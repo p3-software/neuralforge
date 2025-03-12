@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -30,6 +31,23 @@ public class GlobalExceptionHandler {
     private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     /**
+     * Handles {@link AuthorizationDeniedException} when a user lacks sufficient permissions.
+     *
+     * @param ex The exception thrown when authorization is denied.
+     * @return A {@link ResponseEntity} containing a {@link SingleExceptionResponse} with an unauthorized status.
+     */
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    public ResponseEntity<ExceptionResponse> handleAuthorizationDeniedException(AuthorizationDeniedException ex) {
+        String requestId = MDC.get("requestId");
+        logger.error("Not enough permissions exception: {}", ex);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(SingleExceptionResponse.builder()
+                .id(requestId)
+                .exception("You don't have enough permissions to access this content.")
+                .build()
+        );
+    }
+
+    /**
      * Handles {@link ResponseStatusException} and returns an appropriate HTTP response.
      *
      * @param ex The exception thrown.
@@ -41,7 +59,7 @@ public class GlobalExceptionHandler {
         logger.error("A status exception has occurred: {}", ex);
         return ResponseEntity.status(ex.getStatusCode()).body(SingleExceptionResponse.builder()
                 .id(requestId)
-                .exception(ex.getMessage())
+                .exception(ex.getReason())
                 .build()
         );
     }

@@ -1,5 +1,6 @@
 package com.cenfotec.p3.neuralforge_api.model.resource;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -73,6 +74,7 @@ public class UserResource {
      * - One number
      * - One special character (.,/?@#$%^&+=!)
      */
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @NotBlank(message = "Password cannot be empty")
     @Size(min = 8, max = 20, message = "Password must be between 8 and 20 characters")
     @Pattern(
