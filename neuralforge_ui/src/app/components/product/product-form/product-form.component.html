@@ -1,0 +1,40 @@
+<form [formGroup]="form" class="row">
+  <div>
+    <h2 class="mb-0">Add Product</h2>
+  </div>
+  <div class="mb-2">
+    <label class="mb-1" for="name">Name*</label>
+    <input id="name" formControlName="name" type="text" class="form-control">
+    @if (form.controls['name'].invalid && (form.controls['name'].dirty || form.controls['name'].touched)) {
+      <p class="text-danger my-1">Name is required</p>
+    }
+  </div>
+  <div class="mb-2">
+    <label class="mb-1" for="description">Description</label>
+    <textarea id="description" formControlName="description" class="form-control"></textarea>
+  </div>
+  <div class="mb-2">
+    <label class="mb-1" for="price">Price*</label>
+    <input id="price" formControlName="price" type="number" class="form-control" step="0.01">
+    @if (form.controls['price'].invalid && (form.controls['price'].dirty || form.controls['price'].touched)) {
+      <p class="text-danger my-1">Price is required</p>
+    }
+  </div>
+  <div class="mb-2">
+    <label class="mb-1" for="stockQuantity">Stock Quantity*</label>
+    <input id="stockQuantity" formControlName="stockQuantity" type="number" class="form-control">
+    @if (form.controls['stockQuantity'].invalid && (form.controls['stockQuantity'].dirty || form.controls['stockQuantity'].touched)) {
+      <p class="text-danger my-1">Stock Quantity is required</p>
+    }
+  </div>
+  <div class="mb-2">
+    <label class="mb-1" for="categoryId">Category ID*</label>
+    <input id="categoryId" formControlName="categoryId" type="number" class="form-control">
+    @if (form.controls['categoryId'].invalid && (form.controls['categoryId'].dirty || form.controls['categoryId'].touched)) {
+      <p class="text-danger my-1">Category ID is required</p>
+    }
+  </div>
+  <div class="d-flex justify-content-end">
+    <button (click)="callSave()" [disabled]="form.invalid" class="btn btn-primary" type="button">Save</button>
+  </div>
+</form>

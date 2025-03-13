@@ -1,0 +1,18 @@
+.logo-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Espacio entre logo y texto */
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.logo-text {
+  padding-top: 4px;
+  font-size: 22px;
+  font-weight: bold;
+  color: #4a62bd; /* Color del texto */
+}
