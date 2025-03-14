@@ -52,6 +52,13 @@
     </properties>
 
     <dependencies>
+        <!-- Notifications -->
+        <dependency>
+            <groupId>com.sendgrid</groupId>
+            <artifactId>sendgrid-java</artifactId>
+            <version>4.10.1</version>
+        </dependency>
+
         <!-- Data Source -->
         <dependency>
             <groupId>org.mariadb.jdbc</groupId>

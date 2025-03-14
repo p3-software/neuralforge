@@ -21,12 +21,12 @@ import org.springframework.web.server.ResponseStatusException;
 public class UserRoleService {
 
     @Autowired
-    private UserRepository userRepository;
+    protected UserRepository userRepository;
 
     @Autowired
-    private UserRoleRepository userRoleRepository;
+    protected UserRoleRepository userRoleRepository;
 
-    private final UserRoleMapper userRoleMapper = new UserRoleMapper();
+    protected final UserRoleMapper userRoleMapper = new UserRoleMapper();
 
     /**
      * Retrieves a user role based on the specified {@link UserRoleEnum}.
@@ -39,7 +39,7 @@ public class UserRoleService {
         return userRoleMapper.mapToResource(
                 userRoleRepository
                         .findByName(role)
-                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Default role not found"))
+                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Role not found"))
         );
     }
 }

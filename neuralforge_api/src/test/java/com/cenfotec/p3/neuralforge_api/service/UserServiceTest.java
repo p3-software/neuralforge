@@ -1,5 +1,6 @@
 package com.cenfotec.p3.neuralforge_api.service;
 
+import com.cenfotec.p3.neuralforge_api.exception.customTypes.NeuralForgeEmailException;
 import com.cenfotec.p3.neuralforge_api.model.entity.UserEntity;
 import com.cenfotec.p3.neuralforge_api.model.entity.UserRoleEntity;
 import com.cenfotec.p3.neuralforge_api.model.enums.UserRoleEnum;
@@ -108,7 +109,7 @@ class UserServiceTest {
     }
 
     @Test
-    void givenValidUserDetails_whenCreateUser_thenReturnCreatedUser() {
+    void givenValidUserDetails_whenCreateUser_thenReturnCreatedUser() throws NeuralForgeEmailException {
         // Given
         when(userRepository.existsByEmail(mockUserResource.getEmail())).thenReturn(false);
         when(userRoleService.getRoleByEnum(UserRoleEnum.ROLE_STUDENT)).thenReturn(mockRoleResource);

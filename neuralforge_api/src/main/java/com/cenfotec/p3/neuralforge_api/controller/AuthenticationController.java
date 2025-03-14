@@ -1,9 +1,12 @@
 package com.cenfotec.p3.neuralforge_api.controller;
 
+import com.cenfotec.p3.neuralforge_api.exception.customTypes.NeuralForgeEmailException;
 import com.cenfotec.p3.neuralforge_api.model.resource.AuthenticationResource;
 import com.cenfotec.p3.neuralforge_api.model.resource.UserResource;
+import com.cenfotec.p3.neuralforge_api.model.resource.UserValidationInputResource;
 import com.cenfotec.p3.neuralforge_api.service.AuthenticationService;
 import com.cenfotec.p3.neuralforge_api.service.UserService;
+import com.cenfotec.p3.neuralforge_api.service.UserValidationService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,6 +33,9 @@ public class AuthenticationController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private UserValidationService userValidationService;
+
     /**
      * Handles user login requests.
      * Authenticates the user and returns a JWT token upon successful authentication.
@@ -52,9 +58,15 @@ public class AuthenticationController {
      * @return A {@link ResponseEntity} containing the newly created {@link UserResource}.
      */
     @PostMapping("/register")
-    public ResponseEntity<UserResource> registerUser(@Valid @RequestBody UserResource user) {
+    public ResponseEntity<UserResource> registerUser(@Valid @RequestBody UserResource user) throws NeuralForgeEmailException {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(userService.createUser(user));
+    }
+
+    @PostMapping("/verify")
+    public ResponseEntity<Void> validateInitialRegister(@Valid @RequestBody UserValidationInputResource validationInput) {
+        userService.validateInitialRegister(validationInput);
+        return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 }

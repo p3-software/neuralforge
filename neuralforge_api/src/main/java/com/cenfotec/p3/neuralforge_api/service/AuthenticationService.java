@@ -23,15 +23,15 @@ import org.springframework.web.server.ResponseStatusException;
 public class AuthenticationService {
 
     @Autowired
-    private UserRepository userRepository;
+    protected UserRepository userRepository;
 
     @Autowired
-    private AuthenticationManager authenticationManager;
+    protected AuthenticationManager authenticationManager;
 
     @Autowired
-    private JwtService jwtService;
+    protected JwtService jwtService;
 
-    private final UserMapper userMapper = new UserMapper();
+    protected final UserMapper userMapper = new UserMapper();
 
     /**
      * Authenticates a user based on provided credentials.
@@ -45,6 +45,8 @@ public class AuthenticationService {
         UserEntity user = userRepository
                 .findByEmail(input.getEmail())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        if (!user.getVerified()) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Account verification pending");
 
         try {
             authenticationManager.authenticate(

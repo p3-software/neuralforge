@@ -24,11 +24,13 @@ public class UserMapper {
         return UserResource.builder()
                 .id(user.getId())
                 .role(userRoleMapper.mapToResource(user.getRole()))
+                .password(user.getPassword())
                 .createdAt(user.getCreatedAt())
                 .email(user.getEmail())
                 .status(user.getStatus())
                 .lastName(user.getLastName())
                 .name(user.getName())
+                .verified(user.getVerified())
                 .build();
     }
 
@@ -48,6 +50,7 @@ public class UserMapper {
                 .lastName(user.getLastName())
                 .name(user.getName())
                 .password(user.getPassword())
+                .verified(user.getVerified())
                 .build();
     }
 }
