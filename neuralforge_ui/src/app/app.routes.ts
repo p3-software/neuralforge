@@ -11,7 +11,6 @@ import { GuestGuard } from './guards/guest.guard';
 import { IRoleType } from './interfaces';
 import { ProfileComponent } from './pages/profile/profile.component';
 
-import { ProductPageComponent } from './pages/product/product.component';
 
 export const routes: Routes = [
   {
@@ -53,7 +52,8 @@ export const routes: Routes = [
         data: { 
           authorities: [
             IRoleType.admin, 
-            IRoleType.superAdmin
+            IRoleType.teacher,
+            IRoleType.student
           ],
           name: 'Users',
           showInSidebar: true
@@ -67,37 +67,23 @@ export const routes: Routes = [
         data: { 
           authorities: [
             IRoleType.admin, 
-            IRoleType.superAdmin,
-            IRoleType.user
+            IRoleType.teacher,
+            IRoleType.student
           ],
           name: 'profile',
           showInSidebar: false
         }
       },
     
-      
-
-      {
-        path: 'product',
-        component: ProductPageComponent,
-        data: { 
-          authorities: [
-            IRoleType.admin, 
-            IRoleType.superAdmin,
-            IRoleType.user,
-          ],
-          name: 'product',
-          showInSidebar: true
-        }
-      },
+    
       {
         path: 'dashboard',
         component: DashboardComponent,
         data: { 
           authorities: [
             IRoleType.admin, 
-            IRoleType.superAdmin,
-            IRoleType.user
+            IRoleType.teacher,
+            IRoleType.student
           ],
           name: 'dashboard',
           showInSidebar: true

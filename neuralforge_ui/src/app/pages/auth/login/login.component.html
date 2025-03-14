@@ -30,7 +30,7 @@
                   'is-invalid': email.invalid && email.touched,
                   'is-valid': email.valid && email.touched
                 }" required />
-              <div *ngIf="email.invalid" class="invalid-feedback">
+              <div *ngIf="email.invalid && email.touched" class="invalid-feedback">
                 Please add a valid email
               </div>
             </div>
@@ -43,7 +43,7 @@
                   'is-invalid': password.invalid && password.touched,
                   'is-valid': password.valid && password.touched
                 }" required />
-                <div *ngIf="password.invalid" class="invalid-feedback">
+                <div *ngIf="password.invalid && password.touched" class="invalid-feedback">
                   Please add a valid password
                 </div>
               </div>
@@ -53,11 +53,14 @@
               <button class="btn btn-primary btn-block w-100 custom-button" type="submit">
                 Sign in
               </button> 
-              @if(loginError) {
-                <p class="text-danger">{{loginError}}</p>
-              }
+        
+              <p *ngIf="loginError" class="text-danger mt-2">
+                {{ loginError }}
+              </p>
             </div>
-            <a href="/signup">Go SignUp</a>
+            <div class="text-center mt-4">
+              <a href="/signup" class="text-decoration-none">Go SignUp</a>
+            </div>
           </form>
         </div>
       </div>

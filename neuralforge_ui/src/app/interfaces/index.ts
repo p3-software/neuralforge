@@ -38,9 +38,9 @@ export enum IFeedbackStatus {
 }
 
 export enum IRoleType {
-  admin = "ROLE_ADMIN",
-  user = "ROLE_USER",
-  superAdmin = 'ROLE_SUPER_ADMIN'
+  teacher = "ROLE_TEACHER",
+  student = "ROLE_STUDENT",
+  admin = 'ROLE_ADMINISTRATOR'
 }
 
 export interface IRole {
@@ -60,11 +60,3 @@ export interface ISearch {
   totalPages?:number;
 }
 
-export interface IProduct {
-  id?: number;
-  name: string;
-  description: string;
-  price: number;
-  stockQuantity: number;
-  categoryId: number;
-}
