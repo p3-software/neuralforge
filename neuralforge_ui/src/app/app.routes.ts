@@ -11,81 +11,110 @@ import { GuestGuard } from './guards/guest.guard';
 import { IRoleType } from './interfaces';
 import { ProfileComponent } from './pages/profile/profile.component';
 
-
+/**
+ * Application routes configuration.
+ * Defines all available routes and their corresponding components, 
+ * including authentication and authorization guards.
+ */
 export const routes: Routes = [
+  /**
+   * Route for the login page.
+   * Only accessible to unauthenticated users.
+   */
   {
     path: 'login',
     component: LoginComponent,
     canActivate: [GuestGuard],
   },
+
+  /**
+   * Route for the signup page.
+   * Only accessible to unauthenticated users.
+   */
   {
     path: 'signup',
     component: SigUpComponent,
     canActivate: [GuestGuard],
   },
+
+  /**
+   * Route for the access denied page.
+   * Displayed when a user tries to access a restricted area.
+   */
   {
     path: 'access-denied',
     component: AccessDeniedComponent,
   },
+
+  /**
+   * Redirects the base URL to the login page.
+   */
   {
     path: '',
     redirectTo: 'login',
     pathMatch: 'full',
   },
+
+  /**
+   * Main application layout route.
+   * Requires authentication and loads nested routes.
+   */
   {
     path: 'app',
     component: AppLayoutComponent,
     canActivate: [AuthGuard],
     children: [
+      /**
+       * Redirects '/app' to '/app/users' by default.
+       */
       {
         path: 'app',
         redirectTo: 'users',
         pathMatch: 'full',
       },
-      
-      
 
+      /**
+       * Users management page.
+       * Only accessible to admin, teacher, and student roles.
+       * Displays in the sidebar.
+       */
       {
         path: 'users',
         component: UsersComponent,
-        canActivate:[AdminRoleGuard],
+        canActivate: [AdminRoleGuard],
         data: { 
-          authorities: [
-            IRoleType.admin, 
-            IRoleType.teacher,
-            IRoleType.student
-          ],
+          authorities: [IRoleType.admin, IRoleType.teacher, IRoleType.student],
           name: 'Users',
           showInSidebar: true
         }
       },
-      
-      
+
+      /**
+       * User profile page.
+       * Accessible to all roles.
+       * Not displayed in the sidebar.
+       */
       {
         path: 'profile',
         component: ProfileComponent,
         data: { 
-          authorities: [
-            IRoleType.admin, 
-            IRoleType.teacher,
-            IRoleType.student
-          ],
-          name: 'profile',
+          authorities: [IRoleType.admin, IRoleType.teacher, IRoleType.student],
+          name: 'Profile',
           showInSidebar: false
         }
       },
-    
-    
+
+      /**
+       * Dashboard page.
+       * Accessible to all roles.
+       * Displays in the sidebar.
+       */
       {
         path: 'dashboard',
         component: DashboardComponent,
         data: { 
-          authorities: [
-            IRoleType.admin, 
-            IRoleType.teacher,
-            IRoleType.student
-          ],
-          name: 'dashboard',
+          authorities: [IRoleType.admin, IRoleType.teacher, IRoleType.student],
+          name: 'Dashboard',
           showInSidebar: true
         }
       }

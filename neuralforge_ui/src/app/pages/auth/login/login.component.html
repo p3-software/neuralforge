@@ -2,6 +2,7 @@
   <div class="d-flex align-items-center justify-content-center h-100">
     <div class="login-card">
       <div class="w-100">
+        <!-- Logo Section -->
         <div class="text-center">
           <a class="logo text-center" routerLink="/">
             <img
@@ -12,7 +13,9 @@
             />
           </a>
         </div>
+
         <div class="login-main">
+          <!-- Login Form -->
           <form (ngSubmit)="handleLogin($event)" autocomplete="off" #frm="ngForm">
             <div class="mb-3">
               <h4>Sign in to account</h4>
@@ -21,43 +24,68 @@
               </small>
             </div>
 
+            <!-- Email Input Field -->
             <div class="form-group mb-3">
               <label for="email" class="form-label mb-2">
                 Email Address
               </label>
-              <input #email="ngModel" type="text" class="form-control" id="email" name="email"
-                placeholder="agent@gmail.com" [(ngModel)]="loginForm.email" [ngClass]="{
+              <input 
+                #email="ngModel" 
+                type="text" 
+                class="form-control" 
+                id="email" 
+                name="email"
+                placeholder="agent@gmail.com" 
+                [(ngModel)]="loginForm.email" 
+                [ngClass]="{
                   'is-invalid': email.invalid && email.touched,
                   'is-valid': email.valid && email.touched
-                }" required />
+                }" 
+                required 
+              />
+              <!-- Error Message for Email Validation -->
               <div *ngIf="email.invalid && email.touched" class="invalid-feedback">
                 Please add a valid email
               </div>
             </div>
 
+            <!-- Password Input Field -->
             <div class="form-group mb-4">
               <label for="password" class="form-label mb-2">Password</label>
               <div class="form-input position-relative">
-                <input #password="ngModel" type="password" class="form-control" id="password" name="password"
-                placeholder="*****" [(ngModel)]="loginForm.password" [ngClass]="{
-                  'is-invalid': password.invalid && password.touched,
-                  'is-valid': password.valid && password.touched
-                }" required />
+                <input 
+                  #password="ngModel" 
+                  type="password" 
+                  class="form-control" 
+                  id="password" 
+                  name="password"
+                  placeholder="*****" 
+                  [(ngModel)]="loginForm.password" 
+                  [ngClass]="{
+                    'is-invalid': password.invalid && password.touched,
+                    'is-valid': password.valid && password.touched
+                  }" 
+                  required 
+                />
+                <!-- Error Message for Password Validation -->
                 <div *ngIf="password.invalid && password.touched" class="invalid-feedback">
                   Please add a valid password
                 </div>
               </div>
             </div>
 
+            <!-- Login Button -->
             <div class="form-group mb-0">
               <button class="btn btn-primary btn-block w-100 custom-button" type="submit">
                 Sign in
               </button> 
-        
+              <!-- Display login error if any -->
               <p *ngIf="loginError" class="text-danger mt-2">
                 {{ loginError }}
               </p>
             </div>
+
+            <!-- Signup Link -->
             <div class="text-center mt-4">
               <a href="/signup" class="text-decoration-none">Go SignUp</a>
             </div>
@@ -66,4 +94,3 @@
       </div>
     </div>
   </div>
-</div>
