@@ -7,7 +7,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   providedIn: 'root'
 })
 export class ProfileService extends BaseService<IUser> {
-  protected override source: string = 'users/me';
+  protected override source: string = 'api/neuralforge/v1/auth/users/me';
   private userSignal = signal<IUser>({});
   private snackBar = inject(MatSnackBar);
 

@@ -8,7 +8,7 @@ import { AlertService } from './alert.service';
   providedIn: 'root',
 })
 export class UserService extends BaseService<IUser> {
-  protected override source: string = 'users';
+  protected override source: string = 'api/neuralforge/v1/auth/users';
   private userListSignal = signal<IUser[]>([]);
   get users$() {
     return this.userListSignal;

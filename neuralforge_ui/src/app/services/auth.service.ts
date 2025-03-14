@@ -62,6 +62,7 @@ export class AuthService {
         this.expiresIn = response.expiresIn;
         this.user = response.authUser;
         this.save();
+        console.log('User roles:', this.user.role); // Aquí se muestra el rol del usuario
       })
     );
   }
