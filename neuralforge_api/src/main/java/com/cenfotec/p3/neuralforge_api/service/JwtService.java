@@ -26,10 +26,10 @@ import java.util.function.Function;
 public class JwtService {
 
     @Value("${security.jwt.secret-key}")
-    String secretKey;
+    protected String secretKey;
 
     @Value("${security.jwt.expiration-time}")
-    long jwtExpiration;
+    protected long jwtExpiration;
 
     /**
      * Extracts the username (subject) from a given JWT token.
@@ -102,7 +102,7 @@ public class JwtService {
      * @param token The JWT token to check.
      * @return {@code true} if the token is expired, otherwise {@code false}.
      */
-    private boolean isTokenExpired(String token) {
+    protected boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
 
@@ -112,7 +112,7 @@ public class JwtService {
      * @param token The JWT token.
      * @return The expiration date of the token.
      */
-    private Date extractExpiration(String token) {
+    protected Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
     }
 
@@ -139,7 +139,7 @@ public class JwtService {
      * @param expiration The expiration time for the token.
      * @return A JWT token string.
      */
-    private String buildToken(
+    protected String buildToken(
             Map<String, Object> extraClaims,
             UserDetails userDetails,
             long expiration
@@ -159,7 +159,7 @@ public class JwtService {
      *
      * @return A {@link Key} object representing the signing key.
      */
-    private Key getSignInKey() {
+    protected Key getSignInKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }

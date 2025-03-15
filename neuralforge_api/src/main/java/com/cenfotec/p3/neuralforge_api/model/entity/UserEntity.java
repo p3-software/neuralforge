@@ -75,10 +75,16 @@ public class UserEntity implements UserDetails {
     private UserRoleEntity role;
 
     /**
-     * Status of the user account.
+     * Status of access for the user.
      * Defaults to {@code true} when a new user is created.
      */
     private Boolean status;
+
+    /**
+     * Status of verification for the user.
+     * Defaults to {@code false} when a new user is created.
+     */
+    private Boolean verified;
 
     /**
      * Retrieves the authorities granted to the user.
@@ -102,10 +108,10 @@ public class UserEntity implements UserDetails {
 
     /**
      * Sets default values before persisting the entity.
-     * Ensures the user status is set to active upon creation.
      */
     @PrePersist
     private void setDefaultValues() {
         this.status = Boolean.TRUE;
+        this.verified = Boolean.FALSE;
     }
 }

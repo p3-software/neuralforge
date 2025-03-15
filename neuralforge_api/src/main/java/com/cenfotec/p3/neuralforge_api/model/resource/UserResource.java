@@ -62,9 +62,14 @@ public class UserResource {
     private UserRoleResource role;
 
     /**
-     * Status of the user account (active/inactive).
+     * Status of access for the user account (active/inactive).
      */
     private Boolean status;
+
+    /**
+     * Status of verification for the user account (verified/unverified).
+     */
+    private Boolean verified;
 
     /**
      * User password.

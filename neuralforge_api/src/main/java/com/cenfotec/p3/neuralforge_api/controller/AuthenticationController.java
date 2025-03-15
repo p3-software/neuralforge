@@ -1,9 +1,12 @@
 package com.cenfotec.p3.neuralforge_api.controller;
 
+import com.cenfotec.p3.neuralforge_api.exception.customTypes.NeuralForgeEmailException;
 import com.cenfotec.p3.neuralforge_api.model.resource.AuthenticationResource;
 import com.cenfotec.p3.neuralforge_api.model.resource.UserResource;
+import com.cenfotec.p3.neuralforge_api.model.resource.UserValidationInputResource;
 import com.cenfotec.p3.neuralforge_api.service.AuthenticationService;
 import com.cenfotec.p3.neuralforge_api.service.UserService;
+import com.cenfotec.p3.neuralforge_api.service.UserValidationService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Controller responsible for handling authentication-related requests.
- * Provides endpoints for user login and registration.
+ * Provides endpoints for user login, registration, and validation.
  *
  * @author Jareth Mena
  * @version 1.0
@@ -29,6 +32,9 @@ public class AuthenticationController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private UserValidationService userValidationService;
 
     /**
      * Handles user login requests.
@@ -50,11 +56,25 @@ public class AuthenticationController {
      *
      * @param user The {@link UserResource} containing user information.
      * @return A {@link ResponseEntity} containing the newly created {@link UserResource}.
+     * @throws NeuralForgeEmailException If there is an issue with the email address provided during registration.
      */
     @PostMapping("/register")
-    public ResponseEntity<UserResource> registerUser(@Valid @RequestBody UserResource user) {
+    public ResponseEntity<UserResource> registerUser(@Valid @RequestBody UserResource user) throws NeuralForgeEmailException {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(userService.createUser(user));
+    }
+
+    /**
+     * Handles user validation requests during initial registration.
+     * Validates user-provided data before completing the registration process.
+     *
+     * @param validationInput The {@link UserValidationInputResource} containing validation data.
+     * @return A {@link ResponseEntity} with HTTP status 200 (OK) upon successful validation.
+     */
+    @PostMapping("/verify")
+    public ResponseEntity<Void> validateInitialRegister(@Valid @RequestBody UserValidationInputResource validationInput) {
+        userService.validateInitialRegister(validationInput);
+        return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 }

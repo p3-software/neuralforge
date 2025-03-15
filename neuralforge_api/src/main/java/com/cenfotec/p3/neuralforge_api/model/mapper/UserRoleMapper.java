@@ -19,6 +19,7 @@ public class UserRoleMapper {
      * @return A {@link UserRoleResource} containing the mapped role data.
      */
     public UserRoleResource mapToResource(UserRoleEntity role) {
+        if (role == null) return null;
         return UserRoleResource.builder()
                 .description(role.getDescription())
                 .id(role.getId())
@@ -33,6 +34,7 @@ public class UserRoleMapper {
      * @return A {@link UserRoleEntity} containing the mapped role data.
      */
     public UserRoleEntity mapToEntity(UserRoleResource role) {
+        if (role == null) return null;
         return UserRoleEntity.builder()
                 .description(role.getDescription())
                 .id(role.getId())
