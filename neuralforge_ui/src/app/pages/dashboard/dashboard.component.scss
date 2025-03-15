@@ -1,0 +1,19 @@
+.post-section {
+    background-color: white; 
+    padding: 30px;
+    border-radius: 10px; 
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); 
+    margin-top: 20px;
+}
+
+.post-title {
+    font-size: 18px;
+  margin-bottom: 10px;
+  text-align: left;
+}
+
+.post-container {
+    display: flex;
+    gap: 20px;
+    justify-content: left;
+}
