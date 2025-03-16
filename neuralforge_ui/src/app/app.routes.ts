@@ -66,7 +66,6 @@ export const routes: Routes = [
     component: VerificationComponent,
     canActivate: [GuestGuard],
   },
-
   {
     path: "reset-password-request",
     component: ResetPasswordRequestComponent,
@@ -78,7 +77,6 @@ export const routes: Routes = [
     component: PasswordResetComponent,
     canActivate: [GuestGuard],
   },
-
   /**
    * Main application layout route.
    * Requires authentication and loads nested routes.
@@ -106,6 +104,7 @@ export const routes: Routes = [
         path: "users",
         component: UsersComponent,
         canActivate: [AdminRoleGuard],
+
         data: {
           authorities: [IRoleType.admin],
           name: "Users",
@@ -139,6 +138,7 @@ export const routes: Routes = [
         component: DashboardComponent,
         data: {
           authorities: [IRoleType.admin, IRoleType.teacher, IRoleType.student],
+
           name: "Dashboard",
           showInSidebar: true,
         },
