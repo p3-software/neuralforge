@@ -104,7 +104,6 @@ export const routes: Routes = [
         path: "users",
         component: UsersComponent,
         canActivate: [AdminRoleGuard],
-
         data: {
           authorities: [IRoleType.admin],
           name: "Users",
@@ -138,7 +137,6 @@ export const routes: Routes = [
         component: DashboardComponent,
         data: {
           authorities: [IRoleType.admin, IRoleType.teacher, IRoleType.student],
-
           name: "Dashboard",
           showInSidebar: true,
         },
