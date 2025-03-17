@@ -59,6 +59,18 @@ public class EmailService {
         sendEmail(mail);
     }
 
+    public void sendPasswordResetEmail(UserEntity user) throws NeuralForgeEmailException {
+        String resetLink = "http://your-domain.com/password-reset?userId=" + user.getId();
+        String subject = "Restablecer tu contraseña";
+        String body = "Haz clic en el siguiente enlace para restablecer tu contraseña: " + resetLink;
+
+        Email to = new Email(user.getEmail());
+        Content content = new Content("text/plain", body);
+        Mail mail = new Mail(from, subject, to, content);
+
+        sendEmail(mail);
+    }
+
     /**
      * Sends an email using the SendGrid API.
      *

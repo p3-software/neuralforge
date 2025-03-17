@@ -1,9 +1,7 @@
 package com.cenfotec.p3.neuralforge_api.controller;
 
 import com.cenfotec.p3.neuralforge_api.exception.customTypes.NeuralForgeEmailException;
-import com.cenfotec.p3.neuralforge_api.model.resource.AuthenticationResource;
-import com.cenfotec.p3.neuralforge_api.model.resource.UserResource;
-import com.cenfotec.p3.neuralforge_api.model.resource.UserValidationInputResource;
+import com.cenfotec.p3.neuralforge_api.model.resource.*;
 import com.cenfotec.p3.neuralforge_api.service.AuthenticationService;
 import com.cenfotec.p3.neuralforge_api.service.UserService;
 import com.cenfotec.p3.neuralforge_api.service.UserValidationService;
@@ -15,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.cenfotec.p3.neuralforge_api.service.PasswordResetService;
 
 /**
  * Controller responsible for handling authentication-related requests.
@@ -77,4 +76,42 @@ public class AuthenticationController {
         userService.validateInitialRegister(validationInput);
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
+
+    /**
+     * Handles password reset requests.
+     * Sends a password reset email with a link to reset the password.
+     *
+     * @param request The {@link PasswordResetRequestResource} containing the user's email.
+     * @return A {@link ResponseEntity} with a success message.
+     */
+    @Autowired
+    private PasswordResetService passwordResetService;
+
+    @PostMapping("/request")
+    public ResponseEntity<String> requestPasswordReset(@RequestBody PasswordResetRequestResource request) {
+        try {
+            passwordResetService.requestPasswordReset(request);
+            return ResponseEntity.ok("Se ha enviado un correo con el enlace para restablecer tu contraseña.");
+        } catch (NeuralForgeEmailException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error al enviar el correo de restablecimiento de contraseña.");
+        }
+    }
+
+    /**
+     * Endpoint for resetting the password.
+     * Receives the token and the new password to reset the user's password.
+
+     * @return A {@link ResponseEntity} with a success message.
+    */
+    @PostMapping("/reset")
+    public ResponseEntity<String> resetPassword(@RequestBody PasswordResetResource request) {
+        try {
+            passwordResetService.resetPassword(request.getUserId(), request.getNewPassword());
+            return ResponseEntity.ok("Contraseña restablecida con éxito.");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
 }

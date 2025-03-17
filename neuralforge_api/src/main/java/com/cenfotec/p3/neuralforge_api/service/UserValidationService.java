@@ -90,4 +90,6 @@ public class UserValidationService {
     private Optional<UserValidationEntity> getLatestPendingValidation(String email) {
         return userValidationRepository.findLatestPendingValidationByEmail(email);
     }
+
+
 }

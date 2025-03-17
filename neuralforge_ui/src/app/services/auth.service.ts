@@ -167,6 +167,15 @@ export class AuthService {
   }
 
   /**
+ * Sends a password reset request to the API.
+ * @param email The user's email address.
+ * @returns An `Observable` containing the response.
+ */
+  public requestPasswordReset(email: string): Observable<string> {
+    return this.http.post("api/neuralforge/v1/auth/request", { email }, { responseType: 'text' });
+}
+
+  /**
    * Logs out the user and removes their authentication data from local storage.
    */
   public logout(): void {
