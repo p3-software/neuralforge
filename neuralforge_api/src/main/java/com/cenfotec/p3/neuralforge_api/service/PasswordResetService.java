@@ -19,6 +19,12 @@ public class PasswordResetService {
     @Autowired
     private EmailService emailService;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JwtService jwtService; // Agregamos JwtService para validar el token
+
     /**
      * Solicita el restablecimiento de la contraseña.
      *
@@ -32,23 +38,25 @@ public class PasswordResetService {
         }
 
         UserEntity user = userOpt.get();
-
-
-        emailService.sendPasswordResetEmail(user);
+        String token = jwtService.generatePasswordResetToken(user.getId()); // Genera el token
+        emailService.sendPasswordResetEmail(user, token);
     }
 
     /**
      * Restablece la contraseña usando el token proporcionado y la nueva contraseña.
      *
+     * @param token      El token de restablecimiento de contraseña.
      * @param newPassword La nueva contraseña del usuario.
-     * @param userId El identificador del usuario.
+     */
+    public void resetPassword(String token, String newPassword) {
 
-    } */
+        String userId;
+        try {
+            userId = jwtService.extractClaim(token, claims -> claims.get("userId", String.class));
+        } catch (Exception e) {
+            throw new RuntimeException("Token inválido o expirado.");
+        }
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    public void resetPassword(String userId, String newPassword) {
         Optional<UserEntity> userOpt = userRepository.findById(userId);
 
         if (!userOpt.isPresent()) {

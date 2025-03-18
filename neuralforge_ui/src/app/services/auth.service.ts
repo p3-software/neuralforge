@@ -154,6 +154,8 @@ export class AuthService {
       user
     );
   }
+
+
   /**
    * Verifies a user's identity by providing an email and a validation code.
    * @param validationRequest Data required for validation.
@@ -173,6 +175,29 @@ export class AuthService {
  */
   public requestPasswordReset(email: string): Observable<string> {
     return this.http.post("api/neuralforge/v1/auth/request", { email }, { responseType: 'text' });
+  }
+
+  /**
+ * Sends a password reset request to the API.
+ * @param userId The user's ID from the URL.
+ * @param newPassword The new password chosen by the user.
+ * @returns An `Observable` containing the response from the server.
+ */
+  public resetPassword(token: string, newPassword: string): Observable<string> {
+    return this.http.post("api/neuralforge/v1/auth/reset", 
+        { token, newPassword },  
+        { responseType: 'text' }
+    );
+  }
+
+  /**
+ * Sends the Google ID token to the API for authentication.
+ * @param token The Google ID token.
+ * @returns An `Observable` containing the API response.
+ */
+public sendGoogleTokenToApi(token: string): Observable<any> {
+  console.log('Sending Google Token to API:', token); // Log the token for debugging
+  return this.http.post('api/neuralforge/v1/auth/google-login', { token });
 }
 
   /**

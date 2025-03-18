@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+
 /**
  * Service class responsible for handling email-related operations.
  * Utilizes SendGrid for sending verification emails to users.
@@ -59,8 +60,12 @@ public class EmailService {
         sendEmail(mail);
     }
 
-    public void sendPasswordResetEmail(UserEntity user) throws NeuralForgeEmailException {
-        String resetLink = "http://your-domain.com/password-reset?userId=" + user.getId();
+
+
+    public void sendPasswordResetEmail(UserEntity user, String token) throws NeuralForgeEmailException {
+        // Usa el token en la URL en lugar del userId
+        String resetLink = "http://localhost:4200/reset-password?token=" + token;
+
         String subject = "Restablecer tu contraseña";
         String body = "Haz clic en el siguiente enlace para restablecer tu contraseña: " + resetLink;
 
@@ -70,7 +75,6 @@ public class EmailService {
 
         sendEmail(mail);
     }
-
     /**
      * Sends an email using the SendGrid API.
      *

@@ -101,13 +101,13 @@ public class AuthenticationController {
     /**
      * Endpoint for resetting the password.
      * Receives the token and the new password to reset the user's password.
-
+     *
      * @return A {@link ResponseEntity} with a success message.
-    */
+     */
     @PostMapping("/reset")
     public ResponseEntity<String> resetPassword(@RequestBody PasswordResetResource request) {
         try {
-            passwordResetService.resetPassword(request.getUserId(), request.getNewPassword());
+            passwordResetService.resetPassword(request.getToken(), request.getNewPassword()); // Ahora usamos el token
             return ResponseEntity.ok("Contraseña restablecida con éxito.");
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());

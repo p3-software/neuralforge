@@ -1,16 +1,24 @@
 package com.cenfotec.p3.neuralforge_api.model.resource;
 
 public class PasswordResetResource {
-    private String userId;
+    private String token;
     private String newPassword;
 
-    // Getters y setters
-    public String getUserId() {
-        return userId;
+    // Constructor vacío (necesario para la deserialización JSON)
+    public PasswordResetResource() {}
+
+    // Constructor con parámetros
+    public PasswordResetResource(String token, String newPassword) {
+        this.token = token;
+        this.newPassword = newPassword;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public String getNewPassword() {

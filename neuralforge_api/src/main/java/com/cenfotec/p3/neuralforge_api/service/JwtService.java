@@ -163,4 +163,19 @@ public class JwtService {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
+
+    public String generatePasswordResetToken(String userId) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("userId", userId);
+
+        long expirationTime = 15 * 60 * 1000;
+
+        return Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
+                .signWith(getSignInKey(), SignatureAlgorithm.HS256)
+                .compact();
+    }
+
 }

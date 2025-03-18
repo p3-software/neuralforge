@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, OnInit } from '@angular/core';
 import { FormsModule, NgModel } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
@@ -14,7 +14,7 @@ import { AuthService } from '../../../services/auth.service';
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   public showPassword: boolean = false;
 
   /** Error message displayed when login fails. */
@@ -41,6 +41,14 @@ export class LoginComponent {
     private router: Router, 
     private authService: AuthService
   ) {}
+
+  ngOnInit(): void {
+    // Define the callback function for Google Sign-In
+    (window as any).handleCredentialResponse = (response: any) => {
+      this.handleGoogleLogin(response.credential);
+    };
+  }
+
   /**
    * Toggles visibility for the password input.
    */
@@ -74,5 +82,23 @@ export class LoginComponent {
         }
       });
     }
+  }
+
+  /**
+   * Handles Google login by sending the token to the AuthService.
+   * @param token The Google ID token.
+   */
+  private handleGoogleLogin(token: string): void {
+    console.log('Google Token:', token); // Log the token to the console
+    this.authService.sendGoogleTokenToApi(token).subscribe({
+      next: (response) => {
+        console.log('API Response:', response);
+        this.router.navigateByUrl('/app/dashboard');
+      },
+      error: (err) => {
+        console.error('Error sending token to API:', err);
+        this.loginError = 'Failed to authenticate with Google.';
+      }
+    });
   }
 }
