@@ -38,7 +38,7 @@ class EmailServiceTest {
 
         @Override
         protected void sendEmail(Mail mail) {
-            // No hacer nada
+
         }
     }
 }
