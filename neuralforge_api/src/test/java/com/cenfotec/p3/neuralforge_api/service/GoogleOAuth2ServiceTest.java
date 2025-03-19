@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class GoogleOAuth2Service {
+class GoogleOAuth2ServiceTest {
 
     @Mock
     private UserRepository userRepository;

@@ -2,52 +2,43 @@ package com.cenfotec.p3.neuralforge_api.service;
 
 import com.cenfotec.p3.neuralforge_api.exception.customTypes.NeuralForgeEmailException;
 import com.cenfotec.p3.neuralforge_api.model.entity.UserEntity;
-import com.sendgrid.Request;
-import com.sendgrid.Response;
-import com.sendgrid.SendGrid;
+import com.sendgrid.helpers.mail.Mail;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
-import java.io.IOException;
-
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 class EmailServiceTest {
 
-    @InjectMocks
     private EmailService emailService;
-
-    @Mock
-    private SendGrid sendGrid;
+    private UserEntity testUser;
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
+        emailService = new TestEmailService("test@example.com");
+        testUser = new UserEntity();
+        testUser.setName("Test User");
+        testUser.setEmail("test@example.com");
     }
 
     @Test
-    void testSendUserVerificationEmailSuccess() throws NeuralForgeEmailException, IOException {
-        UserEntity user = new UserEntity();
-        user.setName("John Doe");
-        user.setEmail("john.doe@example.com");
-
-        doNothing().when(sendGrid).api(any(Request.class));
-
-        assertDoesNotThrow(() -> emailService.sendUserVerificationEmail(user, 123456));
+    void sendUserVerificationEmail_Success() {
+        assertDoesNotThrow(() -> emailService.sendUserVerificationEmail(testUser, 123456));
     }
 
     @Test
-    void testSendPasswordResetEmailSuccess() throws NeuralForgeEmailException, IOException {
-        UserEntity user = new UserEntity();
-        user.setName("Jane Doe");
-        user.setEmail("jane.doe@example.com");
+    void sendPasswordResetEmail_Success() {
+        assertDoesNotThrow(() -> emailService.sendPasswordResetEmail(testUser, "fakeToken"));
+    }
 
-        doNothing().when(sendGrid).api(any(Request.class));
+    private static class TestEmailService extends EmailService {
+        public TestEmailService(String senderIdentity) {
+            super(senderIdentity);
+        }
 
-        assertDoesNotThrow(() -> emailService.sendPasswordResetEmail(user, "dummyToken"));
+        @Override
+        protected void sendEmail(Mail mail) {
+            // No hacer nada
+        }
     }
 }

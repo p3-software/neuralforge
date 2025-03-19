@@ -64,31 +64,25 @@ public class GoogleOAuth2Service {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Token cannot be null or empty");
         }
 
-        // Google API endpoint for validating ID tokens
         String userInfoEndpointUri = "https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=" + token;
         String response;
 
         try {
-            // Call Google API to validate token
             response = restTemplate.getForObject(userInfoEndpointUri, String.class);
         } catch (RestClientException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Failed to validate Google token", e);
         }
 
-        // Extract email from Google response
         String email = extractEmailFromResponse(response);
 
-        // Find user in the database
         UserEntity user = userRepository
                 .findByEmail(email)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid email or password"));
 
-        // Ensure the user has a verified account
         if (!user.getVerified()) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Account verification pending");
         }
 
-        // Return authentication resource with JWT token
         return AuthenticationResource.builder()
                 .token(jwtService.generateToken(user))
                 .expiresIn(jwtService.getExpirationTime())
