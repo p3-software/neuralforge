@@ -11,6 +11,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.io.IOException;
+
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.Mockito.*;
 
@@ -28,7 +30,7 @@ class EmailServiceTest {
     }
 
     @Test
-    void testSendUserVerificationEmailSuccess() throws NeuralForgeEmailException {
+    void testSendUserVerificationEmailSuccess() throws NeuralForgeEmailException, IOException {
         UserEntity user = new UserEntity();
         user.setName("John Doe");
         user.setEmail("john.doe@example.com");
@@ -39,7 +41,7 @@ class EmailServiceTest {
     }
 
     @Test
-    void testSendPasswordResetEmailSuccess() throws NeuralForgeEmailException {
+    void testSendPasswordResetEmailSuccess() throws NeuralForgeEmailException, IOException {
         UserEntity user = new UserEntity();
         user.setName("Jane Doe");
         user.setEmail("jane.doe@example.com");
