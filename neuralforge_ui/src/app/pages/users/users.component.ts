@@ -24,7 +24,7 @@ import {Observable} from "rxjs";
   styleUrl: './users.component.scss'
 })
 export class UsersComponent {
-  // public userService: UserService = inject(UserService);
+
   public modalService: ModalService = inject(ModalService);
   @ViewChild('addUsersModal') public addUsersModal: any;
   public fb: FormBuilder = inject(FormBuilder);

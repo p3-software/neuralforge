@@ -7,7 +7,7 @@ import { GestionCardComponent } from '../../components/gestion-card/gestion-card
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [PostCardComponent, GestionCardComponent],  // ✅ Ya lo puedes importar directamente
+  imports: [PostCardComponent, GestionCardComponent],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })

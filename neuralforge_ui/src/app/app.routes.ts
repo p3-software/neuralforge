@@ -12,81 +12,55 @@ import { IRoleType } from './interfaces';
 import { ProfileComponent } from './pages/profile/profile.component';
 import {VerificationComponent} from "./pages/auth/verification/verification.component";
 
-/**
- * Application routes configuration.
- * Defines all available routes and their corresponding components, 
- * including authentication and authorization guards.
- */
+
 export const routes: Routes = [
-  /**
-   * Route for the login page.
-   * Only accessible to unauthenticated users.
-   */
+  
   {
     path: 'login',
     component: LoginComponent,
     canActivate: [GuestGuard],
   },
 
-  /**
-   * Route for the signup page.
-   * Only accessible to unauthenticated users.
-   */
+  
   {
     path: 'signup',
     component: SigUpComponent,
     canActivate: [GuestGuard],
   },
 
-  /**
-   * Route for the access denied page.
-   * Displayed when a user tries to access a restricted area.
-   */
+  
   {
     path: 'access-denied',
     component: AccessDeniedComponent,
   },
 
-  /**
-   * Redirects the base URL to the login page.
-   */
+  
   {
     path: '',
     redirectTo: 'login',
     pathMatch: 'full',
   },
-  /**
-   * Redirects to the email verification page.
-   */
+  
   {
     path: 'verification',
     component: VerificationComponent,
     canActivate: [GuestGuard],
   },
 
-  /**
-   * Main application layout route.
-   * Requires authentication and loads nested routes.
-   */
+  
   {
     path: 'app',
     component: AppLayoutComponent,
     canActivate: [AuthGuard],
     children: [
-      /**
-       * Redirects '/app' to '/app/users' by default.
-       */
+      
       {
         path: 'app',
         redirectTo: 'users',
         pathMatch: 'full',
       },
 
-      /**
-       * Users management page.
-       * Only accessible to admin, teacher, and student roles.
-       * Displays in the sidebar.
-       */
+      
       {
         path: 'users',
         component: UsersComponent,
@@ -98,11 +72,7 @@ export const routes: Routes = [
         }
       },
 
-      /**
-       * User profile page.
-       * Accessible to all roles.
-       * Not displayed in the sidebar.
-       */
+      
       {
         path: 'profile',
         component: ProfileComponent,
@@ -113,11 +83,7 @@ export const routes: Routes = [
         }
       },
 
-      /**
-       * Dashboard page.
-       * Accessible to all roles.
-       * Displays in the sidebar.
-       */
+      
       {
         path: 'dashboard',
         component: DashboardComponent,
@@ -129,9 +95,7 @@ export const routes: Routes = [
       },
     ],
   },
-  /**
-   * Failsafe redirect.
-   */
+  
   {
     path: '**',
     redirectTo: '/',
