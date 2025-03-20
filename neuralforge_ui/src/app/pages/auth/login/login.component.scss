@@ -1,58 +1,105 @@
+@use '@angular/material' as mat;
+
 .login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   height: 100vh;
-  background-image: url("../../../../assets/img/login/Login-background.png");
-  background-position: left;
-  background-size: cover;
-  background-repeat: no-repeat;
-  padding: 20px 20%;
-  position: relative;
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5); 
-    z-index: 1;
+  background: linear-gradient(135deg, #4a62bd, #28C76F);
+}
+
+.login-card {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  animation: fadeIn 0.5s ease-in-out;
+
+  h4 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 5px;
   }
+
+  .subtext {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 20px;
+  }
+
+  mat-form-field {
+    width: 100%;
+    margin-bottom: 15px;
+
+    input {
+      font-family: 'Montserrat', sans-serif;
+    }
+  }
+
+  .forgot-password {
+    text-align: right;
+    font-size: 14px;
+    margin-bottom: 15px;
+
+    a {
+      text-decoration: none;
+      color: #4a62bd;
+      font-weight: 500;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  button {
+    width: 100%;
+    font-size: 16px;
+    font-weight: 500;
+    text-transform: uppercase;
+  }
+
+  .error-message {
+    color: #d32f2f;
+    font-size: 14px;
+    margin-top: 10px;
+  }
+
+  .signup-link {
+    font-size: 14px;
+    margin-top: 15px;
+
+    a {
+      color: #28C76F;
+      font-weight: 600;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+// Fade-in animation
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Responsive design
+@media (max-width: 480px) {
   .login-card {
-    position: relative;
-    z-index: 2;
-    width: 50%;
-    padding: 40px;
-    border-radius: 10px;
-    box-shadow: 0 0 37px rgba(8, 21, 66, 0.05);
-    margin: 0 auto;
-    background-color: #fff;
-  }
-
-  .custom-button {
-    background-color: #4a62bd; 
-    border-color: #4a62bd; 
-  }
-  
-  .custom-button:hover {
-    background-color: #3a4f9d; 
-    border-color: #3a4f9d; 
-  }
-
-  @media screen and (min-width: 801px) and (max-width: 1500px) {
-    padding: 20px 5%;
-    .login-card {
-      width: 60%;
-      .login-main {
-        padding: 0px;
-      }
-    }
-  }
-  @media screen and (max-width: 800px) {
-    padding: 20px 5%;
-    .login-card {
-      width: 100%;
-      .login-main {
-        padding: 0px;
-      }
-    }
+    padding: 1.5rem;
   }
 }

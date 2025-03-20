@@ -1,109 +1,81 @@
 <div class="login-container">
-  <div class="d-flex align-items-center justify-content-center h-100">
+  <div class="overlay"></div>
+  <div class="login-wrapper">
     <div class="login-card">
-      <div class="w-100">
-        <div class="text-center">
-          <a class="logo text-center" routerLink="/">
-            <img width="150" class="img-fluid" style="min-width: 150px; max-width: 200px;"
-              src="../../../../assets/icons/logo@2x.png"
-              alt="Logo"
+      <!-- Logo Section -->
+      <div class="text-center">
+        <a class="logo text-center" routerLink="/">
+          <img width="150" class="logo-img" src="../../../../assets/icons/logo@2x.png" alt="Logo" />
+        </a>
+      </div>
+
+      <div class="login-main">
+        <!-- Signup Form -->
+        <form (ngSubmit)="handleSignup($event)" autocomplete="off" #frm="ngForm">
+          <div class="mb-3 text-center">
+            <h2 class="title">Create an Account</h2>
+            <p class="subtitle">Fill in your details below</p>
+          </div>
+
+          <!-- Error Messages -->
+          <div *ngIf="signUpError?.length" class="error-list">
+            <ul>
+              <li *ngFor="let error of signUpError">{{ error }}</li>
+            </ul>
+          </div>
+
+          <!-- Name Fields -->
+          <div class="form-group-container">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>First Name</mat-label>
+              <input #name="ngModel" matInput type="text" id="name" name="name" [(ngModel)]="user.name" required />
+              <mat-error *ngIf="name.invalid && name.touched">Please enter your first name</mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Last Name</mat-label>
+              <input #lastname="ngModel" matInput type="text" id="lastname" name="lastname" [(ngModel)]="user.lastname" />
+            </mat-form-field>
+          </div>
+
+          <!-- Email -->
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Email Address</mat-label>
+            <input #email="ngModel" matInput type="email" id="email" name="email" [(ngModel)]="user.email" required />
+            <mat-error *ngIf="email.invalid && email.touched">Please enter a valid email</mat-error>
+          </mat-form-field>
+
+          <!-- Password -->
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Password</mat-label>
+            <input
+                    #password="ngModel"
+                    matInput
+                    [type]="showPassword ? 'text' : 'password'"
+                    id="password"
+                    name="password"
+                    [(ngModel)]="user.password"
+                    required
             />
-          </a>
-        </div>
-        <div class="login-main">
-          <form (ngSubmit)="handleSignup($event)" autocomplete="off" #frm="ngForm">
-            <div class="mb-3">
-              <h1 class="mb-0">Sign up account</h1>
-              <small style="color: #4f4f4f">
-                Add your personal information.
-              </small>
-            </div>
+            <button mat-icon-button matSuffix type="button" (click)="togglePasswordVisibility()">
+              <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+            <mat-error *ngIf="password.invalid && password.touched">Please enter a valid password</mat-error>
+          </mat-form-field>
 
-            <div>
-              @if (signUpError && signUpError.length > 0) {
-              <ul class="text-danger">
-                <li *ngFor="let error of signUpError">{{ error }}</li>
-              </ul>
-              }
-            </div>
+          <!-- Signup Button -->
+          <div class="text-center">
+            <button mat-raised-button color="primary" class="signup-btn" type="submit" [disabled]="isSignUpDisabled">
+              Sign Up
+            </button>
+          </div>
 
-            <div class="d-flex mb-4">
-              <div class="form-group px-1" style="flex: 1;">
-                <label for="name" class="form-label mb-2">First Name</label>
-                <input #name="ngModel" type="text" class="form-control" id="name" name="name"
-                       placeholder="First Name" [(ngModel)]="user.name" [ngClass]="{
-        'is-invalid': name.invalid && name.touched,
-        'is-valid': name.valid && name.touched
-      }" required />
-                <div *ngIf="name.invalid" class="invalid-feedback">
-                  Please add a valid name
-                </div>
-              </div>
-
-              <div class="form-group px-1" style="flex: 1;">
-                <label for="lastname" class="form-label mb-2">Last Name</label>
-                <input #lastname="ngModel" type="text" class="form-control" id="lastname" name="lastname"
-                       placeholder="Last Name" [(ngModel)]="user.lastname" />
-
-              </div>
-            </div>
-
-
-            <div class="form-group px-1 mb-4">
-              <label for="email" class="form-label mb-2">
-                Email Address
-              </label>
-              <input #email="ngModel" type="text" class="form-control" id="email" name="email"
-                placeholder="agent@gmail.com" [(ngModel)]="user.email" [ngClass]="{
-                  'is-invalid': email.invalid && email.touched,
-                  'is-valid': email.valid && email.touched
-                }" required />
-              <div *ngIf="email.invalid" class="invalid-feedback">
-                Please add a valid email
-              </div>
-            </div>
-
-            <div class="form-group px-1 mb-4">
-              <label for="password" class="form-label mb-2">Password</label>
-              <div class="form-input position-relative">
-                <input
-                        #password="ngModel"
-                        [type]="showPassword ? 'text' : 'password'"
-                class="form-control"
-                id="password"
-                name="password"
-                placeholder="*****"
-                [(ngModel)]="user.password"
-                [ngClass]="{
-                'is-invalid': password.invalid && password.touched,
-                'is-valid': password.valid && password.touched
-                }" required />
-                <button
-                        type="button"
-                        class="btn btn-primary position-absolute end-0 top-50 translate-middle-y me-2"
-                        (click)="togglePasswordVisibility()">
-                  <i [class]="showPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
-                </button>
-                <div *ngIf="password.invalid" class="invalid-feedback">
-                  Please add a valid password
-                </div>
-              </div>
-            </div>
-
-            <div class="form-group mt-2 px-1">
-              <button class="btn btn-primary btn-block w-100 custom-button"
-                      type="submit"
-                      [disabled]="isSignUpDisabled">
-                Sign up
-              </button>
-
-
-            </div>
-            <div class="text-center mt-4">
-              <a href="/login" class="text-decoration-none">Go Login</a>
-            </div>
-          </form>
-        </div>
+          <!-- Login Link -->
+          <p class="text-center login-link">
+            Already have an account?
+            <a routerLink="/login">Log In</a>
+          </p>
+        </form>
       </div>
     </div>
   </div>
