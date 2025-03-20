@@ -127,4 +127,18 @@ public class AuthenticationController {
         AuthenticationResource response = googleOAuth2Service.authenticate(token);
         return ResponseEntity.ok(response);
     }
+
+    /**
+     * Retrieves the currently authenticated user's profile information.
+     * Returns details including first name, last name, email, registration date,
+     * and last password change date.
+     *
+     * @return A {@link ResponseEntity} containing the {@link UserResource} with current user's details.
+     */
+    @GetMapping("/me")
+    public ResponseEntity<UserResource> getCurrentUser() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(userService.getCurrentUser());
+    }
 }
