@@ -15,10 +15,10 @@ import org.springframework.stereotype.Service;
 
 /**
  * Service class responsible for handling email-related operations.
- * Utilizes SendGrid for sending verification emails to users.
+ * Utilizes SendGrid for sending verification and password reset emails.
  *
  * @author Jareth Mena
- * @version 1.0
+ * @version 1.1
  */
 @Service
 public class EmailService {
@@ -60,6 +60,27 @@ public class EmailService {
     }
 
     /**
+     * Sends an email containing a password reset link.
+     *
+     * @param user The {@link UserEntity} recipient of the password reset email.
+     * @param token The JWT token used to authenticate the password reset request.
+     * @throws NeuralForgeEmailException If an error occurs while sending the email.
+     */
+    public void sendPasswordResetEmail(UserEntity user, String token) throws NeuralForgeEmailException {
+        String resetLink = "http://localhost:4200/reset-password?token=" + token;
+        String subject = "Password Reset Request";
+        String body = "Hello " + user.getName() + ",\n\n"
+                + "You have requested to reset your password. Please click the link below to reset it:\n\n"
+                + resetLink + "\n\n"
+                + "If you did not request a password reset, please ignore this email.";
+
+        Email to = new Email(user.getEmail());
+        Content content = new Content("text/plain", body);
+        Mail mail = new Mail(from, subject, to, content);
+        sendEmail(mail);
+    }
+
+    /**
      * Sends an email using the SendGrid API.
      *
      * @param mail The {@link Mail} object containing email details.
@@ -73,10 +94,11 @@ public class EmailService {
             request.setBody(mail.build());
             Response response = sendGrid.api(request);
             if (response.getStatusCode() > 299) {
-                throw new NeuralForgeEmailException("A status of " + response.getStatusCode() + " has been returned by the email client. Body: " + response.getBody());
+                throw new NeuralForgeEmailException("Email sending failed with status code: "
+                        + response.getStatusCode() + ". Response body: " + response.getBody());
             }
         } catch (Exception ex) {
-            throw new NeuralForgeEmailException("An unknown exception has occurred while sending an email: " + ex.getMessage(), ex);
+            throw new NeuralForgeEmailException("An error occurred while sending an email: " + ex.getMessage(), ex);
         }
     }
 }

@@ -11,56 +11,69 @@ import { GuestGuard } from './guards/guest.guard';
 import { IRoleType } from './interfaces';
 import { ProfileComponent } from './pages/profile/profile.component';
 import {VerificationComponent} from "./pages/auth/verification/verification.component";
+import {ResetPasswordRequestComponent} from "./pages/auth/reset-password-request/reset-password-request.component";
+import { PasswordResetComponent } from './pages/auth/reset-password/reset-password.component';
 
 
 export const routes: Routes = [
-  
+
   {
     path: 'login',
     component: LoginComponent,
     canActivate: [GuestGuard],
   },
 
-  
+
   {
     path: 'signup',
     component: SigUpComponent,
     canActivate: [GuestGuard],
   },
 
-  
+
   {
     path: 'access-denied',
     component: AccessDeniedComponent,
   },
 
-  
+
   {
     path: '',
     redirectTo: 'login',
     pathMatch: 'full',
   },
-  
+
   {
     path: 'verification',
     component: VerificationComponent,
     canActivate: [GuestGuard],
   },
 
-  
+  {
+    path: 'reset-password-request',
+    component: ResetPasswordRequestComponent,
+    canActivate: [GuestGuard],
+  },
+
+  {
+    path: 'reset-password',
+    component: PasswordResetComponent,
+    canActivate: [GuestGuard],
+  },
+
   {
     path: 'app',
     component: AppLayoutComponent,
     canActivate: [AuthGuard],
     children: [
-      
+
       {
         path: 'app',
         redirectTo: 'users',
         pathMatch: 'full',
       },
 
-      
+
       {
         path: 'users',
         component: UsersComponent,
@@ -72,7 +85,7 @@ export const routes: Routes = [
         }
       },
 
-      
+
       {
         path: 'profile',
         component: ProfileComponent,
@@ -83,7 +96,7 @@ export const routes: Routes = [
         }
       },
 
-      
+
       {
         path: 'dashboard',
         component: DashboardComponent,
@@ -95,7 +108,7 @@ export const routes: Routes = [
       },
     ],
   },
-  
+
   {
     path: '**',
     redirectTo: '/',

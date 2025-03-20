@@ -1,6 +1,6 @@
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
-import { Observable, tap } from "rxjs";
+import { catchError, Observable, tap, throwError } from "rxjs";
 import {IAuthority, ILoginResponse, IRole, IRoleType, IUser, IValidationRequest} from "../interfaces";
 
 
@@ -8,24 +8,24 @@ import {IAuthority, ILoginResponse, IRole, IRoleType, IUser, IValidationRequest}
   providedIn: "root",
 })
 export class AuthService {
-  
+
   private accessToken!: string;
 
-  
+
   private expiresIn!: number;
 
-  
+
   private userRole: IRole = { name: "", createdAt: "", id: "", description: "" }
   private user: IUser = { email: "", role: this.userRole };
 
-  
+
   private http: HttpClient = inject(HttpClient);
 
   constructor() {
     this.load();
   }
 
-  
+
   public save(): void {
     if (this.user) localStorage.setItem("auth_user", JSON.stringify(this.user));
 
@@ -36,7 +36,7 @@ export class AuthService {
       localStorage.setItem("expiresIn", JSON.stringify(this.expiresIn));
   }
 
-  
+
   private load(): void {
     let token = localStorage.getItem("access_token");
     if (token) this.accessToken = token;
@@ -48,22 +48,22 @@ export class AuthService {
     if (user) this.user = JSON.parse(user);
   }
 
-  
+
   public getUser(): IUser | undefined {
     return this.user;
   }
 
-  
+
   public getAccessToken(): string | null {
     return this.accessToken;
   }
 
-  
+
   public check(): boolean {
     return !!this.accessToken;
   }
 
-  
+
   public login(credentials: {
     email: string;
     password: string;
@@ -80,23 +80,46 @@ export class AuthService {
         })
       );
   }
+  public sendGoogleTokenToApi(token: string): Observable<ILoginResponse> {
+    return this.http.post<ILoginResponse>('api/neuralforge/v1/auth/google-auth', token, {
+      headers: { 'Content-Type': 'text/plain' }
+    }).pipe(
+      tap((response: any) => {
+        this.accessToken = response.token;
+        this.user.email = response.authUser.email;
+        this.expiresIn = response.expiresIn;
+        this.user = response.authUser;
+        this.save();
+      }),
+      catchError((error: HttpErrorResponse) => {
+        let errorMessage = 'An error occurred during authentication.';
 
-  
+        if (error.status === 401 && error.error?.exception) {
+          errorMessage = error.error.exception;
+        }
+
+        console.error('Authentication error:', error);
+        return throwError(() => new Error(errorMessage));
+      })
+    );
+  }
+
+
   public hasRole(role: string): boolean {
     return this.user.role?.name === role;
   }
 
-  
+
   public isSuperAdmin(): boolean {
     return this.user.role?.name === IRoleType.admin;
   }
 
-  
+
   public hasAnyRole(roles: any[]): boolean {
     return roles.some((role) => this.hasRole(role));
   }
 
-  
+
   public getPermittedRoutes(routes: any[]): any[] {
     let permittedRoutes: any[] = [];
     for (const route of routes) {
@@ -109,14 +132,14 @@ export class AuthService {
     return permittedRoutes;
   }
 
-  
+
   public signup(user: IUser): Observable<ILoginResponse> {
     return this.http.post<ILoginResponse>(
       "api/neuralforge/v1/auth/register",
       user
     );
   }
-  
+
   public verify(validationRequest: IValidationRequest) {
     return this.http.post<ILoginResponse>(
         "api/neuralforge/v1/auth/verify",
@@ -124,7 +147,17 @@ export class AuthService {
     );
   }
 
-  
+  public requestPasswordReset(email: string): Observable<string> {
+    return this.http.post("api/neuralforge/v1/auth/request", { email }, { responseType: 'text' });
+  }
+
+  public resetPassword(token: string, newPassword: string): Observable<string> {
+    return this.http.post("api/neuralforge/v1/auth/reset",
+        { token, newPassword },
+        { responseType: 'text' }
+    );
+  }
+
   public logout(): void {
     this.accessToken = "";
     localStorage.removeItem("access_token");
@@ -132,12 +165,12 @@ export class AuthService {
     localStorage.removeItem("auth_user");
   }
 
-  
+
   public getUserAuthorities(): IRole | undefined {
     return this.getUser()?.role;
   }
 
-  
+
   public areActionsAvailable(routeAuthorities: string[]): boolean {
 
     let allowedUser: boolean = false;

@@ -26,7 +26,12 @@ export class TopbarComponent implements OnInit {
 
   
   ngOnInit(): void {
-    this.user = this.authService.getUser();
+    new Promise<void>((resolve) => {
+      setTimeout(() => {
+        this.user = this.authService.getUser();
+        resolve();
+      }, 100);
+    });
   }
 
   

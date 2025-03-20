@@ -61,9 +61,22 @@
 
       <!-- Forgot Password Link -->
       <div class="forgot-password">
-        <a routerLink="/forgot-password">Forgot Password?</a>
+        <a routerLink="/reset-password-request">Forgot Password?</a>
       </div>
-
+      <!-- Google Sign-In Button -->
+      <div id="g_id_onload"
+                data-client_id="6442135428-n9cfaitco0urctfo9mm0b4v3peclld8s.apps.googleusercontent.com"
+                data-callback="handleCredentialResponse"
+                data-auto_prompt="false">
+      </div>
+     <div class="g_id_signin"
+          data-type="standard"
+          data-shape="rectangular"
+          data-theme="outline"
+          data-text="sign_in_with"
+          data-size="large"
+          data-logo_alignment="left">
+      </div>
       <!-- Login Button -->
       <button mat-raised-button color="primary" class="w-100" type="submit">
         Sign in
