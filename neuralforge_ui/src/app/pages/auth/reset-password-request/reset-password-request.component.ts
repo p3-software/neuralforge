@@ -5,11 +5,15 @@ import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 import { IExceptionResponse } from '../../../interfaces';
 import { Observable } from 'rxjs';
+import {MatError, MatFormField, MatLabel} from "@angular/material/form-field";
+import {MatCard, MatCardContent} from "@angular/material/card";
+import {MatInput} from "@angular/material/input";
+import {MatButton} from "@angular/material/button";
 
 @Component({
     selector: 'app-reset-password-request',
     standalone: true,
-    imports: [CommonModule, FormsModule, RouterLink],
+    imports: [CommonModule, FormsModule, RouterLink, MatError, MatLabel, MatFormField, MatCard, MatCardContent, MatInput, MatButton],
     templateUrl: './reset-password-request.component.html',
     styleUrl: './reset-password-request.component.scss'
 })

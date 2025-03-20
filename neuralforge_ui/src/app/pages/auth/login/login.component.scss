@@ -5,14 +5,16 @@
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background: linear-gradient(135deg, #4a62bd, #28C76F);
+  background-image:url("../../../../assets/img/login/Login-background.png");
 }
 
 .login-card {
-  background: #fff;
+  background: rgba(255, 255, 255, 0.75); // Semi-transparent white
+  backdrop-filter: blur(15px); // Blurry effect
+  -webkit-backdrop-filter: blur(15px); // Ensure cross-browser support
   padding: 2rem;
   border-radius: 12px;
-  box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.2);
   width: 100%;
   max-width: 400px;
   text-align: center;
@@ -27,18 +29,9 @@
 
   .subtext {
     font-size: 14px;
-    color: #666;
     margin-bottom: 20px;
   }
 
-  mat-form-field {
-    width: 100%;
-    margin-bottom: 15px;
-
-    input {
-      font-family: 'Montserrat', sans-serif;
-    }
-  }
 
   .forgot-password {
     text-align: right;
@@ -66,7 +59,7 @@
   .error-message {
     color: #d32f2f;
     font-size: 14px;
-    margin-top: 10px;
+    margin:  20px 0px;
   }
 
   .signup-link {
@@ -102,4 +95,43 @@
   .login-card {
     padding: 1.5rem;
   }
+}
+
+.google-login-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px; // Adds spacing
+}
+
+.g_id_signin {
+  width: 280px !important;  // Fixed width (adjust as needed)
+  height: 50px !important;  // Fixed height
+  font-size: 18px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.separator {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 20px 0;
+  color: #494949FF;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.separator::before,
+.separator::after {
+  content: "";
+  flex: 1;
+  border-bottom: 1px solid #494949FF;
+  margin: 0 10px;
+}
+
+.input-field {
+  width: 100%;
+  padding: 5px 0 ;
 }

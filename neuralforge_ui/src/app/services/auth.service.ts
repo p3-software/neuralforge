@@ -151,11 +151,8 @@ export class AuthService {
     return this.http.post("api/neuralforge/v1/auth/request", { email }, { responseType: 'text' });
   }
 
-  public resetPassword(token: string, newPassword: string): Observable<string> {
-    return this.http.post("api/neuralforge/v1/auth/reset",
-        { token, newPassword },
-        { responseType: 'text' }
-    );
+  public resetPassword(token: string, newPassword: string) {
+    return this.http.post("api/neuralforge/v1/auth/reset", { token, newPassword });
   }
 
   public logout(): void {

@@ -4,30 +4,61 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 
+// Importing necessary Angular Material Modules
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatInputModule } from "@angular/material/input";
+import { MatButtonModule } from "@angular/material/button";
+import { MatCardModule } from "@angular/material/card";
+import { MatIconModule } from "@angular/material/icon";
+import {error} from "@angular/compiler-cli/src/transformers/util";
+import {IExceptionResponse} from "../../../interfaces";
+
 @Component({
   selector: 'app-password-reset',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterLink,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatCardModule,
+    MatIconModule // Added MatIconModule for visibility toggler
+  ],
   templateUrl: './reset-password.component.html',
   styleUrls: ['./reset-password.component.scss']
 })
 export class PasswordResetComponent implements OnInit {
-  token: string | null = null; // Ahora usamos el token en lugar del userId
+  token: string | null = null;
   newPassword: string = '';
   confirmPassword: string = '';
   validationErrors: string[] = [];
   successMessage: string = '';
 
+  // Password visibility toggler
+  showNewPassword: boolean = false;
+  showConfirmPassword: boolean = false;
+
   constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private authService: AuthService
+      private route: ActivatedRoute,
+      private router: Router,
+      private authService: AuthService
   ) {}
 
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
-      this.token = params['token'] || null; // Obtiene el token en lugar del userId
+      this.token = params['token'] || null;
+      if (this.token == null) this.router.navigate(['/login']);
     });
+  }
+
+  togglePasswordVisibility(field: 'new' | 'confirm') {
+    if (field === 'new') {
+      this.showNewPassword = !this.showNewPassword;
+    } else {
+      this.showConfirmPassword = !this.showConfirmPassword;
+    }
   }
 
   submitForm() {
@@ -38,10 +69,6 @@ export class PasswordResetComponent implements OnInit {
       return;
     }
 
-    if (!this.isPasswordValid(this.newPassword)) {
-      this.validationErrors.push("Password must be at least 8 characters long and include a number and a capital letter.");
-      return;
-    }
 
     if (this.newPassword !== this.confirmPassword) {
       this.validationErrors.push("Passwords do not match.");
@@ -49,17 +76,20 @@ export class PasswordResetComponent implements OnInit {
     }
 
     this.authService.resetPassword(this.token, this.newPassword).subscribe({
-      next: () => {
+      next: (response) => {
+        console.log(response)
         this.successMessage = "Password successfully reset. Redirecting to login...";
         setTimeout(() => this.router.navigate(['/login']), 3000);
       },
-      error: () => {
-        this.validationErrors.push("Failed to reset password. Please try again.");
+      error: (err: IExceptionResponse) => {
+
+        console.log(err)
+
+        this.validationErrors = Array.isArray(err.error.exception)
+            ? err.error.exception
+            : [err.error.exception];
       }
     });
   }
 
-  private isPasswordValid(password: string): boolean {
-    return /^(?=.*[A-Z])(?=.*\d).{8,}$/.test(password);
-  }
 }

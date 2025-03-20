@@ -71,6 +71,7 @@ export class VerificationComponent implements OnInit {
                     }, 3000);
                 },
                 error: (err: IExceptionResponse) => {
+                    console.log(err)
                     this.validationErrors = Array.isArray(err.error.exception)
                         ? err.error.exception
                         : [err.error.exception];

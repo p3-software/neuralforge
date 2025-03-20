@@ -47,22 +47,46 @@ export class LoginComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.loadGoogleSignIn();
+    this.ensureGoogleSignIn();
+  }
+
+  private ensureGoogleSignIn(retries: number = 5): void {
+    if ((window as any).google && google.accounts) {
+      this.loadGoogleSignIn();
+    } else if (retries > 0) {
+      setTimeout(() => this.ensureGoogleSignIn(retries - 1), 1000);
+    } else {
+      this.loadGoogleApiScript();
+    }
+  }
+
+  private loadGoogleApiScript(): void {
+    if (!document.getElementById('google-api-script')) {
+      const script = document.createElement('script');
+      script.id = 'google-api-script';
+      script.src = 'https://accounts.google.com/gsi/client';
+      script.async = true;
+      script.defer = true;
+      script.onload = () => this.loadGoogleSignIn();
+      document.body.appendChild(script);
+    }
   }
 
   private loadGoogleSignIn(): void {
-    setTimeout(() => {
-      if (google && google.accounts) {
-        google.accounts.id.initialize({
-          client_id: "YOUR_GOOGLE_CLIENT_ID",
-          callback: (response: any) => this.handleGoogleLogin(response.credential)
-        });
+    google.accounts.id.initialize({
+      client_id: "YOUR_GOOGLE_CLIENT_ID",
+      callback: (response: any) => this.handleGoogleLogin(response.credential),
+    });
 
-        google.accounts.id.prompt();
-      } else {
-        console.error("Google API not loaded yet.");
-      }
-    }, 500);
+    google.accounts.id.renderButton(
+        document.querySelector('.g_id_signin'), {
+          theme: "outline",
+          size: "large",
+          text: "sign_in_with"
+        }
+    );
+
+    google.accounts.id.prompt();
   }
 
   public togglePasswordVisibility(): void {
