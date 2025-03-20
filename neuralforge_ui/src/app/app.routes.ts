@@ -11,7 +11,8 @@ import { GuestGuard } from './guards/guest.guard';
 import { IRoleType } from './interfaces';
 import { ProfileComponent } from './pages/profile/profile.component';
 import {VerificationComponent} from "./pages/auth/verification/verification.component";
-
+import {ResetPasswordRequestComponent} from "./pages/auth/reset-password-request/reset-password-request.component";
+import { PasswordResetComponent } from './pages/auth/reset-password/reset-password.component';
 /**
  * Application routes configuration.
  * Defines all available routes and their corresponding components, 
@@ -61,6 +62,18 @@ export const routes: Routes = [
   {
     path: 'verification',
     component: VerificationComponent,
+    canActivate: [GuestGuard],
+  },
+
+  {
+    path: 'reset-password-request',
+    component: ResetPasswordRequestComponent,
+    canActivate: [GuestGuard],
+  },
+
+  {
+    path: 'reset-password',
+    component: PasswordResetComponent,
     canActivate: [GuestGuard],
   },
 

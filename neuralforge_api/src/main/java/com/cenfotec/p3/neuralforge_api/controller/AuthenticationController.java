@@ -1,12 +1,12 @@
 package com.cenfotec.p3.neuralforge_api.controller;
 
 import com.cenfotec.p3.neuralforge_api.exception.customTypes.NeuralForgeEmailException;
-import com.cenfotec.p3.neuralforge_api.model.resource.AuthenticationResource;
-import com.cenfotec.p3.neuralforge_api.model.resource.UserResource;
-import com.cenfotec.p3.neuralforge_api.model.resource.UserValidationInputResource;
+import com.cenfotec.p3.neuralforge_api.model.resource.*;
 import com.cenfotec.p3.neuralforge_api.service.AuthenticationService;
 import com.cenfotec.p3.neuralforge_api.service.UserService;
 import com.cenfotec.p3.neuralforge_api.service.UserValidationService;
+import com.cenfotec.p3.neuralforge_api.service.PasswordResetService;
+import com.cenfotec.p3.neuralforge_api.service.GoogleOAuth2Service;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,6 +35,12 @@ public class AuthenticationController {
 
     @Autowired
     private UserValidationService userValidationService;
+
+    @Autowired
+    private PasswordResetService passwordResetService;
+
+    @Autowired
+    private GoogleOAuth2Service googleOAuth2Service;
 
     /**
      * Handles user login requests.
@@ -76,5 +82,52 @@ public class AuthenticationController {
     public ResponseEntity<Void> validateInitialRegister(@Valid @RequestBody UserValidationInputResource validationInput) {
         userService.validateInitialRegister(validationInput);
         return ResponseEntity.status(HttpStatus.OK).body(null);
+    }
+
+    /**
+     * Handles password reset requests.
+     * Sends a password reset email with a link to reset the password.
+     *
+     * @param request The {@link PasswordResetRequestResource} containing the user's email.
+     * @return A {@link ResponseEntity} with a success message.
+     */
+    @PostMapping("/request")
+    public ResponseEntity<String> requestPasswordReset(@RequestBody PasswordResetRequestResource request) {
+        try {
+            passwordResetService.requestPasswordReset(request);
+            return ResponseEntity.ok("Se ha enviado un correo con el enlace para restablecer tu contraseña.");
+        } catch (NeuralForgeEmailException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error al enviar el correo de restablecimiento de contraseña.");
+        }
+    }
+
+    /**
+     * Endpoint for resetting the password.
+     * Receives the token and the new password to reset the user's password.
+     *
+     * @return A {@link ResponseEntity} with a success message.
+     */
+    @PostMapping("/reset")
+    public ResponseEntity<String> resetPassword(@RequestBody PasswordResetResource request) {
+        try {
+            passwordResetService.resetPassword(request.getToken(), request.getNewPassword());
+            return ResponseEntity.ok("Contraseña restablecida con éxito.");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    /**
+     * Handles authentication via Google OAuth.
+     * Receives an authentication token from Google and validates the user.
+     *
+     * @param token The authentication token provided by Google OAuth.
+     * @return A {@link ResponseEntity} containing an {@link AuthenticationResource} with the authentication details.
+     */
+    @PostMapping("/google-auth")
+    public ResponseEntity<AuthenticationResource> authenticateWithGoogle(@RequestBody String token) {
+        AuthenticationResource response = googleOAuth2Service.authenticate(token);
+        return ResponseEntity.ok(response);
     }
 }

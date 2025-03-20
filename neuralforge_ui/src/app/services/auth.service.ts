@@ -1,6 +1,6 @@
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
-import { Observable, tap } from "rxjs";
+import { catchError, Observable, tap, throwError } from "rxjs";
 import {IAuthority, ILoginResponse, IRole, IRoleType, IUser, IValidationRequest} from "../interfaces";
 
 /**
@@ -54,6 +54,8 @@ export class AuthService {
     if (user) this.user = JSON.parse(user);
   }
 
+  
+
   /**
    * Retrieves the authenticated user.
    * @returns The user object or `undefined` if no user is authenticated.
@@ -98,6 +100,29 @@ export class AuthService {
           this.save();
         })
       );
+  }
+  public sendGoogleTokenToApi(token: string): Observable<ILoginResponse> {
+    return this.http.post<ILoginResponse>('api/neuralforge/v1/auth/google-auth', token, {
+      headers: { 'Content-Type': 'text/plain' }
+    }).pipe(
+      tap((response: any) => {
+        this.accessToken = response.token;
+        this.user.email = response.authUser.email;
+        this.expiresIn = response.expiresIn;
+        this.user = response.authUser;
+        this.save();
+      }),
+      catchError((error: HttpErrorResponse) => {
+        let errorMessage = 'An error occurred during authentication.';
+  
+        if (error.status === 401 && error.error?.exception) {
+          errorMessage = error.error.exception; 
+        }
+  
+        console.error('Authentication error:', error);
+        return throwError(() => new Error(errorMessage));
+      })
+    );
   }
 
   /**
@@ -154,6 +179,8 @@ export class AuthService {
       user
     );
   }
+
+
   /**
    * Verifies a user's identity by providing an email and a validation code.
    * @param validationRequest Data required for validation.
@@ -165,6 +192,35 @@ export class AuthService {
         validationRequest
     );
   }
+
+  /**
+ * Sends a password reset request to the API.
+ * @param email The user's email address.
+ * @returns An `Observable` containing the response.
+ */
+  public requestPasswordReset(email: string): Observable<string> {
+    return this.http.post("api/neuralforge/v1/auth/request", { email }, { responseType: 'text' });
+  }
+
+  /**
+ * Sends a password reset request to the API.
+ * @param userId The user's ID from the URL.
+ * @param newPassword The new password chosen by the user.
+ * @returns An `Observable` containing the response from the server.
+ */
+  public resetPassword(token: string, newPassword: string): Observable<string> {
+    return this.http.post("api/neuralforge/v1/auth/reset", 
+        { token, newPassword },  
+        { responseType: 'text' }
+    );
+  }
+
+  /**
+ * Sends the Google ID token to the API for authentication.
+ * @param token The Google ID token.
+ * @returns An `Observable` containing the API response.
+ */
+  
 
   /**
    * Logs out the user and removes their authentication data from local storage.
