@@ -9,21 +9,20 @@ import {
 } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
 import { MatCardModule } from "@angular/material/card";
+import { MatDialog } from "@angular/material/dialog";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatIconModule } from "@angular/material/icon";
 import { MatInputModule } from "@angular/material/input";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { MatSelectModule } from "@angular/material/select";
+import { Router } from "@angular/router";
 import { of } from "rxjs";
-import { catchError, finalize } from "rxjs/operators";
+import { catchError, finalize, switchMap } from "rxjs/operators";
+import { DeleteAccountDialogComponent } from "../../components/dialogs/delete-account-dialog/delete-account-dialog.component";
 import { SpinnerComponent } from "../../components/spinner/spinner.component";
 import { AlertService } from "../../services/alert.service";
 import { AuthService } from "../../services/auth.service";
 import { ProfileService } from "../../services/profile.service";
-import { MatDialog } from "@angular/material/dialog";
-import { Router } from "@angular/router";
-import { DeleteAccountDialogComponent } from "../../components/dialogs/delete-account-dialog/delete-account-dialog.component";
-import { switchMap } from "rxjs/operators";
 
 interface UserProfile {
   firstName: string;
@@ -265,27 +264,29 @@ export class ProfileComponent implements OnInit {
             this.isLoading = true;
             return this.profileService.deleteAccount();
           }
-          return of(null);
+          return of(undefined);
         }),
         finalize(() => {
           this.isLoading = false;
         })
       )
-      .subscribe(
-        (result) => {
-          this.alertService.displayAlert(
-            "success",
-            "Cuenta eliminada correctamente",
-            "center",
-            "top",
-            ["success-snackbar"]
-          );
+      .subscribe({
+        next: (result) => {
+          if (result !== undefined) {
+            this.alertService.displayAlert(
+              "success",
+              "Cuenta eliminada correctamente",
+              "center",
+              "top",
+              ["success-snackbar"]
+            );
 
-          // Logout and redirect to login page
-          this.authService.logout();
-          this.router.navigate(["/login"]);
+            // Logout and redirect to login page
+            this.authService.logout();
+            this.router.navigate(["/login"]);
+          }
         },
-        (error) => {
+        error: (error) => {
           this.alertService.displayAlert(
             "error",
             "Error al eliminar la cuenta",
@@ -294,7 +295,7 @@ export class ProfileComponent implements OnInit {
             ["error-snackbar"]
           );
           console.error("Error deleting account:", error);
-        }
-      );
+        },
+      });
   }
 }
