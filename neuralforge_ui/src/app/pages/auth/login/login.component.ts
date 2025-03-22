@@ -13,7 +13,6 @@ declare const google: any; // Avoid TypeScript errors for Google API
 @Component({
   selector: "app-login",
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: "./login.component.html",
   styleUrl: "./login.component.scss",
   imports: [
@@ -25,8 +24,7 @@ declare const google: any; // Avoid TypeScript errors for Google API
     MatInputModule,
     MatIconModule
   ],
-  templateUrl: './login.component.html',
-  styleUrl: './login.component.scss'
+
 })
 export class LoginComponent implements OnInit, AfterViewInit {
 
