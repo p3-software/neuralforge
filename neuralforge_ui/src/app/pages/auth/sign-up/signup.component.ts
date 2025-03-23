@@ -3,12 +3,25 @@ import { Component, ViewChild } from '@angular/core';
 import { FormsModule, NgModel } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
-import {IExceptionResponse, IUser} from '../../../interfaces';
+import { IExceptionResponse, IUser } from '../../../interfaces';
+import { MatIconModule } from "@angular/material/icon";
+import { MatError, MatFormFieldModule } from "@angular/material/form-field";
+import { MatInputModule } from "@angular/material/input";
+import { MatButtonModule } from "@angular/material/button";
 
 @Component({
   selector: 'app-signup',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterLink,
+    MatIconModule,
+    MatError,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule // Added MatButtonModule
+  ],
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.scss'
 })
@@ -21,9 +34,8 @@ export class SigUpComponent {
 
   public user: IUser = {};
   public showPassword: boolean = false;
-  constructor(private router: Router,
-    private authService: AuthService
-  ) {}
+
+  constructor(private router: Router, private authService: AuthService) {}
 
   public get isSignUpDisabled(): boolean {
     return !this.nameModel?.valid || !this.emailModel?.valid || !this.passwordModel?.valid;
@@ -58,5 +70,4 @@ export class SigUpComponent {
       });
     }
   }
-
 }
