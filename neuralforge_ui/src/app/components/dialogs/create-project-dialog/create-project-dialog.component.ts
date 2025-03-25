@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import {
   FormControl,
   FormGroup,
@@ -11,6 +11,7 @@ import { MatDialogModule, MatDialogRef } from "@angular/material/dialog";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatIconModule } from "@angular/material/icon";
 import { MatInputModule } from "@angular/material/input";
+import { LearningProjectService } from "../../../services/learning-project.service";
 
 @Component({
   selector: "app-create-project-dialog",
@@ -28,8 +29,10 @@ import { MatInputModule } from "@angular/material/input";
   ],
 })
 export class CreateProjectDialogComponent {
+  private learningProjectService = inject(LearningProjectService);
+
   createProjectForm = new FormGroup({
-    title: new FormControl("", [Validators.required]),
+    name: new FormControl("", [Validators.required]),
     description: new FormControl(""),
   });
 
@@ -37,7 +40,20 @@ export class CreateProjectDialogComponent {
 
   onSubmit() {
     if (this.createProjectForm.valid) {
-      console.log(this.createProjectForm.value);
+      const project = {
+        name: this.createProjectForm.value.name,
+        description: this.createProjectForm.value.description || null,
+      };
+
+      this.learningProjectService.add(project).subscribe({
+        next: (response: any) => {
+          console.log(response);
+        },
+        error: (error: any) => {
+          console.error(error);
+        },
+      });
+
       this.dialogRef.close(this.createProjectForm.value);
     }
   }

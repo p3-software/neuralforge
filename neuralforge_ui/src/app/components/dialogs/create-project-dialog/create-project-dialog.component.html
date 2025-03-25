@@ -2,12 +2,12 @@
   <h2 mat-dialog-title>Create Learning Project</h2>
   <mat-dialog-content>
     <form [formGroup]="createProjectForm" class="form">
-      <!-- Project Title -->
+      <!-- Project Name -->
       <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Title</mat-label>
-        <input matInput formControlName="title" />
-        <mat-error *ngIf="createProjectForm.get('title')?.hasError('required')">
-          Title is required
+        <mat-label>Name</mat-label>
+        <input matInput formControlName="name" />
+        <mat-error *ngIf="createProjectForm.get('name')?.hasError('required')">
+          Name is required
         </mat-error>
       </mat-form-field>
 
