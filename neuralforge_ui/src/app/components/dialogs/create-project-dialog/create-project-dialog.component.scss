@@ -1,13 +1,36 @@
 .wrapper {
   min-width: 500px;
+  padding: 20px;
+  border-radius: 8px;
+  background: #fff;
 }
 
 .form {
   display: flex;
   flex-direction: column;
-  padding-top: 5px;
+  padding-top: 10px;
+  gap: 16px;
+}
+
+mat-form-field {
+  width: 100%;
 }
 
 .description-field {
-  min-height: 200px;
+  min-height: 150px;
+}
+
+mat-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 15px;
+  gap: 10px;
+}
+
+button {
+  min-width: 100px;
+}
+
+button[color="primary"] {
+  font-weight: bold;
 }

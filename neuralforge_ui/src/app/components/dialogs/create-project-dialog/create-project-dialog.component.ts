@@ -1,11 +1,6 @@
 import { CommonModule } from "@angular/common";
 import { Component, inject } from "@angular/core";
-import {
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from "@angular/forms";
+import { FormsModule } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
 import { MatDialogModule, MatDialogRef } from "@angular/material/dialog";
 import { MatFormFieldModule } from "@angular/material/form-field";
@@ -26,52 +21,54 @@ import { LearningProjectService } from "../../../services/learning-project.servi
     MatFormFieldModule,
     MatInputModule,
     MatIconModule,
-    ReactiveFormsModule,
+    FormsModule,
   ],
 })
 export class CreateProjectDialogComponent {
   private learningProjectService = inject(LearningProjectService);
   private alertService = inject(AlertService);
 
-  createProjectForm = new FormGroup({
-    name: new FormControl("", [Validators.required]),
-    description: new FormControl(""),
-  });
+  project = {
+    name: "",
+    description: "",
+  };
 
   constructor(private dialogRef: MatDialogRef<CreateProjectDialogComponent>) {}
 
   onSubmit() {
-    if (this.createProjectForm.valid) {
-      const project = {
-        name: this.createProjectForm.value.name,
-        description: this.createProjectForm.value.description || null,
-      };
-
-      this.learningProjectService.add(project).subscribe({
-        next: (response: any) => {
-          this.alertService.displayAlert(
-            "success",
-            "Learning project created successfully",
-            "center",
-            "top",
-            ["success-snackbar"]
-          );
-
-          this.dialogRef.close(response);
-        },
-        error: (error: any) => {
-          this.alertService.displayAlert(
-            "error",
-            error.error?.exception || "Failed to create learning project",
-            "center",
-            "top",
-            ["error-snackbar"]
-          );
-
-          console.error("Error creating project:", error);
-        },
-      });
+    if (!this.project.name.trim()) {
+      return;
     }
+
+    const projectData = {
+      name: this.project.name,
+      description: this.project.description || null,
+    };
+
+    this.learningProjectService.add(projectData).subscribe({
+      next: (response: any) => {
+        this.alertService.displayAlert(
+          "success",
+          "Learning project created successfully",
+          "center",
+          "top",
+          ["success-snackbar"]
+        );
+
+        this.dialogRef.close(response);
+      },
+      error: (error: any) => {
+        this.alertService.displayAlert(
+          "error",
+          error.error?.exception || "Failed to create learning project",
+          "center",
+          "top",
+          ["error-snackbar"]
+        );
+
+        console.error("Error creating project:", error);
+      },
+    });
   }
 
   onClose() {
