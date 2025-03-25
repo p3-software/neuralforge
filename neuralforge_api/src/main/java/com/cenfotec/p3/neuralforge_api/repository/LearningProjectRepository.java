@@ -18,5 +18,12 @@ import java.util.Optional;
  */
 @Repository
 public interface LearningProjectRepository extends JpaRepository<LearningProjectEntity, String> {
-
+    
+    /**
+     * Finds all learning projects created by a specific user.
+     *
+     * @param creatorUserId The ID of the creator user
+     * @return A list of learning projects created by the specified user
+     */
+    List<LearningProjectEntity> findByCreatorUserId(String creatorUserId);
 }

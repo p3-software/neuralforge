@@ -52,6 +52,19 @@ public class LearningProjectController {
     }
 
     /**
+     * Retrieves all learning projects created by the currently authenticated user.
+     *
+     * @return A {@link ResponseEntity} containing a list of learning projects created by the current user.
+     */
+    @GetMapping("/mine")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<List<LearningProjectResource>> getCurrentUserLearningProjects() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(learningProjectService.getCurrentUserLearningProjects());
+    }
+
+    /**
      * Retrieves a learning project by its ID.
      *
      * @param id The ID of the learning project to retrieve.

@@ -63,6 +63,19 @@ public class LearningProjectService {
     }
 
     /**
+     * Retrieves all learning projects created by the currently authenticated user.
+     *
+     * @return A list of {@link LearningProjectResource} objects created by the current user.
+     */
+    public List<LearningProjectResource> getCurrentUserLearningProjects() {
+        UserEntity currentUser = (UserEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        
+        return learningProjectRepository.findByCreatorUserId(currentUser.getId()).stream()
+                .map(learningProjectMapper::mapToResource)
+                .collect(Collectors.toList());
+    }
+
+    /**
      * Retrieves a learning project by its ID.
      *
      * @param id The ID of the learning project to retrieve.
