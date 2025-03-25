@@ -7,6 +7,7 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 /**
@@ -25,6 +26,7 @@ import lombok.experimental.SuperBuilder;
 @Data
 @Table(name = "learning_projects")
 @EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor
 @SuperBuilder
 @DiscriminatorValue("LEARNING")
 public class LearningProjectEntity extends ProjectEntity {

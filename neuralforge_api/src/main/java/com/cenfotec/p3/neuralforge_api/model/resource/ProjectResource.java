@@ -31,7 +31,7 @@ public abstract class ProjectResource {
      * Name of the project.
      * Must not be blank.
      */
-    @NotBlank(message = "Project name is required")
+    @NotBlank(message = "Name is required")
     private String name;
     
     /**
