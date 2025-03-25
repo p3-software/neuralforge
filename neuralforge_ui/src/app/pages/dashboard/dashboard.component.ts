@@ -15,6 +15,7 @@ interface DashboardCard {
 interface DashboardSection {
   title: string;
   buttonText: string;
+  buttonAction?: () => void;
   cards: DashboardCard[];
 }
 
@@ -82,6 +83,7 @@ export class DashboardComponent {
     {
       title: "Learning Projects",
       buttonText: "Create New Learning Project",
+      buttonAction: this.openCreateLearningProjectDialog.bind(this),
       cards: [
         {
           title: "Learning Project 1",

@@ -11,7 +11,13 @@
 <div class="section" *ngFor="let section of sections">
   <div class="section-header">
     <h2>{{ section.title }}</h2>
-    <button mat-raised-button color="primary">{{ section.buttonText }}</button>
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="section.buttonAction && section.buttonAction()"
+    >
+      {{ section.buttonText }}
+    </button>
   </div>
 
   <div class="card-container">
