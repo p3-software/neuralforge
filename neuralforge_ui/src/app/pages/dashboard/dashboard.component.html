@@ -1,47 +1,32 @@
-<app-gestion-card
-  title="Aula Virtual 1"
-  content="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-  [buttons]="[
-    { text: 'Abandonar Aula Virtual', color: '#4258a6' },
-    { text: 'Ver estudiantes', color: '#a3bffa' },
-    { text: 'Análisis de Progreso', color: '#091e42' },
-    { text: 'Ver Plan de Enseñanza', color: '#4258a6' }
-  ]">
-</app-gestion-card>
+<!-- Welcome Banner -->
+<mat-card class="welcome-banner" *ngIf="welcomeMessages.length">
+  <mat-icon class="welcome-icon">
+    {{ welcomeMessages[currentMessageIndex].icon }}
+  </mat-icon>
+  <span class="welcome-text">
+    {{ welcomeMessages[currentMessageIndex].text }}
+  </span>
+</mat-card>
 
-<div class="post-section">
-  <h2 class="post-title">Practicas y Laboratorios</h2>
 
-  <div class="post-container">
-    <app-post-card 
-      title="Practica 1" 
-      content="Lorem ipsum dolor sit amet, elit. Sed do eiusmod tempor incididunt..." 
-      buttonText="Ver Contenido">
-    </app-post-card>
+<div class="section" *ngFor="let section of sections">
+  <div class="section-header">
+    <h2>{{ section.title }}</h2>
+    <button mat-raised-button color="primary">{{ section.buttonText }}</button>
+  </div>
 
-    <app-post-card 
-      title="Practica 2" 
-      content="Lorem ipsum dolor sit amet, elit. Sed do eiusmod tempor incididunt..." 
-      buttonText="Ver Contenido">
-    </app-post-card>
-
-    <app-post-card 
-      title="Practica 3" 
-      content="Lorem ipsum dolor sit amet, elit. Sed do eiusmod tempor incididunt..." 
-      buttonText="Ver Contenido">
-    </app-post-card>
-
-    <app-post-card 
-      title="Practica 4" 
-      content="Lorem ipsum dolor sit amet, elit. Sed do eiusmod tempor incididunt..." 
-      buttonText="Ver Contenido">
-    </app-post-card>
-
-    <app-post-card 
-      title="Practica 5" 
-      content="Lorem ipsum dolor sit amet, elit. Sed do eiusmod tempor incididunt..." 
-      buttonText="Ver Contenido">
-    </app-post-card>
-
+  <div class="card-container">
+    <mat-card class="custom-card" *ngFor="let card of section.cards">
+      <mat-card-title>{{ card.title }}</mat-card-title>
+      <mat-card-content>
+        <p>{{ card.content }}</p>
+        <p *ngIf="card.count !== undefined">
+          <strong>{{ card.count }} students</strong>
+        </p>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-button color="primary">Enter</button>
+      </mat-card-actions>
+    </mat-card>
   </div>
 </div>

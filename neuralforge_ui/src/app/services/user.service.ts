@@ -40,6 +40,10 @@ export class UserService extends BaseService<IUser> {
     });
   }
 
+  block(user: IUser){
+
+  }
+
   save(user: IUser) {
     this.add(user).subscribe({
       next: (response: any) => {

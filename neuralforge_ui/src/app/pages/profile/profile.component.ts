@@ -241,11 +241,6 @@ export class ProfileComponent implements OnInit {
     }
   }
 
-  changeEmail(): void {
-    console.log("Change email clicked");
-    alert("Not implemented yet");
-  }
-
   changePassword(): void {
     console.log("Change password clicked");
     alert("Not implemented yet");
