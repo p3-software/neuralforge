@@ -6,8 +6,7 @@
     </div>
     <div class="">
       <app-user-list
-        (callModalAction)="callEdition($event)"
-        (callDeleteAction)="userService.delete($event)"
+        (callBlockAction)="userService.block($event)"
         [users]="userService.users$()"
       />
     </div>

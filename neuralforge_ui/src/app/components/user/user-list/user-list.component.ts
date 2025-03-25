@@ -33,8 +33,7 @@ import {MatInputModule} from "@angular/material/input";
 export class UserListComponent implements AfterViewInit {
   @Input() title: string = '';
   @Input() users: IUser[] = [];
-  @Output() callModalAction = new EventEmitter<IUser>();
-  @Output() callDeleteAction = new EventEmitter<IUser>();
+  @Output() callBlockAction = new EventEmitter<IUser>();
 
   displayedColumns: string[] = ['id', 'name', 'lastname', 'email', 'createdAt', 'role', 'status', 'verified', 'actions'];
   dataSource!: MatTableDataSource<IUser>;
