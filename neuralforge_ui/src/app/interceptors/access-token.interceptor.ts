@@ -1,6 +1,8 @@
-import { HttpInterceptorFn } from "@angular/common/http";
-import { inject } from "@angular/core";
-import { AuthService } from "../services/auth.service";
+import { HttpInterceptorFn } from '@angular/common/http';
+import { inject } from '@angular/core';
+import { AuthService } from '../services/auth.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Observable, catchError, throwError } from 'rxjs';
 
 /**
  * HTTP Interceptor for attaching an access token to API requests.
@@ -17,7 +19,7 @@ export const accessTokenInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
   let headers = {};
 
-  // If the user is not authenticated, proceed with the original request.
+  // If user is not authenticated, proceed without modifying the request
   if (!authService.check()) return next(req);
 
   // Add the Authorization header to requests that do not include 'auth' in the URL.
@@ -30,5 +32,13 @@ export const accessTokenInterceptor: HttpInterceptorFn = (req, next) => {
   // Clone the request with the modified headers.
   const clonedRequest = req.clone(headers);
 
-  return next(clonedRequest);
+  return next(clonedRequest).pipe(
+      catchError((error: HttpErrorResponse): Observable<never> => {
+        if (error.status === 401) { // Unauthorized
+          authService.logout(); // Remove token (assuming logout() handles this)
+          window.location.reload(); // Reload application
+        }
+        return throwError(() => error);
+      })
+  );
 };

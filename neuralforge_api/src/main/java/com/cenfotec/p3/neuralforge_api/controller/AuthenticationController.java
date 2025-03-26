@@ -9,6 +9,7 @@ import com.cenfotec.p3.neuralforge_api.service.PasswordResetService;
 import com.cenfotec.p3.neuralforge_api.service.GoogleOAuth2Service;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -92,10 +93,10 @@ public class AuthenticationController {
     public ResponseEntity<String> requestPasswordReset(@RequestBody PasswordResetRequestResource request) {
         try {
             passwordResetService.requestPasswordReset(request);
-            return ResponseEntity.ok("Se ha enviado un correo con el enlace para restablecer tu contraseña.");
+            return ResponseEntity.ok("An email has been sent with the link to reset your password.");
         } catch (NeuralForgeEmailException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error al enviar el correo de restablecimiento de contraseña.");
+                    .body("Error sending the password reset email.");
         }
     }
 
@@ -106,13 +107,9 @@ public class AuthenticationController {
      * @return A {@link ResponseEntity} with a success message.
      */
     @PostMapping("/reset")
-    public ResponseEntity<String> resetPassword(@RequestBody PasswordResetResource request) {
-        try {
-            passwordResetService.resetPassword(request.getToken(), request.getNewPassword());
-            return ResponseEntity.ok("Contraseña restablecida con éxito.");
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+    public ResponseEntity<Void> resetPassword(@RequestBody @Valid PasswordResetResource request) {
+        passwordResetService.resetPassword(request.getToken(), request.getNewPassword());
+        return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 
     /**
