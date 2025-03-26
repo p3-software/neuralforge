@@ -35,13 +35,9 @@ import java.util.*;
 @Service
 public class DynamicContentService {
 
-    @Value("${deepseek.api.url}")
-    private String deepSeekApiUrl;
-
-    @Value("${deepseek.api.bearer-token}")
-    private String bearerToken;
-
+    private static final String DEEPSEEK_API_URL = "https://api.deepseek.com/chat/completions";
     private static final String MODEL_NAME = "deepseek-chat";
+    private static final String BEARER_TOKEN = "sk-44fe8f6278c545f982817d175934b260";
 
     @Autowired
     private DynamicContentRepository dynamicContentRepository;
@@ -106,10 +102,10 @@ public class DynamicContentService {
         RestTemplate restTemplate = new RestTemplate(new SimpleClientHttpRequestFactory());
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setBearerAuth(bearerToken);
+        headers.setBearerAuth(BEARER_TOKEN);
 
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
-        ResponseEntity<Map> response = restTemplate.exchange(deepSeekApiUrl, HttpMethod.POST, entity, Map.class);
+        ResponseEntity<Map> response = restTemplate.exchange(DEEPSEEK_API_URL, HttpMethod.POST, entity, Map.class);
 
         if (response.getBody() != null && response.getBody().containsKey("choices")) {
             List<Map<String, Object>> choices = (List<Map<String, Object>>) response.getBody().get("choices");

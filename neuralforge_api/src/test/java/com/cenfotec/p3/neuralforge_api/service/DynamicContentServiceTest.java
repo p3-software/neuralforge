@@ -17,7 +17,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -57,8 +56,7 @@ class DynamicContentServiceTest {
     void givenValidFile_whenExtractTextAndGeneratePdf_thenReturnSuccessMessage() throws IOException {
         // Given
         when(file.isEmpty()).thenReturn(false);
-        InputStream inputStream = new FileInputStream(new File("src/test/resources/sample.pdf"));
-        when(file.getInputStream()).thenReturn(inputStream);
+        when(file.getInputStream()).thenReturn(new FileInputStream("src/test/resources/sample.pdf"));
 
         // When
         String result = dynamicContentService.extractTextAndGeneratePdf(file, "Test Title", "test@example.com", "Test Type");
