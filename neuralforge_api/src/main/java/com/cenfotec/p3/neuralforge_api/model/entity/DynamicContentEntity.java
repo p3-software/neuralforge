@@ -10,7 +10,8 @@ import java.time.LocalDateTime;
 
 /**
  * Entity representing dynamic content in the system.
-
+ * This entity is used to store content information such as title, creation date,
+ * file path, user email, and content type.
  *
  * @author Fabian Vargas
  * @version 1.0
@@ -25,6 +26,7 @@ public class DynamicContentEntity {
 
     /**
      * Unique identifier for the content.
+     * The ID is generated automatically using UUID strategy.
      */
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -32,13 +34,14 @@ public class DynamicContentEntity {
 
     /**
      * Title of the content.
+     * This field is mandatory and cannot be null.
      */
     @Column(nullable = false)
     private String title;
 
     /**
      * Timestamp indicating when the content was created.
-     * This value is automatically generated and cannot be updated.
+     * This field is automatically set upon entity creation and cannot be updated.
      */
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
@@ -46,17 +49,21 @@ public class DynamicContentEntity {
 
     /**
      * Path where the content is stored.
+     * This field is mandatory and cannot be null.
      */
     @Column(nullable = false)
     private String path;
 
     /**
+     * The email of the user associated with the dynamic content.
+     * This field is mandatory and cannot be null.
      */
     @Column(nullable = false)
     private String email;
 
     /**
      * Type of the content.
+     * This field is mandatory and cannot be null.
      */
     @Column(nullable = false)
     private String type;

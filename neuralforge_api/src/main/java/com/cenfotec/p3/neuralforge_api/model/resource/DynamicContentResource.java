@@ -1,4 +1,3 @@
-
 package com.cenfotec.p3.neuralforge_api.model.resource;
 
 import java.time.LocalDateTime;
@@ -17,7 +16,7 @@ public class DynamicContentResource {
     private LocalDateTime creationDate;
     private String path;
     private String email;
-    private String type; // Nuevo campo type
+    private String type;
 
     // Getters and Setters
 
@@ -54,11 +53,11 @@ public class DynamicContentResource {
     }
 
     public String getEmail() {
-        return email; // Obtener el ID del usuario
+        return email;
     }
 
     public void setEmail(String email) {
-        this.email = email; // Establecer solo el ID del usuario
+        this.email = email;
     }
 
     public String getType() {

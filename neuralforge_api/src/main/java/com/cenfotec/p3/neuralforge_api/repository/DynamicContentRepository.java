@@ -23,10 +23,10 @@ import java.util.Optional;
 public interface DynamicContentRepository extends JpaRepository<DynamicContentEntity, String> {
 
     /**
-
+     * Finds content entries by email.
      *
      * @param email The email.
-
+     * @return A list of dynamic content entities.
      */
     List<DynamicContentEntity> findByEmail(String email);
 
@@ -39,12 +39,21 @@ public interface DynamicContentRepository extends JpaRepository<DynamicContentEn
     Optional<DynamicContentEntity> findById(String id);
 
     /**
+     * Finds a content entry by its title.
+     *
+     * @param title The title of the content.
+     * @return An {@link Optional} containing the content if found, or empty otherwise.
+     */
+    Optional<DynamicContentEntity> findByTitle(String title);
+
+    /**
      * Updates dynamic content attributes while ignoring null or empty values.
      * Only provided non-null values will be updated in the database.
      *
      * @param id The ID of the content to update.
      * @param title The new title (optional).
      * @param path The new file path (optional).
+     * @param email The new email (optional).
      * @param type The new type (optional).
      */
     @Transactional
@@ -52,7 +61,7 @@ public interface DynamicContentRepository extends JpaRepository<DynamicContentEn
     @Query("UPDATE DynamicContentEntity d SET " +
             "d.title = CASE WHEN :title IS NOT NULL AND :title <> '' THEN :title ELSE d.title END, " +
             "d.path = CASE WHEN :path IS NOT NULL AND :path <> '' THEN :path ELSE d.path END, " +
-            "d.path = CASE WHEN :email IS NOT NULL AND :email <> '' THEN :path ELSE d.email END, " +
+            "d.email = CASE WHEN :email IS NOT NULL AND :email <> '' THEN :email ELSE d.email END, " +
             "d.type = CASE WHEN :type IS NOT NULL AND :type <> '' THEN :type ELSE d.type END " +
             "WHERE d.id = :id")
     void updateContentIgnoringNulls(
