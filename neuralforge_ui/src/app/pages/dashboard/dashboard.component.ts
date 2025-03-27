@@ -8,6 +8,8 @@ import { CreateProjectDialogComponent } from "../../components/dialogs/create-pr
 import { EmptyStateComponent } from "../../components/empty-state/empty-state.component";
 import { ILearningProject } from "../../interfaces";
 import { LearningProjectService } from "../../services/learning-project.service";
+import { CreateStudyPlanDialogComponent } from "../../components/dialogs/create-study-plan-dialog/create-study-plan-dialog.component";
+import { CreateGoalProjectDialogComponent } from "../../components/dialogs/create-goal-project-dialog/create-goal-project-dialog.component";
 
 interface DashboardCard {
   title: string;
@@ -71,6 +73,40 @@ export class DashboardComponent implements OnInit {
     });
   }
 
+  openCreateStudyPlanDialog() {
+    const dialogRef = this.dialog.open(CreateStudyPlanDialogComponent);
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        const studyPlanSection = this.sections.find(
+          (section) => section.title === "Study Plans"
+        );
+
+        if (studyPlanSection) {
+          // Add the new study plan to the section here
+          console.log(result);
+        }
+      }
+    });
+  }
+
+  openCreateGoalProjectDialog() {
+    const dialogRef = this.dialog.open(CreateGoalProjectDialogComponent);
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        const goalProjectSection = this.sections.find(
+          (section) => section.title === "Programmed Goal Projects"
+        );
+
+        if (goalProjectSection) {
+          // Add the new goal project to the section here
+          console.log(result);
+        }
+      }
+    });
+  }
+
   welcomeMessages = [
     {
       icon: "emoji_people",
@@ -89,6 +125,7 @@ export class DashboardComponent implements OnInit {
     {
       title: "Study Plans",
       buttonText: "Create New Study Plan",
+      buttonAction: this.openCreateStudyPlanDialog.bind(this),
       isLoading: false,
       cards: [
         {
@@ -118,6 +155,7 @@ export class DashboardComponent implements OnInit {
     {
       title: "Programmed Goal Projects",
       buttonText: "Create New Programmed Goal Project",
+      buttonAction: this.openCreateGoalProjectDialog.bind(this),
       isLoading: false,
       cards: [
         {
