@@ -1,6 +1,7 @@
 package com.cenfotec.p3.neuralforge_api.service;
 
 import com.cenfotec.p3.neuralforge_api.model.entity.DynamicContentEntity;
+import com.cenfotec.p3.neuralforge_api.model.enums.DynamicContentTypeEnum;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -37,7 +38,10 @@ public class DynamicContentService {
 
     private static final String DEEPSEEK_API_URL = "https://api.deepseek.com/chat/completions";
     private static final String MODEL_NAME = "deepseek-chat";
-    private static final String BEARER_TOKEN = "sk-44fe8f6278c545f982817d175934b260";
+
+
+    @Value("${deepseek.api.bearer-token}")
+    private String bearerToken;
 
     @Autowired
     private DynamicContentRepository dynamicContentRepository;
@@ -56,7 +60,7 @@ public class DynamicContentService {
 
     public String extractTextAndGeneratePdf(MultipartFile file, String title, String email, String type) throws IOException {
         if (file.isEmpty()) {
-            throw new IllegalArgumentException("El archivo está vacío.");
+            throw new IllegalArgumentException("File is empty.");
         }
 
         try (PDDocument document = PDDocument.load(file.getInputStream())) {
@@ -65,7 +69,7 @@ public class DynamicContentService {
 
             String summary = getSummaryFromDeepSeek(extractedText);
             savePdf(summary, title, email, type);
-            return "PDF generado y guardado correctamente";
+            return "PDF generated and saved successfully.";
         }
     }
 
@@ -102,7 +106,7 @@ public class DynamicContentService {
         RestTemplate restTemplate = new RestTemplate(new SimpleClientHttpRequestFactory());
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setBearerAuth(BEARER_TOKEN);
+        headers.setBearerAuth(bearerToken);
 
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
         ResponseEntity<Map> response = restTemplate.exchange(DEEPSEEK_API_URL, HttpMethod.POST, entity, Map.class);
@@ -141,7 +145,7 @@ public class DynamicContentService {
 
             File logoFile = new File("src/main/resources/images/logo.png");
             if (!logoFile.exists()) {
-                System.out.println("Logo no encontrado en la ruta especificada: " + logoFile.getAbsolutePath());
+                System.out.println("Logo not found in the specified path: " + logoFile.getAbsolutePath());
                 return;
             }
 
@@ -176,14 +180,14 @@ public class DynamicContentService {
                 PDFont dateFont = PDType1Font.HELVETICA;
                 float dateSize = 14;
 
-                float dateWidth = dateFont.getStringWidth("Fecha de generación: " + date) / 1000 * dateSize;
+                float dateWidth = dateFont.getStringWidth("Generation Date: " + date) / 1000 * dateSize;
                 float dateX = (coverPage.getMediaBox().getWidth() - dateWidth) / 2;
                 float dateY = logoY - 30;
 
                 coverStream.beginText();
                 coverStream.setFont(dateFont, dateSize);
                 coverStream.newLineAtOffset(dateX, dateY);
-                coverStream.showText("Fecha de generación: " + date);
+                coverStream.showText("Generation Date: " + date);
                 coverStream.endText();
             }
 
@@ -280,12 +284,12 @@ public class DynamicContentService {
         dynamicContent.setTitle(title);
         dynamicContent.setPath(pdfFile.getAbsolutePath());
         dynamicContent.setEmail(email);
-        dynamicContent.setType(type);
+        dynamicContent.setType(DynamicContentTypeEnum.valueOf(type));
         dynamicContent.setCreationDate(LocalDateTime.now());
 
         dynamicContentRepository.save(dynamicContent);
 
-        System.out.println("PDF generado y guardado en base de datos.");
+        System.out.println("PDF generated and saved successfully.");
         System.out.println("Path: " + pdfFile.getAbsolutePath());
         System.out.println("Title: " + title);
         System.out.println("Email: " + email);

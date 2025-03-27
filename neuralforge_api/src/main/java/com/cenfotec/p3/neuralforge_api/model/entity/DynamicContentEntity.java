@@ -1,5 +1,6 @@
 package com.cenfotec.p3.neuralforge_api.model.entity;
 
+import com.cenfotec.p3.neuralforge_api.model.enums.DynamicContentTypeEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -65,6 +66,7 @@ public class DynamicContentEntity {
      * Type of the content.
      * This field is mandatory and cannot be null.
      */
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String type;
+    private DynamicContentTypeEnum type;
 }

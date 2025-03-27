@@ -13,12 +13,12 @@ import java.io.IOException;
  * This controller exposes an endpoint for uploading a file, extracting text,
  * and generating a PDF summary based on the provided details.
  *
- * @author [Author Name]
+ * @author Fabian Vargas
  * @version 1.0
  */
 @RestController
-@RequestMapping("/auth/summary")
-public class SummaryController {
+@RequestMapping("/DynamicContent")
+public class DynamicContentController {
 
     private final DynamicContentService summaryService;
 
@@ -27,7 +27,7 @@ public class SummaryController {
      *
      * @param summaryService Service used for processing summary generation logic.
      */
-    public SummaryController(DynamicContentService summaryService) {
+    public DynamicContentController(DynamicContentService summaryService) {
         this.summaryService = summaryService;
     }
 

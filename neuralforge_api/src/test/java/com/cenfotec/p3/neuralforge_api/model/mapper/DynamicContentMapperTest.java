@@ -1,6 +1,7 @@
 package com.cenfotec.p3.neuralforge_api.model.mapper;
 
 import com.cenfotec.p3.neuralforge_api.model.entity.DynamicContentEntity;
+import com.cenfotec.p3.neuralforge_api.model.enums.DynamicContentTypeEnum;
 import com.cenfotec.p3.neuralforge_api.model.resource.DynamicContentResource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,7 +34,7 @@ class DynamicContentMapperTest {
         mockDynamicContentEntity.setTitle("Test Title");
         mockDynamicContentEntity.setPath("src/main/resources/dynamicContent/Test_Title.pdf");
         mockDynamicContentEntity.setEmail("test@example.com");
-        mockDynamicContentEntity.setType("Test Type");
+        mockDynamicContentEntity.setType(DynamicContentTypeEnum.SUMMARY);
         mockDynamicContentEntity.setCreationDate(now);
 
         mockDynamicContentResource = new DynamicContentResource();
@@ -41,7 +42,7 @@ class DynamicContentMapperTest {
         mockDynamicContentResource.setTitle("Test Title");
         mockDynamicContentResource.setPath("src/main/resources/dynamicContent/Test_Title.pdf");
         mockDynamicContentResource.setEmail("test@example.com");
-        mockDynamicContentResource.setType("Test Type");
+        mockDynamicContentResource.setType("SUMMARY");
         mockDynamicContentResource.setCreationDate(now);
     }
 
@@ -56,7 +57,7 @@ class DynamicContentMapperTest {
         assertEquals(mockDynamicContentEntity.getTitle(), result.getTitle());
         assertEquals(mockDynamicContentEntity.getPath(), result.getPath());
         assertEquals(mockDynamicContentEntity.getEmail(), result.getEmail());
-        assertEquals(mockDynamicContentEntity.getType(), result.getType());
+        assertEquals(mockDynamicContentEntity.getType().name(), result.getType());
         assertEquals(mockDynamicContentEntity.getCreationDate(), result.getCreationDate());
     }
 
@@ -71,7 +72,7 @@ class DynamicContentMapperTest {
         assertEquals(mockDynamicContentResource.getTitle(), result.getTitle());
         assertEquals(mockDynamicContentResource.getPath(), result.getPath());
         assertEquals(mockDynamicContentResource.getEmail(), result.getEmail());
-        assertEquals(mockDynamicContentResource.getType(), result.getType());
+        assertEquals(mockDynamicContentResource.getType(), result.getType().name());
         assertEquals(mockDynamicContentResource.getCreationDate(), result.getCreationDate());
     }
 }

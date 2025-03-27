@@ -1,7 +1,9 @@
 package com.cenfotec.p3.neuralforge_api.model.mapper;
 
 import com.cenfotec.p3.neuralforge_api.model.entity.DynamicContentEntity;
+import com.cenfotec.p3.neuralforge_api.model.enums.DynamicContentTypeEnum;
 import com.cenfotec.p3.neuralforge_api.model.resource.DynamicContentResource;
+import lombok.Builder;
 
 /**
  * Mapper class for converting DynamicContentEntity to DynamicContentResource.
@@ -23,15 +25,14 @@ public class DynamicContentMapper {
             return null;
         }
 
-        DynamicContentResource resource = new DynamicContentResource();
-        resource.setId(entity.getId());
-        resource.setTitle(entity.getTitle());
-        resource.setCreationDate(entity.getCreationDate());
-        resource.setPath(entity.getPath());
-        resource.setEmail(entity.getEmail());
-        resource.setType(entity.getType());
-
-        return resource;
+        return DynamicContentResource.builder()
+                .id(entity.getId())
+                .title(entity.getTitle())
+                .creationDate(entity.getCreationDate())
+                .path(entity.getPath())
+                .email(entity.getEmail())
+                .type(entity.getType().name())
+                .build();
     }
 
     /**
@@ -45,14 +46,13 @@ public class DynamicContentMapper {
             return null;
         }
 
-        DynamicContentEntity entity = new DynamicContentEntity();
-        entity.setId(resource.getId());
-        entity.setTitle(resource.getTitle());
-        entity.setCreationDate(resource.getCreationDate());
-        entity.setPath(resource.getPath());
-        entity.setEmail(resource.getEmail());
-        entity.setType(resource.getType());
-
-        return entity;
+        return DynamicContentEntity.builder()
+                .id(resource.getId())
+                .title(resource.getTitle())
+                .creationDate(resource.getCreationDate())
+                .path(resource.getPath())
+                .email(resource.getEmail())
+                .type(DynamicContentTypeEnum.valueOf(resource.getType()))
+                .build();
     }
 }
