@@ -1,7 +1,7 @@
 import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
-import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
+import { provideClientHydration } from '@angular/platform-browser';
 
 /**
  * appConfig
@@ -26,7 +26,7 @@ export const appConfig: ApplicationConfig = {
      * Enables client-side hydration support with event replay.
      * This is useful when using server-side rendering (SSR) or partial hydration.
      */
-    provideClientHydration(withEventReplay())
+    provideClientHydration()
   ]
 };
 
