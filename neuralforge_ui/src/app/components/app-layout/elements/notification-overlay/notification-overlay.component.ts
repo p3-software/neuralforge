@@ -45,7 +45,7 @@ import { INotification } from '../../../../interfaces';
 export class NotificationOverlayComponent {
     @Input() notifications: INotification[] = [];
     @Input() allNotifications: INotification[] = [];
-    @Output() dismiss = new EventEmitter<number>();
+    @Output() dismiss = new EventEmitter<string>();
     @Output() close = new EventEmitter<void>();
 
     viewMode: 'new' | 'all' = 'new';

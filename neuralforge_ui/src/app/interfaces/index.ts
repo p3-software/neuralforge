@@ -27,8 +27,8 @@ export interface IUser {
 }
 
 export interface INotification {
-  id?: number;
-  userId?: number;
+  id?: string;
+  userId?: string;
   title?: string;
   description?: string;
   actionLabel?: string;

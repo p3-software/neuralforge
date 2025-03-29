@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { LayoutService } from '../../../../services/layout.service';
 import { AuthService } from '../../../../services/auth.service';
-// import { NotificationService } from '../../../../services/notification.service';
+import { NotificationService } from '../../../../services/notification.service';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
@@ -51,7 +51,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
 
   constructor(
       public router: Router,
-      // private notificationService: NotificationService
+      private notificationService: NotificationService
   ) {
     const user = localStorage.getItem('auth_user');
     if (user) {
@@ -88,13 +88,21 @@ export class SidebarComponent implements OnInit, OnDestroy {
     this.showNotifications = !this.showNotifications;
   }
 
-  dismissNotification(id: number) {
-    this.notifications = this.notifications.filter(n => n.id !== id);
-    this.updateNotificationCount();
-    if (this.notifications.length === 0) {
-      this.showNotifications = false;
-    }
+  dismissNotification(id: string) {
+    this.notificationService.dismissNotification(id).subscribe({
+      next: () => {
+        this.notifications = this.notifications.filter(n => n.id !== id);
+        this.updateNotificationCount();
+        if (this.notifications.length === 0) {
+          this.showNotifications = false;
+        }
+      },
+      error: (err) => {
+        console.error('Failed to dismiss notification:', err);
+      }
+    });
   }
+
 
 
   updateNotificationCount(){
@@ -107,31 +115,18 @@ export class SidebarComponent implements OnInit, OnDestroy {
     const email = user ? JSON.parse(user)?.email : null;
 
     if (email) {
-      const response: INotification[] = [
-        {
-          id: 1,
-          userId: 123,
-          title: 'New Message',
-          description: 'Go to Users.',
-          actionLabel: 'View',
-          redirectTo: '/app/users',
-          dismissed: false
+      this.notificationService.getByEmail(email).subscribe({
+        next: (response) => {
+          this.allNotifications = response;
+          this.notifications = response.filter(n => !n.dismissed);
+          this.updateNotificationCount();
         },
-        {
-          id: 2,
-          userId: 123,
-          title: 'Reminder',
-          description: 'Know your profile.',
-          actionLabel: 'Open',
-          redirectTo: '/app/profile',
-          dismissed: false
+        error: (err) => {
+          console.error('Failed to fetch notifications:', err);
         }
-      ];
-      this.allNotifications = response;
-      this.notifications = response.filter(n => !n.dismissed);
-
-      this.updateNotificationCount();
+      });
     }
+
   }
 
 }
