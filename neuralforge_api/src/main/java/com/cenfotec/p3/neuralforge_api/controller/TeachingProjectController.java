@@ -35,8 +35,7 @@ public class TeachingProjectController {
     @PostMapping
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<TeachingProjectResource> createTeachingProject(@Valid @RequestBody TeachingProjectResource teachingProject) {
-        TeachingProjectResource createdProject = teachingProjectService.createTeachingProject(teachingProject);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdProject);
+        return ResponseEntity.status(HttpStatus.CREATED).body(teachingProjectService.createTeachingProject(teachingProject));
     }
 
     /**
@@ -51,8 +50,7 @@ public class TeachingProjectController {
     public ResponseEntity<TeachingProjectResource> updateTeachingProject(
             @PathVariable String id,
             @Valid @RequestBody TeachingProjectResource teachingProject) {
-        TeachingProjectResource updatedProject = teachingProjectService.updateTeachingProject(id, teachingProject);
-        return ResponseEntity.ok(updatedProject);
+        return ResponseEntity.ok(teachingProjectService.updateTeachingProject(id, teachingProject));
     }
 
     /**
@@ -63,8 +61,7 @@ public class TeachingProjectController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<TeachingProjectResource> getTeachingProject(@PathVariable String id) {
-        TeachingProjectResource project = teachingProjectService.getTeachingProject(id);
-        return ResponseEntity.ok(project);
+        return ResponseEntity.ok(teachingProjectService.getTeachingProject(id));
     }
 
     /**
@@ -74,8 +71,7 @@ public class TeachingProjectController {
      */
     @GetMapping
     public ResponseEntity<List<TeachingProjectResource>> getAllTeachingProjects() {
-        List<TeachingProjectResource> projects = teachingProjectService.getAllTeachingProjects();
-        return ResponseEntity.ok(projects);
+        return ResponseEntity.ok(teachingProjectService.getAllTeachingProjects());
     }
 
     /**
@@ -86,8 +82,7 @@ public class TeachingProjectController {
     @GetMapping("/mine")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<TeachingProjectResource>> getCurrentUserTeachingProjects() {
-        List<TeachingProjectResource> projects = teachingProjectService.getCurrentUserTeachingProjects();
-        return ResponseEntity.ok(projects);
+        return ResponseEntity.ok(teachingProjectService.getCurrentUserTeachingProjects());
     }
 
     /**
@@ -100,22 +95,6 @@ public class TeachingProjectController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Void> deleteTeachingProject(@PathVariable String id) {
         teachingProjectService.deleteTeachingProject(id);
-        return ResponseEntity.noContent().build();
-    }
-
-    /**
-     * Deletes a material from a teaching project.
-     *
-     * @param projectId The ID of the teaching project.
-     * @param materialId The ID of the material to delete.
-     * @return A response with no content.
-     */
-    @DeleteMapping("/{projectId}/materials/{materialId}")
-    @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<Void> deleteMaterial(
-            @PathVariable String projectId,
-            @PathVariable String materialId) {
-        teachingProjectService.deleteMaterial(projectId, materialId);
         return ResponseEntity.noContent().build();
     }
 } 

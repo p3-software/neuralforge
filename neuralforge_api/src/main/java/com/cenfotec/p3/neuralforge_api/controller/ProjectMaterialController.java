@@ -3,6 +3,7 @@ package com.cenfotec.p3.neuralforge_api.controller;
 import com.cenfotec.p3.neuralforge_api.model.resource.ProjectMaterialResource;
 import com.cenfotec.p3.neuralforge_api.service.ProjectMaterialService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
@@ -24,10 +25,11 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/project-materials")
-@RequiredArgsConstructor
 public class ProjectMaterialController {
 
-    private final ProjectMaterialService materialService;
+    @Autowired
+    private ProjectMaterialService materialService;
+
     private final String uploadDir = "uploads/materials";
 
     /**
@@ -112,16 +114,6 @@ public class ProjectMaterialController {
             @RequestParam(required = false) String description,
             @RequestParam(required = false) String hyperlink,
             @RequestParam String projectId) {
-        
-        // Debug logging
-        if (file != null) {
-            System.out.println("Received file: " + file.getOriginalFilename());
-            System.out.println("File size: " + file.getSize());
-        } else {
-            System.out.println("No file received");
-        }
-        System.out.println("Type: " + type);
-        System.out.println("ProjectId: " + projectId);
         
         return ResponseEntity
                 .status(HttpStatus.CREATED)

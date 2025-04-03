@@ -22,10 +22,6 @@ public class ProjectMaterialMapper {
      * @return A {@link ProjectMaterialResource} containing the mapped material data.
      */
     public ProjectMaterialResource mapToResource(ProjectMaterialEntity entity) {
-        if (entity == null) {
-            return null;
-        }
-
         return ProjectMaterialResource.builder()
                 .id(entity.getId())
                 .type(entity.getType())
@@ -45,10 +41,6 @@ public class ProjectMaterialMapper {
      * @return A {@link ProjectMaterialEntity} containing the mapped material data.
      */
     public ProjectMaterialEntity mapToEntity(ProjectMaterialResource resource) {
-        if (resource == null) {
-            return null;
-        }
-
         return ProjectMaterialEntity.builder()
                 .id(resource.getId())
                 .type(resource.getType())

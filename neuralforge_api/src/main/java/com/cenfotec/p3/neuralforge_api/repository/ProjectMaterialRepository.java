@@ -14,5 +14,11 @@ import java.util.List;
  */
 @Repository
 public interface ProjectMaterialRepository extends JpaRepository<ProjectMaterialEntity, String> {
+    /**
+     * Finds all project materials associated with a specific project ID.
+     *
+     * @param projectId The ID of the project to find materials for.
+     * @return A list of project materials associated with the specified project ID.
+     */
     List<ProjectMaterialEntity> findByProjectId(String projectId);
 } 

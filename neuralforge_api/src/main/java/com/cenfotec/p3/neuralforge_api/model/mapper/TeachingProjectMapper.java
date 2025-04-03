@@ -3,6 +3,7 @@ package com.cenfotec.p3.neuralforge_api.model.mapper;
 import com.cenfotec.p3.neuralforge_api.model.entity.TeachingProjectEntity;
 import com.cenfotec.p3.neuralforge_api.model.enums.ProjectTypeEnum;
 import com.cenfotec.p3.neuralforge_api.model.resource.TeachingProjectResource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -15,16 +16,14 @@ import org.springframework.stereotype.Component;
  * @version 1.0
  */
 @Component
+
 public class TeachingProjectMapper extends ProjectMapper<TeachingProjectEntity, TeachingProjectResource> {
 
-    private final ProjectMaterialMapper projectMaterialMapper;
-    private final SelectedDaysMapper selectedDaysMapper;
-
-    public TeachingProjectMapper(ProjectMaterialMapper projectMaterialMapper, SelectedDaysMapper selectedDaysMapper) {
-        super();
-        this.projectMaterialMapper = projectMaterialMapper;
-        this.selectedDaysMapper = selectedDaysMapper;
-    }
+    @Autowired
+    private ProjectMaterialMapper projectMaterialMapper;
+    
+    @Autowired
+    private SelectedDaysMapper selectedDaysMapper;
 
     /**
      * Converts a {@link TeachingProjectEntity} into a {@link TeachingProjectResource}.
@@ -42,9 +41,7 @@ public class TeachingProjectMapper extends ProjectMapper<TeachingProjectEntity, 
                 .createdAt(teachingProject.getCreatedAt())
                 .lastModifiedAt(teachingProject.getLastModifiedAt())
                 .projectType(ProjectTypeEnum.TEACHING)
-                .materials(teachingProject.getMaterials() != null 
-                    ? teachingProject.getMaterials().stream().map(projectMaterialMapper::mapToResource).toList()
-                    : null)
+                .materials(teachingProject.getMaterials().stream().map(projectMaterialMapper::mapToResource).toList())
                 .selectedDays(selectedDaysMapper.toResource(teachingProject.getSelectedDays()))
                 .dailyHours(teachingProject.getDailyHours())
                 .weeksCount(teachingProject.getWeeksCount())
@@ -68,9 +65,7 @@ public class TeachingProjectMapper extends ProjectMapper<TeachingProjectEntity, 
                 .description(teachingProject.getDescription())
                 .createdAt(teachingProject.getCreatedAt())
                 .lastModifiedAt(teachingProject.getLastModifiedAt())
-                .materials(teachingProject.getMaterials() != null 
-                    ? teachingProject.getMaterials().stream().map(projectMaterialMapper::mapToEntity).toList()
-                    : null)
+                .materials(teachingProject.getMaterials().stream().map(projectMaterialMapper::mapToEntity).toList())
                 .selectedDays(selectedDaysMapper.toEntity(teachingProject.getSelectedDays()))
                 .dailyHours(teachingProject.getDailyHours())
                 .weeksCount(teachingProject.getWeeksCount())

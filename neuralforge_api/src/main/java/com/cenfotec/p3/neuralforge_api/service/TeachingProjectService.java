@@ -1,5 +1,7 @@
 package com.cenfotec.p3.neuralforge_api.service;
 
+import com.cenfotec.p3.neuralforge_api.model.entity.ProjectMaterialEntity;
+import com.cenfotec.p3.neuralforge_api.model.entity.SelectedDaysEntity;
 import com.cenfotec.p3.neuralforge_api.model.entity.TeachingProjectEntity;
 import com.cenfotec.p3.neuralforge_api.model.entity.UserEntity;
 import com.cenfotec.p3.neuralforge_api.model.enums.UserRoleEnum;
@@ -48,6 +50,7 @@ public class TeachingProjectService {
     
     @Autowired
     private SelectedDaysService selectedDaysService;
+
     @Autowired
     private SelectedDaysMapper selectedDaysMapper;
 
@@ -61,17 +64,15 @@ public class TeachingProjectService {
     public TeachingProjectResource createTeachingProject(TeachingProjectResource teachingProject) {
         UserEntity user = (UserEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         teachingProject.setCreatorUserId(user.getId());
-        
-        // Save SelectedDays first
-        var savedSelectedDays = selectedDaysService.save(teachingProject.getSelectedDays());
-        
+
+        SelectedDaysEntity savedSelectedDays = selectedDaysService.save(teachingProject.getSelectedDays());
+
         TeachingProjectEntity entity = teachingProjectMapper.mapToEntity(teachingProject);
-        
-        // Inject the persisted SelectedDaysEntity
+        entity.setId(null); // Fix dumb error. We should have client specific types that don't include ids when creating projects.
         entity.setSelectedDays(savedSelectedDays);
-        
-        entity = teachingProjectRepository.save(entity);
-        return teachingProjectMapper.mapToResource(entity);
+
+        TeachingProjectEntity savedEntity = teachingProjectRepository.save(entity);
+        return teachingProjectMapper.mapToResource(savedEntity);
     }
 
     /**
@@ -91,7 +92,6 @@ public class TeachingProjectService {
 
         teachingProject.setId(id);
         
-        // Update SelectedDays if provided
         if (teachingProject.getSelectedDays() != null) {
             var savedSelectedDays = selectedDaysService.save(teachingProject.getSelectedDays());
             teachingProject.setSelectedDays(selectedDaysMapper.toResource(savedSelectedDays));
@@ -99,7 +99,6 @@ public class TeachingProjectService {
         
         TeachingProjectEntity updatedEntity = teachingProjectMapper.mapToEntity(teachingProject);
         
-        // Fix: Set project reference for each material entity
         if (updatedEntity.getMaterials() != null) {
             updatedEntity.getMaterials().forEach(material -> material.setProject(updatedEntity));
         }
@@ -118,6 +117,7 @@ public class TeachingProjectService {
         TeachingProjectEntity entity = teachingProjectRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, 
                     "Teaching project not found with id: " + id));
+
         return teachingProjectMapper.mapToResource(entity);
     }
 
@@ -128,6 +128,7 @@ public class TeachingProjectService {
      */
     public List<TeachingProjectResource> getAllTeachingProjects() {
         List<TeachingProjectEntity> entities = teachingProjectRepository.findAll();
+
         return entities.stream()
                 .map(teachingProjectMapper::mapToResource)
                 .collect(Collectors.toList());
@@ -177,6 +178,8 @@ public class TeachingProjectService {
         validateProjectOwnership(project.getCreatorUserId());
 
         project.getMaterials().removeIf(material -> material.getId().equals(materialId));
+        // No need to manually set version as we're using the entity retrieved from the database
+        // which already has the correct version value
         teachingProjectRepository.save(project);
     }
 
@@ -194,24 +197,4 @@ public class TeachingProjectService {
                 "Only the owner of the project or an admin is able to perform actions over this project");
         }
     }
-
-    /**
-     * Uploads a file to the server.
-     *
-     * @param file The file to upload.
-     * @return The name of the uploaded file.
-     * @throws IOException If there is an error uploading the file.
-     */
-    private String uploadFile(MultipartFile file) throws IOException {
-        Path uploadPath = Paths.get(uploadDir);
-        if (!Files.exists(uploadPath)) {
-            Files.createDirectories(uploadPath);
-        }
-
-        String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
-        Path filePath = uploadPath.resolve(fileName);
-        Files.copy(file.getInputStream(), filePath);
-
-        return fileName;
-    }
-} 
+}

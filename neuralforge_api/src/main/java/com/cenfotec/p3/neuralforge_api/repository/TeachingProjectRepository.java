@@ -14,5 +14,11 @@ import java.util.List;
  */
 @Repository
 public interface TeachingProjectRepository extends JpaRepository<TeachingProjectEntity, String> {
+    /**
+     * Finds all teaching projects created by a specific user.
+     *
+     * @param creatorUserId The ID of the creator user
+     * @return A list of teaching projects created by the specified user
+     */
     List<TeachingProjectEntity> findByCreatorUserId(String creatorUserId);
 } 

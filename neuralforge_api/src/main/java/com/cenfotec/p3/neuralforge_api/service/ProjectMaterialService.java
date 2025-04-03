@@ -7,9 +7,9 @@ import com.cenfotec.p3.neuralforge_api.model.resource.ProjectMaterialResource;
 import com.cenfotec.p3.neuralforge_api.repository.ProjectMaterialRepository;
 import com.cenfotec.p3.neuralforge_api.repository.ProjectRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -32,9 +32,15 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ProjectMaterialService {
 
+    @Autowired
     private final ProjectMaterialRepository materialRepository;
+
+    @Autowired
     private final ProjectRepository projectRepository;
+    
+    @Autowired
     private final ProjectMaterialMapper materialMapper;
+    
     private final String uploadDir = "uploads/materials";
 
     /**
@@ -43,7 +49,6 @@ public class ProjectMaterialService {
      * @param projectId The ID of the project.
      * @return A list of project material resources.
      */
-    @Transactional(readOnly = true)
     public List<ProjectMaterialResource> getProjectMaterials(String projectId) {
         return materialRepository.findByProjectId(projectId)
                 .stream()
@@ -61,7 +66,6 @@ public class ProjectMaterialService {
      * @param projectId The ID of the project.
      * @return The created project material resource.
      */
-    @Transactional
     public ProjectMaterialResource uploadMaterial(MultipartFile file, String type, String description, String hyperlink, String projectId) {
         if (type == null || (!type.equals("file") && !type.equals("hyperlink"))) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid material type. Must be 'file' or 'hyperlink'");
@@ -126,7 +130,6 @@ public class ProjectMaterialService {
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to store file");
             }
         } else if ("hyperlink".equals(type)) {
-            // Validate hyperlink for hyperlink type
             if (hyperlink == null || hyperlink.isBlank()) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Hyperlink is required for type 'hyperlink'");
             }
@@ -142,7 +145,6 @@ public class ProjectMaterialService {
      *
      * @param materialId The ID of the project material to delete.
      */
-    @Transactional
     public void deleteMaterial(String materialId) {
         ProjectMaterialEntity material = materialRepository.findById(materialId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Material not found with id: " + materialId));
@@ -153,14 +155,13 @@ public class ProjectMaterialService {
                 Path filePath = Paths.get(uploadDir, fileName);
                 Files.deleteIfExists(filePath);
             } catch (IOException e) {
-                // Log the error but continue with material deletion
+                System.err.println("Error deleting file: " + e.getMessage());
             }
         }
 
         materialRepository.delete(material);
     }
 
-    @Transactional
     public ProjectMaterialResource createProjectMaterial(ProjectMaterialResource material) {
         ProjectEntity project = projectRepository.findById(material.getProjectId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Project not found"));
@@ -170,7 +171,6 @@ public class ProjectMaterialService {
         return materialMapper.mapToResource(savedEntity);
     }
 
-    @Transactional
     public ProjectMaterialResource updateProjectMaterial(String id, ProjectMaterialResource material) {
         ProjectMaterialEntity existingMaterial = materialRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Material not found"));
@@ -185,14 +185,12 @@ public class ProjectMaterialService {
         return materialMapper.mapToResource(savedEntity);
     }
 
-    @Transactional(readOnly = true)
     public ProjectMaterialResource getProjectMaterial(String id) {
         return materialRepository.findById(id)
                 .map(materialMapper::mapToResource)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Material not found"));
     }
 
-    @Transactional(readOnly = true)
     public List<ProjectMaterialResource> getAllProjectMaterials() {
         return materialRepository.findAll()
                 .stream()
@@ -200,7 +198,6 @@ public class ProjectMaterialService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional
     public void deleteProjectMaterial(String id) {
         if (!materialRepository.existsById(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Material not found");
