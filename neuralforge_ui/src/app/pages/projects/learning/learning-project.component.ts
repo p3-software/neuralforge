@@ -31,7 +31,7 @@ import { LearningProjectService } from "../../../services/learning-project.servi
 })
 export class LearningProjectComponent implements OnInit {
   projectId: string = "";
-  project?: ILearningProject;
+  project: ILearningProject | null = null;
   isLoading = true;
   hasError = false;
   errorMessage = "Unable to load project details.";

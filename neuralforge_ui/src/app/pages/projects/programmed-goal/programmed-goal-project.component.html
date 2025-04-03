@@ -1,25 +1,49 @@
-<app-project-details
-  [project]="project"
-  [isLoading]="isLoading"
-  [hasError]="hasError"
-  [errorMessage]="errorMessage"
-  (editProject)="editProject()"
-  (deleteProject)="onDeleteProject()"
-  (notificationsToggle)="onToggleNotify()"
->
-  <ng-template #overviewContent>
-    <mat-card class="deadline-card">
-      <h2 class="days-left-title">Days Left: {{ getDaysLeft() }}</h2>
-      <p class="deadline">
-        Deadline: {{ project?.deadline | date : "longDate" }}
-      </p>
-    </mat-card>
+<ng-container *ngIf="!isLoading && !hasError">
+  <app-project-details
+    [project]="project"
+    [isLoading]="isLoading"
+    [hasError]="hasError"
+    [errorMessage]="errorMessage"
+    [notificationsEnabled]="(project && project.notify) || false"
+    (editProject)="editProject()"
+    (deleteProject)="onDeleteProject()"
+    (toggleNotify)="onToggleNotify()"
+    (notificationsToggle)="onToggleNotify()"
+  >
+    <ng-template #overviewContent>
+      <ng-container *ngIf="project">
+        <mat-card class="deadline-card">
+          <h2 class="days-left-title">Days Left: {{ getDaysLeft() }}</h2>
+          <p class="deadline">
+            Deadline:
+            <ng-container *ngIf="project.deadline">
+              {{ project.deadline | date : "longDate" }}
+            </ng-container>
+            <ng-container *ngIf="!project.deadline"> Not set </ng-container>
+          </p>
+        </mat-card>
 
-    <app-deadline-calendar
-      [calendarStartDate]="calendarStartDate"
-      [today]="today"
-      [project]="project"
-      (calendarStartDateChange)="calendarStartDate = $event"
-    />
-  </ng-template>
-</app-project-details>
+        <app-deadline-calendar
+          [calendarStartDate]="calendarStartDate"
+          [today]="today"
+          [project]="project"
+          (calendarStartDateChange)="calendarStartDate = $event"
+        />
+      </ng-container>
+    </ng-template>
+  </app-project-details>
+</ng-container>
+
+<ng-container *ngIf="isLoading">
+  <div class="loading-container">
+    <mat-icon>hourglass_empty</mat-icon>
+    <p>Loading project...</p>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="hasError && !isLoading">
+  <div class="error-container">
+    <mat-icon color="warn" class="error-icon">error_outline</mat-icon>
+    <p class="error-message">{{ errorMessage }}</p>
+  </div>
+</ng-container>

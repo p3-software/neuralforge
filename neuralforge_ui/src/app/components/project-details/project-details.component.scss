@@ -5,11 +5,10 @@
 $primary-color: mat.get-color-from-palette(theme.$my-primary, 500);
 $accent-color: mat.get-color-from-palette(theme.$my-accent, 500);
 $primary-contrast: map.get(map.get(theme.$my-primary, contrast), 500);
-$scrollbar-width: 12px; // Standard scrollbar width
 
 :host {
   display: block;
-  width: calc(100% - #{$scrollbar-width});
+  width: 100%;
   max-width: 1200px;
   margin: 0 auto;
   padding: 1rem;
@@ -18,6 +17,7 @@ $scrollbar-width: 12px; // Standard scrollbar width
   box-sizing: border-box;
   position: relative;
   z-index: 1;
+  background-color: transparent;
 }
 
 // Background wrapper

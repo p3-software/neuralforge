@@ -1,23 +1,14 @@
-<div class="container">
-  <div *ngIf="isLoading" class="loading-container">
-    <mat-spinner diameter="40"></mat-spinner>
-  </div>
-
-  <div *ngIf="hasError" class="error-container">
-    <mat-icon color="warn" class="error-icon">error_outline</mat-icon>
-    <p class="error-message">{{ errorMessage }}</p>
-  </div>
-
-  <div *ngIf="!isLoading && !hasError && project" class="project-container">
-    <app-project-details
-      [project]="project"
-      [isLoading]="isLoading"
-      [hasError]="hasError"
-      [errorMessage]="errorMessage"
-      (editProject)="editProject()"
-      (deleteProject)="onDeleteProject()"
-    >
-      <ng-template #overviewContent>
+<ng-container *ngIf="!isLoading && !hasError">
+  <app-project-details
+    [project]="project"
+    [isLoading]="isLoading"
+    [hasError]="hasError"
+    [errorMessage]="errorMessage"
+    (editProject)="editProject()"
+    (deleteProject)="onDeleteProject()"
+  >
+    <ng-template #overviewContent>
+      <ng-container *ngIf="project">
         <mat-card class="schedule-card">
           <h2>Course Schedule</h2>
           <div class="schedule-info">
@@ -44,7 +35,7 @@
 
         <mat-card
           class="materials-card"
-          *ngIf="project?.materials && project.materials!.length > 0"
+          *ngIf="project.materials && project.materials.length > 0"
         >
           <h2>Course Materials</h2>
           <div class="materials-list">
@@ -57,7 +48,20 @@
             </div>
           </div>
         </mat-card>
-      </ng-template>
-    </app-project-details>
+      </ng-container>
+    </ng-template>
+  </app-project-details>
+</ng-container>
+
+<ng-container *ngIf="isLoading">
+  <div class="loading-container">
+    <mat-spinner diameter="40"></mat-spinner>
   </div>
-</div>
+</ng-container>
+
+<ng-container *ngIf="hasError && !isLoading">
+  <div class="error-container">
+    <mat-icon color="warn" class="error-icon">error_outline</mat-icon>
+    <p class="error-message">{{ errorMessage }}</p>
+  </div>
+</ng-container>

@@ -45,6 +45,7 @@ export class ProjectDetailsComponent implements OnInit {
   @Output() editProject = new EventEmitter<void>();
   @Output() deleteProject = new EventEmitter<void>();
   @Output() toggleNotify = new EventEmitter<boolean>();
+  @Output() notificationsToggle = new EventEmitter<void>();
 
   isProgrammedGoalProject = false;
 
@@ -57,5 +58,6 @@ export class ProjectDetailsComponent implements OnInit {
 
   onToggleNotify(): void {
     this.toggleNotify.emit(this.notificationsEnabled);
+    this.notificationsToggle.emit();
   }
 }

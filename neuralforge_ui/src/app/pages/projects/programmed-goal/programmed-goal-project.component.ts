@@ -1,4 +1,4 @@
-import { DatePipe } from "@angular/common";
+import { DatePipe, NgIf } from "@angular/common";
 import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import { MatButtonModule } from "@angular/material/button";
 import { MatCardModule } from "@angular/material/card";
@@ -22,6 +22,7 @@ import { ProgrammedGoalProjectService } from "../../../services/programmed-goal-
   styleUrls: ["./programmed-goal-project.component.scss"],
   imports: [
     DatePipe,
+    NgIf,
     MatTabsModule,
     MatIconModule,
     MatButtonModule,

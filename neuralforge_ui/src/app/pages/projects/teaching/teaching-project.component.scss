@@ -8,12 +8,7 @@ $primary-contrast: map.get(map.get(theme.$my-primary, contrast), 500);
 
 :host {
   display: block;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 1rem;
-  font-family: "Poppins", sans-serif;
-  color: #333;
-  background-color: #f9f9fc;
+  width: 100%;
 }
 
 .schedule-card {
@@ -94,17 +89,14 @@ $primary-contrast: map.get(map.get(theme.$my-primary, contrast), 500);
   }
 }
 
-.container {
-  padding: 20px;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
 .loading-container {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 400px;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .error-container {
@@ -115,6 +107,9 @@ $primary-contrast: map.get(map.get(theme.$my-primary, contrast), 500);
   min-height: 400px;
   text-align: center;
   color: #f44336;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
 
   .error-icon {
     font-size: 48px;
