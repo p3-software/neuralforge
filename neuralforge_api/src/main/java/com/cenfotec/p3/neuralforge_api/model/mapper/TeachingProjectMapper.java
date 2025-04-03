@@ -40,6 +40,7 @@ public class TeachingProjectMapper extends ProjectMapper<TeachingProjectEntity, 
                 .name(teachingProject.getName())
                 .description(teachingProject.getDescription())
                 .createdAt(teachingProject.getCreatedAt())
+                .lastModifiedAt(teachingProject.getLastModifiedAt())
                 .projectType(ProjectTypeEnum.TEACHING)
                 .materials(teachingProject.getMaterials() != null 
                     ? teachingProject.getMaterials().stream().map(projectMaterialMapper::mapToResource).toList()
@@ -66,6 +67,7 @@ public class TeachingProjectMapper extends ProjectMapper<TeachingProjectEntity, 
                 .name(teachingProject.getName())
                 .description(teachingProject.getDescription())
                 .createdAt(teachingProject.getCreatedAt())
+                .lastModifiedAt(teachingProject.getLastModifiedAt())
                 .materials(teachingProject.getMaterials() != null 
                     ? teachingProject.getMaterials().stream().map(projectMaterialMapper::mapToEntity).toList()
                     : null)

@@ -4,6 +4,7 @@ import com.cenfotec.p3.neuralforge_api.model.entity.TeachingProjectEntity;
 import com.cenfotec.p3.neuralforge_api.model.entity.UserEntity;
 import com.cenfotec.p3.neuralforge_api.model.enums.UserRoleEnum;
 import com.cenfotec.p3.neuralforge_api.model.mapper.ProjectMaterialMapper;
+import com.cenfotec.p3.neuralforge_api.model.mapper.SelectedDaysMapper;
 import com.cenfotec.p3.neuralforge_api.model.mapper.TeachingProjectMapper;
 import com.cenfotec.p3.neuralforge_api.model.resource.TeachingProjectResource;
 import com.cenfotec.p3.neuralforge_api.repository.TeachingProjectRepository;
@@ -47,6 +48,8 @@ public class TeachingProjectService {
     
     @Autowired
     private SelectedDaysService selectedDaysService;
+    @Autowired
+    private SelectedDaysMapper selectedDaysMapper;
 
     /**
      * Creates a new teaching project.
@@ -91,7 +94,7 @@ public class TeachingProjectService {
         // Update SelectedDays if provided
         if (teachingProject.getSelectedDays() != null) {
             var savedSelectedDays = selectedDaysService.save(teachingProject.getSelectedDays());
-            teachingProject.setSelectedDays(savedSelectedDays);
+            teachingProject.setSelectedDays(selectedDaysMapper.toResource(savedSelectedDays));
         }
         
         TeachingProjectEntity updatedEntity = teachingProjectMapper.mapToEntity(teachingProject);

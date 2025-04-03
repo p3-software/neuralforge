@@ -78,11 +78,22 @@ public abstract class ProjectEntity {
     @Column(name = "created_at", nullable = false, updatable = false)
     private Date createdAt;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "last_modified_at", nullable = false)
+    private Date lastModifiedAt;
+
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProjectMaterialEntity> materials = new ArrayList<>();
 
     @PrePersist
     protected void onCreate() {
-        this.createdAt = new Date();
+        Date now = new Date();
+        this.createdAt = now;
+        this.lastModifiedAt = now;
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.lastModifiedAt = new Date();
     }
 }

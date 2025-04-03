@@ -2,7 +2,7 @@
 
 <div *ngIf="project" class="project-header">
   <div class="project-title">
-    <h1>{{ project?.name }}</h1>
+    <h1>{{ project.name }}</h1>
     <mat-slide-toggle
       *ngIf="isProgrammedGoalProject"
       [checked]="notificationsEnabled"
@@ -12,7 +12,7 @@
     </mat-slide-toggle>
   </div>
   <p class="project-description">
-    {{ project?.description || "No description available" }}
+    {{ project.description || "No description available" }}
   </p>
 </div>
 
@@ -28,13 +28,56 @@
   </mat-tab>
 
   <mat-tab label="Configuration">
-    <div class="config-actions">
-      <button (click)="editProject.emit()" mat-stroked-button color="primary">
-        Edit Project
-      </button>
-      <button (click)="deleteProject.emit()" mat-stroked-button color="warn">
-        Delete Project
-      </button>
+    <div class="config-container">
+      <div class="metadata-section">
+        <h3>Project Metadata</h3>
+        <div class="metadata-grid">
+          <div class="metadata-item">
+            <mat-icon>calendar_today</mat-icon>
+            <div class="metadata-content">
+              <span class="label">Created</span>
+              <span class="value">{{
+                project.createdAt | date : "medium"
+              }}</span>
+            </div>
+          </div>
+          <div class="metadata-item">
+            <mat-icon>update</mat-icon>
+            <div class="metadata-content">
+              <span class="label">Last Modified</span>
+              <span class="value">{{
+                project.lastModifiedAt
+                  ? (project.lastModifiedAt | date : "medium")
+                  : "Never"
+              }}</span>
+            </div>
+          </div>
+          <div class="metadata-item">
+            <mat-icon>category</mat-icon>
+            <div class="metadata-content">
+              <span class="label">Project Type</span>
+              <span class="value">{{ project.projectType | titlecase }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="actions-section">
+        <h3>Project Actions</h3>
+        <div class="actions-grid">
+          <button
+            mat-raised-button
+            color="primary"
+            (click)="editProject.emit()"
+          >
+            <mat-icon>edit</mat-icon>
+            Edit Project
+          </button>
+          <button mat-raised-button color="warn" (click)="deleteProject.emit()">
+            <mat-icon>delete</mat-icon>
+            Delete Project
+          </button>
+        </div>
+      </div>
     </div>
   </mat-tab>
 </mat-tab-group>

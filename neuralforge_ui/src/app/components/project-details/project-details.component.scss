@@ -72,15 +72,126 @@ $scrollbar-width: 12px; // Standard scrollbar width
 }
 
 .config-actions {
-  padding: 1.5rem;
   display: flex;
-  justify-content: center;
   gap: 1rem;
+  margin-bottom: 2rem;
+}
 
-  button {
-    font-family: "Poppins", sans-serif;
+.config-container {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2rem;
+  padding: 1.5rem;
+}
+
+.metadata-section,
+.actions-section {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+
+  h3 {
+    margin: 0 0 1.5rem 0;
+    color: $primary-color;
+    font-size: 1.25rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    &::before {
+      content: "";
+      display: block;
+      width: 4px;
+      height: 24px;
+      background: $primary-color;
+      border-radius: 2px;
+    }
+  }
+}
+
+.metadata-grid {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.metadata-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1rem;
+  background: rgba($primary-color, 0.03);
+  border-radius: 8px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba($primary-color, 0.06);
+  }
+
+  mat-icon {
+    color: $primary-color;
+    opacity: 0.8;
+  }
+
+  .metadata-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .label {
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 0.875rem;
     font-weight: 500;
-    min-width: 120px;
+  }
+
+  .value {
+    color: rgba(0, 0, 0, 0.87);
+    font-weight: 400;
+    font-size: 1rem;
+    word-break: break-word;
+  }
+}
+
+.actions-section {
+  .actions-grid {
+    display: grid;
+    gap: 1rem;
+
+    button {
+      width: 100%;
+      padding: 1rem;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      border-radius: 8px;
+      font-weight: 500;
+
+      mat-icon {
+        margin-right: 0.25rem;
+      }
+
+      &[color="primary"] {
+        background: linear-gradient(
+          135deg,
+          $primary-color,
+          darken($primary-color, 10%)
+        );
+      }
+
+      &[color="warn"] {
+        background: linear-gradient(135deg, #f44336, darken(#f44336, 10%));
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .config-container {
+    grid-template-columns: 1fr;
   }
 }
 

@@ -27,14 +27,10 @@
                 <h2>Project Details</h2>
                 <p>
                   <strong>Created:</strong>
-                  {{
-                    project?.createdAt
-                      ? (project.createdAt | date : "longDate")
-                      : "Not specified"
-                  }}
+                  {{ project.createdAt | date : "longDate" }}
                 </p>
                 <p><strong>Project Type:</strong> Learning Project</p>
-                <p><strong>Creator ID:</strong> {{ project?.creatorUserId }}</p>
+                <p><strong>Creator ID:</strong> {{ project.creatorUserId }}</p>
               </mat-card>
             </div>
           </ng-template>

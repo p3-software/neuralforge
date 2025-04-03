@@ -55,6 +55,7 @@ export class CreateGoalProjectDialogComponent {
       saturday: false,
       sunday: false,
     },
+    lastModifiedAt: null,
   };
 
   frequencies = [1, 2, 3, 4, 5, 6, 7];
@@ -71,6 +72,7 @@ export class CreateGoalProjectDialogComponent {
       ...projectData, // This includes name and description from the form
       deadline: this.goalProject.deadline,
       selectedDays: this.goalProject.selectedDays,
+      lastModifiedAt: null,
     };
 
     console.log(goalData);

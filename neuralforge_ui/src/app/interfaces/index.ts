@@ -96,6 +96,7 @@ export interface IProject {
   name: string;
   description: string;
   createdAt: Date | null;
+  lastModifiedAt: Date | null;
 }
 
 export interface ILearningProject extends IProject {

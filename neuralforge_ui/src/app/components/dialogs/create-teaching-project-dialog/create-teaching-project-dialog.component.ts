@@ -96,6 +96,7 @@ export class CreateTeachingProjectDialogComponent {
       hoursPerClass: hoursPerClass,
       createdAt: null,
       materials: [],
+      lastModifiedAt: null,
     };
 
     this.teachingProjectService.add(teachingProjectData).subscribe({

@@ -55,5 +55,6 @@ public abstract class ProjectResource {
     private ProjectTypeEnum projectType;
 
     private Date createdAt;
+    private Date lastModifiedAt;
     private List<ProjectMaterialResource> materials;
 }

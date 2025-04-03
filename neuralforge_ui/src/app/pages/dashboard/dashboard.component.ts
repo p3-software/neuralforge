@@ -232,26 +232,28 @@ export class DashboardComponent implements OnInit {
     section.hasError = false;
     section.errorMessage = "";
 
-    this.programmedGoalProjectService.findMine().subscribe({
-      next: (response) => {
-        if (Array.isArray(response)) {
-          section.cards = response.map((project: IProgrammedGoalProject) => ({
-            id: project.id,
-            title: project.name,
-            content: project.description || "No description available.",
-            projectType: project.projectType,
-          }));
-        }
-        section.isLoading = false;
-      },
-      error: (error) => {
-        console.error("Error fetching programmed goal projects:", error);
-        section.cards = [];
-        section.isLoading = false;
-        section.hasError = true;
-        section.errorMessage =
-          "Unable to load projects. Please try again later.";
-      },
-    });
+    this.programmedGoalProjectService
+      .findAllWithParamsAndCustomSource("mine")
+      .subscribe({
+        next: (response) => {
+          if (Array.isArray(response)) {
+            section.cards = response.map((project: IProgrammedGoalProject) => ({
+              id: project.id,
+              title: project.name,
+              content: project.description || "No description available.",
+              projectType: project.projectType,
+            }));
+          }
+          section.isLoading = false;
+        },
+        error: (error) => {
+          console.error("Error fetching programmed goal projects:", error);
+          section.cards = [];
+          section.isLoading = false;
+          section.hasError = true;
+          section.errorMessage =
+            "Unable to load projects. Please try again later.";
+        },
+      });
   }
 }
