@@ -89,13 +89,24 @@ export enum IProjectType {
   ProgrammedGoal = "PROGRAMMED_GOAL",
 }
 
-export interface ILearningProject {
-  id: string;
-  creatorUserId: string;
-  createdAt?: Date;
-  name: string;
-  description?: string;
+export interface IProject {
+  id?: string;
   projectType: IProjectType;
+  creatorUserId?: string;
+  name: string;
+  description: string;
+  createdAt: Date | null;
+}
+
+export interface ILearningProject extends IProject {
+  materials?: ILearningMaterial[];
+}
+
+export interface IProgrammedGoalProject extends IProject {
+  deadline: Date;
+  notify: boolean;
+  selectedDays: ISelectedDays;
+  dynamicContents?: IDynamicContent[];
 }
 
 interface IDashboardCard {
@@ -114,19 +125,6 @@ export interface IDashboardSection {
   isLoading?: boolean;
   hasError?: boolean;
   errorMessage?: string;
-}
-
-export interface IProgrammedGoalProject {
-  id?: string;
-  projectType: IProjectType;
-  creatorUserId?: string;
-  name: string;
-  description: string;
-  deadline: Date;
-  createdAt: Date | null;
-  notify: boolean;
-  selectedDays: ISelectedDays;
-  dynamicContents?: IDynamicContent[];
 }
 
 export interface ISelectedDays {
@@ -160,25 +158,30 @@ export interface IDynamicContentSection {
   errorMessage?: string;
 }
 
-export interface ITeachingMaterial {
+export interface ILearningMaterial {
   id?: string;
-  type: "PDF" | "TEXT" | "HYPERLINK";
-  fileName?: string;
-  fileUrl?: string;
-  description: string;
-  hyperlink?: string;
+  name: string;
+  description?: string;
+  url?: string;
+  type: string;
+  createdAt?: Date;
 }
 
-export interface ITeachingProject {
+export interface ITeachingMaterial {
   id?: string;
-  projectType: IProjectType;
-  creatorUserId?: string;
   name: string;
-  description: string;
-  createdAt: Date | null;
+  description?: string;
+  url?: string;
+  type: string;
+  createdAt?: Date;
+}
+
+export interface ITeachingProject extends IProject {
   selectedDays: ISelectedDays;
   dailyHours: number;
   weeksCount: number;
   hoursPerClass: number;
   materials?: ITeachingMaterial[];
+  startDate?: Date;
+  endDate?: Date;
 }

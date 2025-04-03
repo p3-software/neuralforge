@@ -1,14 +1,14 @@
-import { CommonModule, DatePipe, NgIf } from "@angular/common";
+import { CommonModule, NgIf } from "@angular/common";
 import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
-import { MatButtonModule } from "@angular/material/button";
 import { MatCardModule } from "@angular/material/card";
 import { MatDialog } from "@angular/material/dialog";
 import { MatIconModule } from "@angular/material/icon";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
-import { MatTabsModule } from "@angular/material/tabs";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ConfirmDialogComponent } from "../../../components/dialogs/confirm-dialog/confirm-dialog.component";
 import { EditTeachingProjectDialogComponent } from "../../../components/dialogs/edit-teaching-project-dialog/edit-teaching-project-dialog.component";
+import { ProjectDetailsComponent } from "../../../components/project-details/project-details.component";
+import { TeachingCalendarComponent } from "../../../components/teaching-calendar/teaching-calendar.component";
 import { ITeachingProject } from "../../../interfaces";
 import { AlertService } from "../../../services/alert.service";
 import { TeachingProjectService } from "../../../services/teaching-project.service";
@@ -18,12 +18,11 @@ import { TeachingProjectService } from "../../../services/teaching-project.servi
   standalone: true,
   imports: [
     CommonModule,
+    ProjectDetailsComponent,
+    TeachingCalendarComponent,
     MatCardModule,
-    MatButtonModule,
     MatIconModule,
-    MatTabsModule,
     MatProgressSpinnerModule,
-    DatePipe,
     NgIf,
   ],
   templateUrl: "./teaching-project.component.html",
@@ -34,6 +33,7 @@ export class TeachingProjectComponent implements OnInit {
   isLoading = true;
   hasError = false;
   errorMessage = "";
+  calendarStartDate = new Date();
 
   constructor(
     private route: ActivatedRoute,
@@ -90,9 +90,13 @@ export class TeachingProjectComponent implements OnInit {
     if (!this.project) return;
 
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: "400px",
       data: {
-        title: "Delete Project",
-        message: "Are you sure you want to delete this project?",
+        title: "Confirm Deletion",
+        message:
+          "Are you sure you want to delete this project? This action cannot be undone.",
+        confirmText: "Delete",
+        cancelText: "Cancel",
       },
     });
 

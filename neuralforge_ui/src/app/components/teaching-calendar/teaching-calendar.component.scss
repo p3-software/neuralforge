@@ -1,0 +1,121 @@
+@use "@angular/material" as mat;
+@use "sass:map";
+@use "../../../styles.scss" as theme;
+
+$primary-color: mat.get-color-from-palette(theme.$my-primary, 500);
+$accent-color: mat.get-color-from-palette(theme.$my-accent, 500);
+$primary-contrast: map.get(map.get(theme.$my-primary, contrast), 500);
+
+.calendar {
+  background: #ffffff;
+  border-radius: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.calendar-header {
+  margin-bottom: 2rem;
+
+  h3 {
+    font-size: 1.5rem;
+    font-weight: 500;
+    margin: 0;
+    color: #2b2b2b;
+  }
+}
+
+.weeks-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.week-card {
+  background: #f8f9fa;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+
+  .week-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid rgba($primary-color, 0.1);
+
+    h4 {
+      font-size: 1.25rem;
+      font-weight: 500;
+      margin: 0;
+      color: #2b2b2b;
+    }
+
+    .week-range {
+      color: #666;
+      font-size: 0.875rem;
+    }
+  }
+
+  .days-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 1rem;
+
+    .day-box {
+      background: #ffffff;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      min-height: 120px;
+
+      &.teaching-day {
+        background-color: rgba($primary-color, 0.05);
+        border: 1px solid rgba($primary-color, 0.1);
+      }
+
+      .day-header {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+        margin-bottom: 0.75rem;
+
+        .day-name {
+          font-weight: 500;
+          color: #2b2b2b;
+        }
+
+        .day-date {
+          font-size: 0.875rem;
+          color: #666;
+        }
+      }
+
+      .topics-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+
+        .topic-item {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          padding: 0.5rem;
+          background: rgba($primary-color, 0.05);
+          border-radius: 0.25rem;
+
+          mat-icon {
+            font-size: 1rem;
+            width: 1rem;
+            height: 1rem;
+            color: $primary-color;
+          }
+
+          span {
+            font-size: 0.875rem;
+            color: #666;
+          }
+        }
+      }
+    }
+  }
+}
