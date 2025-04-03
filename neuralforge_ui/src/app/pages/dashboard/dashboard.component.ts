@@ -15,10 +15,12 @@ import {
   IDashboardSection,
   ILearningProject,
   IProgrammedGoalProject,
+  IProjectType,
   ITeachingProject,
 } from "../../interfaces";
 import { LearningProjectService } from "../../services/learning-project.service";
 import { ProgrammedGoalProjectService } from "../../services/programmed-goal-project.service";
+import { ProjectService } from "../../services/project.service";
 import { TeachingProjectService } from "../../services/teaching-project.service";
 
 @Component({
@@ -40,7 +42,8 @@ export class DashboardComponent implements OnInit {
     private dialog: MatDialog,
     private learningProjectService: LearningProjectService,
     private programmedGoalProjectService: ProgrammedGoalProjectService,
-    private teachingProjectService: TeachingProjectService
+    private teachingProjectService: TeachingProjectService,
+    private projectService: ProjectService
   ) {}
 
   welcomeMessages = [
@@ -87,15 +90,13 @@ export class DashboardComponent implements OnInit {
         (this.currentMessageIndex + 1) % this.welcomeMessages.length;
     }, 5000);
 
-    this.fetchTeachingProjects();
-    this.fetchLearningProjects();
-    this.fetchProgrammedGoalProjects();
+    this.fetchAllProjects();
   }
 
   openCreateTeachingProjectDialog() {
     const dialogRef = this.dialog.open(CreateTeachingProjectDialogComponent);
 
-    dialogRef.afterClosed().subscribe((result: ITeachingProject) => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         const section = this.sections.find(
           (s) => s.title === "Teaching Projects"
@@ -115,7 +116,7 @@ export class DashboardComponent implements OnInit {
   openCreateLearningProjectDialog() {
     const dialogRef = this.dialog.open(CreateProjectDialogComponent);
 
-    dialogRef.afterClosed().subscribe((result: ILearningProject) => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         const section = this.sections.find(
           (s) => s.title === "Learning Projects"
@@ -152,108 +153,84 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  fetchTeachingProjects() {
-    const section = this.sections.find((s) => s.title === "Teaching Projects");
-    if (!section) return;
+  fetchAllProjects() {
+    this.sections.forEach((section) => {
+      section.isLoading = true;
+      section.hasError = false;
+      section.errorMessage = "";
+    });
 
-    section.isLoading = true;
-    section.hasError = false;
-    section.errorMessage = "";
-
-    this.teachingProjectService
-      .findAllWithParamsAndCustomSource("mine")
-      .subscribe({
-        next: (response) => {
-          console.log("Teaching projects response:", response);
-          if (Array.isArray(response)) {
-            section.cards = response.map((project: ITeachingProject) => ({
+    this.projectService.getAllUserProjects().subscribe({
+      next: (response) => {
+        const teachingSection = this.sections.find(
+          (s) => s.title === "Teaching Projects"
+        );
+        if (teachingSection && response.teachingProjects) {
+          teachingSection.cards = response.teachingProjects.map(
+            (project: ITeachingProject) => ({
               id: project.id,
               title: project.name,
               content: project.description || "No description available.",
               projectType: project.projectType,
-            }));
-            console.log("Teaching projects cards:", section.cards);
-          } else {
-            console.log("Response is not an array:", response);
-          }
+            })
+          );
+        }
+
+        const learningSection = this.sections.find(
+          (s) => s.title === "Learning Projects"
+        );
+        if (learningSection && response.learningProjects) {
+          learningSection.cards = response.learningProjects.map(
+            (project: ILearningProject) => ({
+              id: project.id,
+              title: project.name,
+              content: project.description || "No description available.",
+              projectType: project.projectType,
+            })
+          );
+        }
+
+        const goalSection = this.sections.find(
+          (s) => s.title === "Programmed Goal Projects"
+        );
+        if (goalSection && response.programmedGoalProjects) {
+          goalSection.cards = response.programmedGoalProjects.map(
+            (project: IProgrammedGoalProject) => ({
+              id: project.id,
+              title: project.name,
+              content: project.description || "No description available.",
+              projectType: project.projectType,
+            })
+          );
+        }
+
+        this.sections.forEach((section) => {
           section.isLoading = false;
-        },
-        error: (error) => {
-          console.error("Error fetching teaching projects:", error);
+        });
+      },
+      error: (error) => {
+        console.error("Error fetching projects:", error);
+        this.sections.forEach((section) => {
           section.cards = [];
           section.isLoading = false;
           section.hasError = true;
           section.errorMessage =
             "Unable to load projects. Please try again later.";
-        },
-      });
+        });
+      },
+    });
   }
 
-  fetchLearningProjects() {
-    const section = this.sections.find((s) => s.title === "Learning Projects");
-    if (!section) return;
-
-    section.isLoading = true;
-    section.hasError = false;
-    section.errorMessage = "";
-
-    this.learningProjectService
-      .findAllWithParamsAndCustomSource("mine")
-      .subscribe({
-        next: (response) => {
-          if (Array.isArray(response)) {
-            section.cards = response.map((project: ILearningProject) => ({
-              id: project.id,
-              title: project.name,
-              content: project.description || "No description available.",
-              projectType: project.projectType,
-            }));
-          }
-          section.isLoading = false;
-        },
-        error: (error) => {
-          console.error("Error fetching learning projects:", error);
-          section.cards = [];
-          section.isLoading = false;
-          section.hasError = true;
-          section.errorMessage =
-            "Unable to load projects. Please try again later.";
-        },
-      });
-  }
-
-  fetchProgrammedGoalProjects() {
-    const section = this.sections.find(
-      (s) => s.title === "Programmed Goal Projects"
-    );
-    if (!section) return;
-
-    section.isLoading = true;
-    section.hasError = false;
-    section.errorMessage = "";
-
-    this.programmedGoalProjectService
-      .findAllWithParamsAndCustomSource("mine")
-      .subscribe({
-        next: (response) => {
-          if (Array.isArray(response)) {
-            section.cards = response.map((project: IProgrammedGoalProject) => ({
-              id: project.id,
-              title: project.name,
-              content: project.description || "No description available.",
-              projectType: project.projectType,
-            }));
-          }
-          section.isLoading = false;
-        },
-        error: (error) => {
-          console.error("Error fetching programmed goal projects:", error);
-          section.cards = [];
-          section.isLoading = false;
-          section.hasError = true;
-          section.errorMessage =
-            "Unable to load projects. Please try again later.";
-        },
-      });
+  getRouteByProjectType(projectType: IProjectType): string {
+    switch (projectType) {
+      case IProjectType.Learning:
+        return "project/learning";
+      case IProjectType.Teaching:
+        return "project/teaching";
+      case IProjectType.ProgrammedGoal:
+        return "project/programmed_goal";
+      default:
+        return "";
+    }
   }
 }
