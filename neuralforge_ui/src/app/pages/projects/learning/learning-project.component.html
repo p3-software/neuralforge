@@ -13,19 +13,32 @@
     <!-- Overview Tab -->
     <mat-tab label="Overview">
       <div class="overview-tab">
-        <mat-card class="project-info-card">
-          <h2>Project Details</h2>
-          <p>
-            <strong>Created:</strong>
-            {{
-              project.createdAt
-                ? (project.createdAt | date : "longDate")
-                : "Not specified"
-            }}
-          </p>
-          <p><strong>Project Type:</strong> Learning Project</p>
-          <p><strong>Creator ID:</strong> {{ project.creatorUserId }}</p>
-        </mat-card>
+        <app-project-details
+          [project]="project"
+          [isLoading]="isLoading"
+          [hasError]="hasError"
+          [errorMessage]="errorMessage"
+          (editProject)="editProject()"
+          (deleteProject)="onDeleteProject()"
+        >
+          <ng-template #overviewContent>
+            <div class="overview-tab">
+              <mat-card class="project-info-card">
+                <h2>Project Details</h2>
+                <p>
+                  <strong>Created:</strong>
+                  {{
+                    project?.createdAt
+                      ? (project.createdAt | date : "longDate")
+                      : "Not specified"
+                  }}
+                </p>
+                <p><strong>Project Type:</strong> Learning Project</p>
+                <p><strong>Creator ID:</strong> {{ project?.creatorUserId }}</p>
+              </mat-card>
+            </div>
+          </ng-template>
+        </app-project-details>
       </div>
     </mat-tab>
 
