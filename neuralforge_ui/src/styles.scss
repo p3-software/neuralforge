@@ -93,3 +93,22 @@ p {
 body {
   margin: 0;
 }
+
+/* Snackbar styles */
+.success-snackbar {
+  .mat-mdc-snack-bar-label {
+    color: #fff;
+  }
+  .mdc-snackbar__surface {
+    background-color: #28c76f;
+  }
+}
+
+.error-snackbar {
+  .mat-mdc-snack-bar-label {
+    color: #fff;
+  }
+  .mdc-snackbar__surface {
+    background-color: #ea5455;
+  }
+}

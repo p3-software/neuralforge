@@ -39,3 +39,6 @@ build/
 ### Angular ###
 node_modules/
 .angular/
+
+### User uploads ###
+neuralforge_api/uploads

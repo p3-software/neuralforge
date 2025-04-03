@@ -10,9 +10,12 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -30,7 +33,16 @@ public class ProjectMaterialController {
     @Autowired
     private ProjectMaterialService materialService;
 
-    private final String uploadDir = "uploads/materials";
+    private final String baseUploadDir = "uploads";
+    private final String materialsDir = "materials";
+
+    /**
+     * Get the full path to the uploads directory.
+     * @return The Path to the uploads directory.
+     */
+    private Path getUploadPath() {
+        return Paths.get(baseUploadDir, materialsDir);
+    }
 
     /**
      * Creates a new project material.
@@ -100,6 +112,12 @@ public class ProjectMaterialController {
                 .build();
     }
 
+    /**
+     * Retrieves all project materials for a specific project.
+     *
+     * @param projectId The ID of the project.
+     * @return A list of project materials.
+     */
     @GetMapping("/project/{projectId}")
     public ResponseEntity<List<ProjectMaterialResource>> getProjectMaterials(@PathVariable String projectId) {
         return ResponseEntity
@@ -107,6 +125,16 @@ public class ProjectMaterialController {
                 .body(materialService.getProjectMaterials(projectId));
     }
 
+    /**
+     * Uploads a new material for a project.
+     *
+     * @param file The file to upload (for file type materials).
+     * @param type The type of material (file or hyperlink).
+     * @param description The description of the material.
+     * @param hyperlink The hyperlink URL (for hyperlink type materials).
+     * @param projectId The ID of the project to associate the material with.
+     * @return The created project material.
+     */
     @PostMapping("/upload")
     public ResponseEntity<ProjectMaterialResource> uploadMaterial(
             @RequestParam(required = false) MultipartFile file,
@@ -120,22 +148,15 @@ public class ProjectMaterialController {
                 .body(materialService.uploadMaterial(file, type, description, hyperlink, projectId));
     }
 
-    @GetMapping("/files/{fileName}")
-    public ResponseEntity<Resource> downloadFile(@PathVariable String fileName) {
-        try {
-            Path filePath = Paths.get(uploadDir).resolve(fileName);
-            Resource resource = new UrlResource(filePath.toUri());
-
-            if (resource.exists() || resource.isReadable()) {
-                return ResponseEntity.ok()
-                        .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
-                        .body(resource);
-            } else {
-                return ResponseEntity.notFound().build();
-            }
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().build();
-        }
+    /**
+     * Securely downloads a file by material ID, verifying the user has access to the project.
+     * This endpoint is protected and requires authentication.
+     *
+     * @param materialId The ID of the material to download.
+     * @return A response containing the file resource.
+     */
+    @GetMapping("/download/{materialId}")
+    public ResponseEntity<Resource> downloadSecureFile(@PathVariable String materialId) {
+        return materialService.downloadMaterialFile(materialId);
     }
 } 

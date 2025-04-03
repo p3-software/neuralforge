@@ -26,7 +26,9 @@ export class ProjectMaterialService extends BaseService<ProjectMaterial> {
     return this.http.delete<void>(`${this.source}/${materialId}`);
   }
 
-  getMaterialFile(fileUrl: string): Observable<Blob> {
-    return this.http.get(fileUrl, { responseType: "blob" });
+  downloadMaterialFile(materialId: string): Observable<Blob> {
+    return this.http.get(`${this.source}/download/${materialId}`, {
+      responseType: "blob",
+    });
   }
 }

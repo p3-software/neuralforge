@@ -127,6 +127,57 @@ export class MaterialsComponent implements OnInit, OnChanges {
     });
   }
 
+  downloadMaterial(material: ProjectMaterial): void {
+    this.isLoading = true;
+    this.projectMaterialService.downloadMaterialFile(material.id).subscribe({
+      next: (blob) => {
+        this.isLoading = false;
+
+        // Create a URL for the blob
+        const url = window.URL.createObjectURL(blob);
+
+        // Create an anchor element and set up download attributes
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = material.fileName || `download-${material.id}`;
+        document.body.appendChild(a);
+
+        // Trigger the download
+        a.click();
+
+        // Clean up
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+
+        // Show success message
+        this.snackBar.open(
+          `${material.fileName} downloaded successfully`,
+          "Close",
+          {
+            duration: 3000,
+            panelClass: "success-snackbar",
+          }
+        );
+      },
+      error: (error) => {
+        this.isLoading = false;
+
+        // Show friendly error message based on error status code
+        let errorMessage = "Error downloading file";
+        if (error.status === 403) {
+          errorMessage = "You don't have permission to download this file";
+        } else if (error.status === 404) {
+          errorMessage = "File not found. It may have been deleted.";
+        }
+
+        this.snackBar.open(errorMessage, "Close", {
+          duration: 5000,
+          panelClass: "error-snackbar",
+        });
+      },
+    });
+  }
+
   getMaterialIcon(type: string): string {
     return type === "file" ? "insert_drive_file" : "link";
   }

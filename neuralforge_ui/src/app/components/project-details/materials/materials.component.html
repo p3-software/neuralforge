@@ -32,12 +32,14 @@
         <p class="material-description">
           {{ material.description || "No description" }}
         </p>
-        
+
         <p *ngIf="material.type === 'hyperlink'" class="hyperlink-url">
           <mat-icon class="url-icon">link</mat-icon>
-          <a [href]="material.hyperlink" target="_blank" class="url-text">{{ material.hyperlink }}</a>
+          <a [href]="material.hyperlink" target="_blank" class="url-text">{{
+            material.hyperlink
+          }}</a>
         </p>
-        
+
         <div class="material-actions">
           <a
             *ngIf="material.type === 'hyperlink'"
@@ -49,16 +51,15 @@
             <mat-icon>open_in_new</mat-icon>
             Open Link
           </a>
-          <a
+          <button
             *ngIf="material.type === 'file'"
-            [href]="material.fileUrl"
-            target="_blank"
+            (click)="downloadMaterial(material)"
             mat-button
             color="primary"
           >
             <mat-icon>download</mat-icon>
             Download
-          </a>
+          </button>
           <button
             mat-icon-button
             color="warn"
