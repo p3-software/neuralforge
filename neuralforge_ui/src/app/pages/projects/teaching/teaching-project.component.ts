@@ -81,7 +81,8 @@ export class TeachingProjectComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.loadProject(this.project!.id!);
+        this.project = result;
+        this.cdr.detectChanges();
       }
     });
   }

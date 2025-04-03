@@ -1,3 +1,5 @@
+import { ProjectMaterial } from "../models/project-material.model";
+
 export interface ILoginResponse {
   accessToken: string;
   expiresIn: number;
@@ -97,11 +99,10 @@ export interface IProject {
   description: string;
   createdAt: Date;
   lastModifiedAt: Date | null;
+  materials: ProjectMaterial[];
 }
 
-export interface ILearningProject extends IProject {
-  materials?: ILearningMaterial[];
-}
+export interface ILearningProject extends IProject {}
 
 export interface IProgrammedGoalProject extends IProject {
   deadline: Date;
@@ -168,21 +169,12 @@ export interface ILearningMaterial {
   createdAt?: Date;
 }
 
-export interface ITeachingMaterial {
-  id?: string;
-  name: string;
-  description?: string;
-  url?: string;
-  type: string;
-  createdAt?: Date;
-}
-
 export interface ITeachingProject extends IProject {
   selectedDays: ISelectedDays;
   dailyHours: number;
   weeksCount: number;
   hoursPerClass: number;
-  materials?: ITeachingMaterial[];
+  materials: ProjectMaterial[];
   startDate?: Date;
   endDate?: Date;
 }

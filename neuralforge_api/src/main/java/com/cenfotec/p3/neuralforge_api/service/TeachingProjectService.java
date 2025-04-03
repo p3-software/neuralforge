@@ -98,6 +98,12 @@ public class TeachingProjectService {
         }
         
         TeachingProjectEntity updatedEntity = teachingProjectMapper.mapToEntity(teachingProject);
+        
+        // Fix: Set project reference for each material entity
+        if (updatedEntity.getMaterials() != null) {
+            updatedEntity.getMaterials().forEach(material -> material.setProject(updatedEntity));
+        }
+        
         TeachingProjectEntity savedEntity = teachingProjectRepository.save(updatedEntity);
         return teachingProjectMapper.mapToResource(savedEntity);
     }
