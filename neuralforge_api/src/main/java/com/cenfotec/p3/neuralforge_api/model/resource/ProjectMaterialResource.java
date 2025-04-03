@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 /**
  * Resource class representing a material associated with a project.
  * 
@@ -17,10 +19,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ProjectMaterialResource {
 
-    private Long id;
+    private String id;
     private String type;
     private String fileName;
     private String fileUrl;
     private String description;
     private String hyperlink;
-} 
+    private String projectId;
+    private LocalDateTime createdAt;
+}

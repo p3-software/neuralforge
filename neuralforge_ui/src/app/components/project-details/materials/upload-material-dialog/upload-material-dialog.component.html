@@ -1,0 +1,103 @@
+<h2 mat-dialog-title>Upload Material</h2>
+
+<form [formGroup]="uploadForm" (ngSubmit)="onSubmit()">
+  <mat-dialog-content>
+    <div class="form-container">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Material Type</mat-label>
+        <mat-select formControlName="type">
+          <mat-option *ngFor="let type of materialTypes" [value]="type.value">
+            {{ type.label }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="uploadForm.get('type')?.hasError('required')">
+          Material type is required
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Description</mat-label>
+        <textarea
+          matInput
+          formControlName="description"
+          rows="3"
+          placeholder="Enter a description for this material"
+        ></textarea>
+      </mat-form-field>
+
+      <ng-container *ngIf="uploadForm.get('type')?.value === 'hyperlink'">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Hyperlink</mat-label>
+          <input
+            matInput
+            formControlName="hyperlink"
+            placeholder="https://example.com"
+          />
+          <mat-error *ngIf="uploadForm.get('hyperlink')?.hasError('required')">
+            Hyperlink is required
+          </mat-error>
+          <mat-error *ngIf="uploadForm.get('hyperlink')?.hasError('pattern')">
+            Please enter a valid URL starting with http:// or https://
+          </mat-error>
+        </mat-form-field>
+      </ng-container>
+
+      <ng-container *ngIf="uploadForm.get('type')?.value === 'file'">
+        <div class="file-upload-container">
+          <div
+            class="drop-zone"
+            (dragover)="onDragOver($event)"
+            (drop)="onDrop($event)"
+            (click)="fileInput.click()"
+          >
+            <input
+              type="file"
+              #fileInput
+              (change)="onFileSelected($event)"
+              accept=".pdf,.txt"
+              style="display: none"
+            />
+            <div class="drop-zone-content">
+              <mat-icon class="upload-icon">cloud_upload</mat-icon>
+              <p>Drag and drop a file here or click to browse</p>
+              <p class="file-types">Supported formats: PDF, TXT (max 10MB)</p>
+            </div>
+          </div>
+          <div *ngIf="selectedFile" class="selected-file">
+            <mat-icon>insert_drive_file</mat-icon>
+            <span>{{ selectedFile.name }}</span>
+            <button
+              mat-icon-button
+              color="warn"
+              (click)="
+                selectedFile = null; uploadForm.patchValue({ file: null })
+              "
+            >
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+          <mat-error *ngIf="uploadForm.get('file')?.hasError('required')">
+            Please select a file
+          </mat-error>
+        </div>
+      </ng-container>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button type="button" (click)="onCancel()">Cancel</button>
+    <button
+      mat-raised-button
+      color="primary"
+      type="submit"
+      [disabled]="!uploadForm.valid || isUploading"
+    >
+      <mat-spinner
+        diameter="20"
+        *ngIf="isUploading"
+        class="upload-spinner"
+      ></mat-spinner>
+      <span *ngIf="!isUploading">Upload</span>
+    </button>
+  </mat-dialog-actions>
+</form>

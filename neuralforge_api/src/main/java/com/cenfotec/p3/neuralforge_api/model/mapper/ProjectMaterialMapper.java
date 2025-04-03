@@ -1,5 +1,6 @@
 package com.cenfotec.p3.neuralforge_api.model.mapper;
 
+import com.cenfotec.p3.neuralforge_api.model.entity.ProjectEntity;
 import com.cenfotec.p3.neuralforge_api.model.entity.ProjectMaterialEntity;
 import com.cenfotec.p3.neuralforge_api.model.resource.ProjectMaterialResource;
 import org.springframework.stereotype.Component;
@@ -17,34 +18,44 @@ public class ProjectMaterialMapper {
     /**
      * Converts a {@link ProjectMaterialEntity} into a {@link ProjectMaterialResource}.
      *
-     * @param material The {@link ProjectMaterialEntity} to be mapped.
+     * @param entity The {@link ProjectMaterialEntity} to be mapped.
      * @return A {@link ProjectMaterialResource} containing the mapped material data.
      */
-    public ProjectMaterialResource mapToResource(ProjectMaterialEntity material) {
+    public ProjectMaterialResource mapToResource(ProjectMaterialEntity entity) {
+        if (entity == null) {
+            return null;
+        }
+
         return ProjectMaterialResource.builder()
-                .id(material.getId())
-                .type(material.getType())
-                .fileName(material.getFileName())
-                .fileUrl(material.getFileUrl())
-                .description(material.getDescription())
-                .hyperlink(material.getHyperlink())
+                .id(entity.getId())
+                .type(entity.getType())
+                .fileName(entity.getFileName())
+                .fileUrl(entity.getFileUrl())
+                .description(entity.getDescription())
+                .hyperlink(entity.getHyperlink())
+                .projectId(entity.getProject().getId())
+                .createdAt(entity.getCreatedAt())
                 .build();
     }
 
     /**
      * Converts a {@link ProjectMaterialResource} into a {@link ProjectMaterialEntity}.
      *
-     * @param material The {@link ProjectMaterialResource} to be mapped.
+     * @param resource The {@link ProjectMaterialResource} to be mapped.
      * @return A {@link ProjectMaterialEntity} containing the mapped material data.
      */
-    public ProjectMaterialEntity mapToEntity(ProjectMaterialResource material) {
+    public ProjectMaterialEntity mapToEntity(ProjectMaterialResource resource) {
+        if (resource == null) {
+            return null;
+        }
+
         return ProjectMaterialEntity.builder()
-                .id(material.getId())
-                .type(material.getType())
-                .fileName(material.getFileName())
-                .fileUrl(material.getFileUrl())
-                .description(material.getDescription())
-                .hyperlink(material.getHyperlink())
+                .id(resource.getId())
+                .type(resource.getType())
+                .fileName(resource.getFileName())
+                .fileUrl(resource.getFileUrl())
+                .description(resource.getDescription())
+                .hyperlink(resource.getHyperlink())
                 .build();
     }
 } 

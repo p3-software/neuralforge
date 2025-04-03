@@ -4,6 +4,8 @@ import com.cenfotec.p3.neuralforge_api.model.entity.ProjectMaterialEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * Repository interface for managing project materials.
  * 
@@ -11,5 +13,6 @@ import org.springframework.stereotype.Repository;
  * @version 1.0
  */
 @Repository
-public interface ProjectMaterialRepository extends JpaRepository<ProjectMaterialEntity, Long> {
+public interface ProjectMaterialRepository extends JpaRepository<ProjectMaterialEntity, String> {
+    List<ProjectMaterialEntity> findByProjectId(String projectId);
 } 

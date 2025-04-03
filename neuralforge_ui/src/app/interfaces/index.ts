@@ -90,12 +90,12 @@ export enum IProjectType {
 }
 
 export interface IProject {
-  id?: string;
+  id: string;
   projectType: IProjectType;
   creatorUserId?: string;
   name: string;
   description: string;
-  createdAt: Date | null;
+  createdAt: Date;
   lastModifiedAt: Date | null;
 }
 

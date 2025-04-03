@@ -1,0 +1,92 @@
+.form-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem 0;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.file-upload-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.drop-zone {
+  border: 2px dashed #ccc;
+  border-radius: 4px;
+  padding: 2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background-color: #fafafa;
+
+  &:hover {
+    border-color: #666;
+    background-color: #f5f5f5;
+  }
+
+  &.drag-over {
+    border-color: #1976d2;
+    background-color: #e3f2fd;
+  }
+}
+
+.drop-zone-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.upload-icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  color: #666;
+}
+
+.file-types {
+  color: #666;
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+.selected-file {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  margin-top: 0.5rem;
+
+  mat-icon {
+    color: #666;
+  }
+
+  span {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.upload-spinner {
+  margin-right: 0.5rem;
+}
+
+mat-dialog-actions {
+  padding: 1rem 0;
+  margin-bottom: 0;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+button[mat-raised-button] {
+  margin-right: 0.5rem;
+}

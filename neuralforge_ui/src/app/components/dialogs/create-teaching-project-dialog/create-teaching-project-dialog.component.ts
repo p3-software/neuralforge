@@ -85,7 +85,7 @@ export class CreateTeachingProjectDialogComponent {
     }
 
     const weeksCount = this.getWeeksCount();
-    const hoursPerClass = 1; // Default value, can be made configurable if needed
+    const hoursPerClass = 1;
 
     const teachingProjectData: ITeachingProject = {
       ...projectData,
@@ -94,9 +94,10 @@ export class CreateTeachingProjectDialogComponent {
       dailyHours: this.teachingProject.dailyHours,
       weeksCount: weeksCount,
       hoursPerClass: hoursPerClass,
-      createdAt: null,
+      createdAt: new Date(),
       materials: [],
       lastModifiedAt: null,
+      id: "",
     };
 
     this.teachingProjectService.add(teachingProjectData).subscribe({

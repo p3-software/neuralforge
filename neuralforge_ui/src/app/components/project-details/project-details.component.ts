@@ -4,6 +4,7 @@ import {
   ContentChild,
   EventEmitter,
   Input,
+  OnInit,
   Output,
   TemplateRef,
 } from "@angular/core";
@@ -12,11 +13,8 @@ import { MatCardModule } from "@angular/material/card";
 import { MatIconModule } from "@angular/material/icon";
 import { MatSlideToggleModule } from "@angular/material/slide-toggle";
 import { MatTabsModule } from "@angular/material/tabs";
-import {
-  IProgrammedGoalProject,
-  IProject,
-  IProjectType,
-} from "../../interfaces";
+import { Project } from "../../models/project.model";
+import { MaterialsComponent } from "./materials/materials.component";
 
 @Component({
   selector: "app-project-details",
@@ -28,38 +26,36 @@ import {
     MatTabsModule,
     MatIconModule,
     MatSlideToggleModule,
+    MaterialsComponent,
   ],
   templateUrl: "./project-details.component.html",
   styleUrls: ["./project-details.component.scss"],
 })
-export class ProjectDetailsComponent {
-  @Input() project: IProject | null = null;
+export class ProjectDetailsComponent implements OnInit {
+  @Input() project: Project | null = null;
   @Input() isLoading = false;
   @Input() hasError = false;
   @Input() errorMessage = "";
+  @Input() notificationsEnabled = false;
 
   @ContentChild("overviewContent") overviewContent!: TemplateRef<any>;
   @ContentChild("generatedContent") generatedContent!: TemplateRef<any>;
   @ContentChild("configurationContent") configurationContent!: TemplateRef<any>;
 
-  @Output() notificationsToggle = new EventEmitter<boolean>();
   @Output() editProject = new EventEmitter<void>();
   @Output() deleteProject = new EventEmitter<void>();
+  @Output() toggleNotify = new EventEmitter<boolean>();
 
-  get isProgrammedGoalProject(): boolean {
-    return this.project?.projectType === IProjectType.ProgrammedGoal;
+  isProgrammedGoalProject = false;
+
+  ngOnInit(): void {
+    if (this.project) {
+      this.isProgrammedGoalProject =
+        this.project.projectType === "PROGRAMMED_GOAL";
+    }
   }
 
-  get notificationsEnabled(): boolean {
-    if (this.isProgrammedGoalProject) {
-      return (this.project as IProgrammedGoalProject).notify;
-    }
-    return false;
-  }
-
-  onToggleNotify() {
-    if (this.isProgrammedGoalProject) {
-      this.notificationsToggle.emit(!this.notificationsEnabled);
-    }
+  onToggleNotify(): void {
+    this.toggleNotify.emit(this.notificationsEnabled);
   }
 }

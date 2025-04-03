@@ -1,23 +1,22 @@
 import { CommonModule } from "@angular/common";
 import { Component, inject } from "@angular/core";
+import { FormsModule } from "@angular/forms";
 import { MatDialogModule, MatDialogRef } from "@angular/material/dialog";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatInputModule } from "@angular/material/input";
+import { ISelectedDays } from "../../../interfaces";
 import { AlertService } from "../../../services/alert.service";
 import {
   ProjectFormComponent,
   ProjectFormData,
 } from "../../project-form/project-form.component";
 import { WeekdayPickerComponent } from "../../weekday-picker/weekday-picker.component";
-import { FormsModule } from "@angular/forms";
-import { MatFormFieldModule } from "@angular/material/form-field";
-import { MatInputModule } from "@angular/material/input";
-import {ISelectedDays} from "../../../interfaces";
 
 export interface StudyPlanData extends ProjectFormData {
   selectedDays: ISelectedDays;
   dailyHours: number;
   weeksCount: number;
 }
-
 
 @Component({
   selector: "app-create-study-plan-dialog",
@@ -31,7 +30,7 @@ export interface StudyPlanData extends ProjectFormData {
     WeekdayPickerComponent,
     FormsModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
   ],
 })
 export class CreateStudyPlanDialogComponent {
@@ -47,39 +46,46 @@ export class CreateStudyPlanDialogComponent {
       thursday: false,
       friday: false,
       saturday: false,
-      sunday: false
+      sunday: false,
     },
     dailyHours: 1,
     weeksCount: 4,
   };
 
-  constructor(private dialogRef: MatDialogRef<CreateStudyPlanDialogComponent>) {}
+  constructor(
+    private dialogRef: MatDialogRef<CreateStudyPlanDialogComponent>
+  ) {}
 
   onSubmit(projectData: ProjectFormData) {
     const studyPlanData: StudyPlanData = {
       ...projectData,
       selectedDays: this.studyPlan.selectedDays,
       dailyHours: this.studyPlan.dailyHours,
-      weeksCount: this.studyPlan.weeksCount
+      weeksCount: this.studyPlan.weeksCount,
     };
 
     this.alertService.displayAlert(
-        "success",
-        "Study plan created successfully",
-        "center",
-        "top",
-        ["success-snackbar"]
+      "success",
+      "Study plan created successfully",
+      "center",
+      "top",
+      ["success-snackbar"]
     );
 
     this.dialogRef.close(studyPlanData);
   }
 
   getSelectedDaysCount(): number {
-    return Object.values(this.studyPlan.selectedDays).filter(day => day).length;
+    return Object.values(this.studyPlan.selectedDays).filter((day) => day)
+      .length;
   }
 
   getTotalHours(): number {
-    return this.getSelectedDaysCount() * this.studyPlan.dailyHours * this.studyPlan.weeksCount;
+    return (
+      this.getSelectedDaysCount() *
+      this.studyPlan.dailyHours *
+      this.studyPlan.weeksCount
+    );
   }
 
   onClose() {

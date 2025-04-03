@@ -40,7 +40,8 @@ export class CreateGoalProjectDialogComponent {
   public frequency: number = 3;
 
   goalProject: IProgrammedGoalProject = {
-    createdAt: null,
+    id: "",
+    createdAt: new Date(),
     notify: false,
     projectType: IProjectType.ProgrammedGoal,
     name: "",
@@ -66,7 +67,8 @@ export class CreateGoalProjectDialogComponent {
 
   onSubmit(projectData: ProjectFormData) {
     const goalData: IProgrammedGoalProject = {
-      createdAt: null,
+      id: "",
+      createdAt: new Date(),
       notify: false,
       projectType: IProjectType.ProgrammedGoal,
       ...projectData, // This includes name and description from the form

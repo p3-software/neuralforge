@@ -21,6 +21,13 @@
     <ng-container *ngTemplateOutlet="overviewContent"></ng-container>
   </mat-tab>
 
+  <mat-tab label="Materials">
+    <app-materials
+      [projectId]="project.id"
+      [projectMaterials]="project.materials"
+    ></app-materials>
+  </mat-tab>
+
   <mat-tab label="Generated Contents">
     <div class="empty-state">
       <p>No contents generated yet.</p>
