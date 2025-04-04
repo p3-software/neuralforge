@@ -405,4 +405,83 @@ public class DynamicContentService {
         
         return result.toString();
     }
+
+    /**
+     * Calls the DeepSeek API with the given prompt and returns the raw response.
+     * This method is specifically designed for getting structured data back from DeepSeek.
+     *
+     * @param prompt The prompt to send to DeepSeek API.
+     * @return The raw response string from DeepSeek API.
+     */
+    public String sendToDeepSeekAndGetRawResponse(String prompt) {
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("model", MODEL_NAME);
+
+        Map<String, String> message = new HashMap<>();
+        message.put("role", "user");
+        message.put("content", prompt);
+
+        requestBody.put("messages", List.of(message));
+        requestBody.put("max_tokens", 4096);
+        requestBody.put("response_format", Map.of("type", "json_object"));
+
+        RestTemplate restTemplate = new RestTemplate(new SimpleClientHttpRequestFactory());
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(bearerToken);
+
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
+        ResponseEntity<Map> response = restTemplate.exchange(DEEPSEEK_API_URL, HttpMethod.POST, entity, Map.class);
+
+        if (response.getBody() != null && response.getBody().containsKey("choices")) {
+            List<Map<String, Object>> choices = (List<Map<String, Object>>) response.getBody().get("choices");
+            if (choices != null && !choices.isEmpty()) {
+                Map<String, Object> messageResponse = (Map<String, Object>) choices.get(0).get("message");
+                if (messageResponse != null && messageResponse.containsKey("content")) {
+                    return (String) messageResponse.get("content");
+                }
+            }
+        }
+        throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to get valid response from DeepSeek API");
+    }
+
+    /**
+     * Saves raw content to the DynamicContentEntity without creating a PDF.
+     * Used for storing structured data responses like JSON.
+     *
+     * @param title The title of the content.
+     * @param content The raw content to save.
+     * @param email The email of the user.
+     * @param type The type of the content.
+     * @param projectId The ID of the associated project.
+     * @return The saved DynamicContentEntity.
+     */
+    public DynamicContentEntity saveRawContent(String title, String content, String email, String type, String projectId) {
+        // Create a temp file to store the raw content
+        try {
+            File directory = new File("uploads/dynamic_content");
+            if (!directory.exists()) {
+                directory.mkdirs();
+            }
+
+            String fileName = title.replaceAll("[^a-zA-Z0-9]", "_") + "_" + System.currentTimeMillis() + ".json";
+            File contentFile = new File(directory, fileName);
+            
+            try (FileWriter writer = new FileWriter(contentFile)) {
+                writer.write(content);
+            }
+
+            DynamicContentEntity dynamicContent = DynamicContentEntity.builder()
+                    .title(title)
+                    .path(contentFile.getAbsolutePath())
+                    .email(email)
+                    .type(DynamicContentTypeEnum.valueOf(type))
+                    .projectId(projectId)
+                    .build();
+
+            return dynamicContentRepository.save(dynamicContent);
+        } catch (IOException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error saving content: " + e.getMessage());
+        }
+    }
 }

@@ -97,4 +97,16 @@ public class TeachingProjectController {
         teachingProjectService.deleteTeachingProject(id);
         return ResponseEntity.noContent().build();
     }
+
+    /**
+     * Generates a teaching schedule for a project using DeepSeek AI.
+     *
+     * @param teachingProjectId The ID of the teaching project for which to generate a schedule.
+     * @return The teaching project resource with the generated schedule.
+     */
+    @PostMapping("/{teachingProjectId}/generate-schedule")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<TeachingProjectResource> generateTeachingSchedule(@PathVariable String teachingProjectId) {
+        return ResponseEntity.ok(teachingProjectService.generateTeachingSchedule(teachingProjectId));
+    }
 } 
