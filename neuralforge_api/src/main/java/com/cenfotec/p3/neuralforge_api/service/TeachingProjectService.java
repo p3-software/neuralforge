@@ -115,6 +115,7 @@ public class TeachingProjectService {
         validateProjectOwnership(existingEntity.getCreatorUserId());
 
         teachingProject.setId(id);
+
         
         if (teachingProject.getSelectedDays() != null) {
             var savedSelectedDays = selectedDaysService.save(teachingProject.getSelectedDays());
@@ -122,11 +123,9 @@ public class TeachingProjectService {
         }
         
         TeachingProjectEntity updatedEntity = teachingProjectMapper.mapToEntity(teachingProject);
-        
-        if (updatedEntity.getMaterials() != null) {
-            updatedEntity.getMaterials().forEach(material -> material.setProject(updatedEntity));
-        }
-        
+        updatedEntity.setWeeks(existingEntity.getWeeks());
+        updatedEntity.setMaterials(existingEntity.getMaterials());
+
         TeachingProjectEntity savedEntity = teachingProjectRepository.save(updatedEntity);
         return teachingProjectMapper.mapToResource(savedEntity);
     }

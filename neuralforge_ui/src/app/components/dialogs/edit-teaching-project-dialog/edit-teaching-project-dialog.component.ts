@@ -112,7 +112,12 @@ export class EditTeachingProjectDialogComponent implements OnInit {
       startDate: this.teachingProject.startDate,
       endDate: this.teachingProject.endDate,
       lastModifiedAt: new Date(),
+
+      materials: [],
+      weeks: [],
     };
+
+    console.log("Updated project data:", updatedProject);
 
     this.teachingProjectService.update(updatedProject).subscribe({
       next: (response) => {
