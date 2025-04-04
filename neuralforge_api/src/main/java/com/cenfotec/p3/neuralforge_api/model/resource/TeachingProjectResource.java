@@ -6,7 +6,9 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Resource class representing a teaching project in the system.
@@ -45,4 +47,10 @@ public class TeachingProjectResource extends ProjectResource {
      * The date when the teaching project ends.
      */
     private Date endDate;
+    
+    /**
+     * The complete teaching schedule, organized by weeks, sessions, and topics.
+     */
+    @lombok.Builder.Default
+    private List<CourseWeekResource> weeks = new ArrayList<>();
 }

@@ -6,6 +6,10 @@ import com.cenfotec.p3.neuralforge_api.model.resource.TeachingProjectResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.stream.Collectors;
+
 /**
  * Mapper class responsible for converting between {@link TeachingProjectEntity} 
  * and {@link TeachingProjectResource}.
@@ -16,7 +20,6 @@ import org.springframework.stereotype.Component;
  * @version 1.0
  */
 @Component
-
 public class TeachingProjectMapper extends ProjectMapper<TeachingProjectEntity, TeachingProjectResource> {
 
     @Autowired
@@ -24,6 +27,9 @@ public class TeachingProjectMapper extends ProjectMapper<TeachingProjectEntity, 
     
     @Autowired
     private SelectedDaysMapper selectedDaysMapper;
+    
+    @Autowired
+    private CourseWeekMapper courseWeekMapper;
 
     /**
      * Converts a {@link TeachingProjectEntity} into a {@link TeachingProjectResource}.
@@ -47,6 +53,11 @@ public class TeachingProjectMapper extends ProjectMapper<TeachingProjectEntity, 
                 .weeksCount(teachingProject.getWeeksCount())
                 .startDate(teachingProject.getStartDate())
                 .endDate(teachingProject.getEndDate())
+                .weeks(teachingProject.getWeeks() != null ?
+                        teachingProject.getWeeks().stream()
+                                .map(courseWeekMapper::mapToResource)
+                                .collect(Collectors.toList()) :
+                        Collections.emptyList())
                 .build();
     }
 
@@ -58,7 +69,7 @@ public class TeachingProjectMapper extends ProjectMapper<TeachingProjectEntity, 
      */
     @Override
     public TeachingProjectEntity mapToEntity(TeachingProjectResource teachingProject) {
-        return TeachingProjectEntity.builder()
+        TeachingProjectEntity entity = TeachingProjectEntity.builder()
                 .id(teachingProject.getId())
                 .creatorUserId(teachingProject.getCreatorUserId())
                 .name(teachingProject.getName())
@@ -71,6 +82,18 @@ public class TeachingProjectMapper extends ProjectMapper<TeachingProjectEntity, 
                 .weeksCount(teachingProject.getWeeksCount())
                 .startDate(teachingProject.getStartDate())
                 .endDate(teachingProject.getEndDate())
+                .weeks(new ArrayList<>())
                 .build();
+        
+        // Set up bidirectional relationships
+        if (teachingProject.getWeeks() != null && !teachingProject.getWeeks().isEmpty()) {
+            entity.setWeeks(
+                teachingProject.getWeeks().stream()
+                    .map(weekResource -> courseWeekMapper.mapToEntity(weekResource, entity))
+                    .collect(Collectors.toList())
+            );
+        }
+        
+        return entity;
     }
 } 
