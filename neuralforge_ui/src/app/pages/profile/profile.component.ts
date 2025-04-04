@@ -18,12 +18,12 @@ import { MatSelectModule } from "@angular/material/select";
 import { Router } from "@angular/router";
 import { of } from "rxjs";
 import { catchError, finalize, switchMap } from "rxjs/operators";
+import { ChangePasswordDialogComponent } from "../../components/dialogs/change-password-dialog/change-password-dialog.component";
 import { DeleteAccountDialogComponent } from "../../components/dialogs/delete-account-dialog/delete-account-dialog.component";
 import { SpinnerComponent } from "../../components/spinner/spinner.component";
 import { AlertService } from "../../services/alert.service";
 import { AuthService } from "../../services/auth.service";
 import { ProfileService } from "../../services/profile.service";
-import { ChangePasswordDialogComponent } from '../../components/dialogs/change-password-dialog/change-password-dialog.component';
 
 interface UserProfile {
   firstName: string;
@@ -146,10 +146,7 @@ export class ProfileComponent implements OnInit {
         { value: this.userProfile.firstName, disabled: true },
         Validators.required,
       ],
-      lastName: [
-        { value: this.userProfile.lastName, disabled: true },
-        Validators.required,
-      ],
+      lastName: [{ value: this.userProfile.lastName, disabled: true }],
     });
 
     this.userProfileForm.valueChanges.subscribe(() => {
@@ -198,7 +195,7 @@ export class ProfileComponent implements OnInit {
 
       const userData = {
         name: formValues.firstName,
-        lastName: formValues.lastName,
+        lastName: formValues.lastName ? formValues.lastName : null,
       };
 
       this.isLoading = true;
@@ -239,22 +236,24 @@ export class ProfileComponent implements OnInit {
             );
           }
         });
+    } else {
+      // Mark form controls as touched to trigger validation messages
+      this.userProfileForm.markAllAsTouched();
     }
   }
 
   changePassword(): void {
     this.dialog
-        .open(ChangePasswordDialogComponent, {
-          width: '400px',
-        })
-        .afterClosed()
-        .subscribe((result) => {
-          if (result) {
-            this.loadUserProfile(); // Refresh password change date
-          }
-        });
+      .open(ChangePasswordDialogComponent, {
+        width: "400px",
+      })
+      .afterClosed()
+      .subscribe((result) => {
+        if (result) {
+          this.loadUserProfile(); // Refresh password change date
+        }
+      });
   }
-
 
   deleteAccount(): void {
     const dialogRef = this.dialog.open(DeleteAccountDialogComponent, {

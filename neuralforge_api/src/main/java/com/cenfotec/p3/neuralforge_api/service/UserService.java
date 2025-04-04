@@ -220,14 +220,19 @@ public class UserService {
         // Get the current authenticated user's email
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        // Create a limited user resource with only the fields we want to update
-        UserResource limitedUser = new UserResource();
-        limitedUser.setName(inputUser.getName());
-        limitedUser.setLastName(inputUser.getLastName());
-
-        // Use the existing handledUserUpdate method to perform the update
-        // This will handle validation, error checking, and the actual update
-        return handledUserUpdate(email, limitedUser);
+        // Find the user by email
+        UserEntity user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        
+        // Update only first name and last name
+        user.setName(inputUser.getName());
+        user.setLastName(inputUser.getLastName());
+        
+        // Save the updated user
+        UserEntity updatedUser = userRepository.save(user);
+        
+        // Return the updated user resource
+        return userMapper.mapToResource(updatedUser);
     }
 
     /**
