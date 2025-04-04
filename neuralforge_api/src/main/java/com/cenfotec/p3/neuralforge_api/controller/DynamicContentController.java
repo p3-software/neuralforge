@@ -3,7 +3,6 @@ package com.cenfotec.p3.neuralforge_api.controller;
 import com.cenfotec.p3.neuralforge_api.model.request.GenerateContentRequest;
 import com.cenfotec.p3.neuralforge_api.model.resource.DynamicContentResource;
 import com.cenfotec.p3.neuralforge_api.service.DynamicContentService;
-import com.cenfotec.p3.neuralforge_api.service.SummaryContentService;
 import com.cenfotec.p3.neuralforge_api.service.ConceptMapContentService;
 import com.cenfotec.p3.neuralforge_api.service.PPTContentService;
 import org.springframework.core.io.Resource;
@@ -25,7 +24,7 @@ import java.util.List;
  * @version 1.1
  */
 @RestController
-@RequestMapping("auth/DynamicContent")
+@RequestMapping("DynamicContent")
 public class DynamicContentController {
     private final DynamicContentService dynamicContentService;
     // private final SummaryContentService summaryContentService;

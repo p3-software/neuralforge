@@ -58,9 +58,6 @@ public class UserService {
     @Autowired
     protected NotificationService notificationService;
 
-    @Autowired
-    protected DynamicContentRepository dynamicContentRepository;
-
     /**
      * Mapper instance for handling user entity transformations.
      */
@@ -247,9 +244,6 @@ public class UserService {
         UserEntity user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
-        // Delete associated dynamic content before deleting the user
-        dynamicContentRepository.deleteByEmail(email);
-        
         userRepository.delete(user);
         // After deletion, the user will still be authenticated for the current request
         // The client-side should handle logging out and redirecting after successful deletion

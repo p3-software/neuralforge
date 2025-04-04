@@ -68,6 +68,7 @@ class TeachingProjectMapperTest {
         entity.setDailyHours(2);
         entity.setWeeksCount(8);
         entity.setMaterials(materialEntities);
+        entity.setWeeks(null);
 
         // Mock behavior
         when(selectedDaysMapper.toResource(any(SelectedDaysEntity.class))).thenReturn(selectedDaysResource);
