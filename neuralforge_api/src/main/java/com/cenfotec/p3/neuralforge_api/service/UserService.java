@@ -10,6 +10,7 @@ import com.cenfotec.p3.neuralforge_api.model.resource.UserResource;
 import com.cenfotec.p3.neuralforge_api.model.resource.UserRoleResource;
 import com.cenfotec.p3.neuralforge_api.model.resource.UserValidationInputResource;
 import com.cenfotec.p3.neuralforge_api.model.resource.UserValidationResource;
+import com.cenfotec.p3.neuralforge_api.repository.DynamicContentRepository;
 import com.cenfotec.p3.neuralforge_api.repository.UserRepository;
 import com.cenfotec.p3.neuralforge_api.repository.UserValidationRepository;
 import com.cenfotec.p3.neuralforge_api.util.ValidationUtil;
@@ -174,7 +175,7 @@ public class UserService {
         NotificationResource welcomeNotification = NotificationResource.builder()
                 .userId(user.getId())
                 .title("Welcome to NeuralForge!")
-                .description("We’re excited to have you onboard. Let’s get learning.")
+                .description("We're excited to have you onboard. Let's get learning.")
                 .actionLabel("Start Exploring")
                 .redirectTo("/app/dashboard")
                 .dismissed(false)
@@ -192,8 +193,6 @@ public class UserService {
         notificationService.createNotification(welcomeNotification);
         notificationService.createNotification(profileReminder);
     }
-
-
 
     /**
      * Retrieves the currently authenticated user's information.
@@ -218,19 +217,25 @@ public class UserService {
         // Get the current authenticated user's email
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        // Create a limited user resource with only the fields we want to update
-        UserResource limitedUser = new UserResource();
-        limitedUser.setName(inputUser.getName());
-        limitedUser.setLastName(inputUser.getLastName());
-
-        // Use the existing handledUserUpdate method to perform the update
-        // This will handle validation, error checking, and the actual update
-        return handledUserUpdate(email, limitedUser);
+        // Find the user by email
+        UserEntity user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        
+        // Update only first name and last name
+        user.setName(inputUser.getName());
+        user.setLastName(inputUser.getLastName());
+        
+        // Save the updated user
+        UserEntity updatedUser = userRepository.save(user);
+        
+        // Return the updated user resource
+        return userMapper.mapToResource(updatedUser);
     }
 
     /**
      * Deletes the currently authenticated user's account.
      * Retrieves the current user from the security context and removes them from the database.
+     * Also cleans up any associated dynamic content.
      *
      * @throws ResponseStatusException if the user is not found.
      */

@@ -1,16 +1,47 @@
+.app-container {
+  display: flex;
+  min-height: 100vh;
+  position: relative;
+}
+
+.sidebar-wrapper {
+  width: 0;
+  height: 100vh;
+  position: relative;
+  z-index: 100;
+}
+
+.content-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  margin-left: 0;
+  transition: margin-left 0.3s ease;
+  width: 100%;
+}
+
+.main-content {
+  flex: 1;
+  padding: 20px;
+  overflow-x: hidden;
+}
+
 .footer {
-  background: transparent !important; /* Sin fondo */
+  background-color: #f8f9fa;
   padding: 20px 0;
   font-size: 12px;
   color: #666;
+  box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.05);
+  z-index: 10;
 }
 
 .footer .footer-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 20px; /* Espacio entre los elementos */
-  flex-wrap: wrap; /* Permite ajuste en pantallas pequeñas */
+  gap: 20px;
+  flex-wrap: wrap;
 }
 
 .footer .about-us {
@@ -40,7 +71,7 @@
 }
 
 .footer .about-us ul li a:hover {
-  color: #4a62bd; /* Resalta al pasar el mouse */
+  color: #4a62bd;
 }
 
 .footer .footer-logo {
@@ -49,7 +80,7 @@
 }
 
 .footer .footer-logo img {
-  width: 110px; /* Ajusta el tamaño del logo */
+  width: 110px;
   height: auto;
 }
 
@@ -57,4 +88,26 @@
   text-align: center;
   width: 100%;
   margin-top: 10px;
+  margin-bottom: 0;
+}
+
+@media screen and (max-width: 768px) {
+  .sidebar-wrapper {
+    position: relative;
+    width: 100%;
+    height: auto;
+
+    &.close_icon {
+      width: 100%;
+    }
+  }
+
+  .content-wrapper {
+    width: 100%;
+    margin-left: 0;
+
+    &.with-closed-sidebar {
+      margin-left: 0;
+    }
+  }
 }

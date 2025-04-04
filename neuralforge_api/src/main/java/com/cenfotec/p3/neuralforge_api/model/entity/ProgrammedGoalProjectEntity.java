@@ -15,6 +15,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -45,15 +46,33 @@ public class ProgrammedGoalProjectEntity extends ProjectEntity {
         setNotify(true);
     }
 
+    /**
+     * The target completion date for this goal project.
+     * Represents when the project should be finished.
+     */
     private Date deadline;
 
+    /**
+     * Days selected for project work or activities.
+     * Establishes a one-to-one relationship with SelectedDaysEntity.
+     * When this project is deleted, the associated selected days entity will also be removed.
+     */
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "selected_days_id", referencedColumnName = "id")
     private SelectedDaysEntity selectedDays;
 
+    /**
+     * Flag indicating whether notifications should be sent for this project.
+     * Defaults to true when a new project is created.
+     */
     private Boolean notify;
 
+    /**
+     * List of dynamic content items associated with this project.
+     * Establishes a one-to-many relationship with DynamicContentEntity.
+     * When this project is deleted, all associated dynamic content items will also be removed.
+     */
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "programmed_goal_project_id")
-    private List<DynamicContentEntity> dynamicContents;
+    private List<DynamicContentEntity> dynamicContents = new ArrayList<>();
 }

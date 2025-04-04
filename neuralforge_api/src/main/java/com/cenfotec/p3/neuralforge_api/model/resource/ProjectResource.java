@@ -4,12 +4,12 @@ import com.cenfotec.p3.neuralforge_api.model.enums.ProjectTypeEnum;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Resource class representing the base data transfer object for all projects.
@@ -53,5 +53,18 @@ public abstract class ProjectResource {
      */
     private ProjectTypeEnum projectType;
 
+    /**
+     * Timestamp indicating when the project was created.
+     */
     private Date createdAt;
+    
+    /**
+     * Timestamp indicating when the project was last modified.
+     */
+    private Date lastModifiedAt;
+    
+    /**
+     * List of materials associated with the project.
+     */
+    private List<ProjectMaterialResource> materials;
 }

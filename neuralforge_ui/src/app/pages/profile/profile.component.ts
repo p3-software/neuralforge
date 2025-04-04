@@ -18,12 +18,12 @@ import { MatSelectModule } from "@angular/material/select";
 import { Router } from "@angular/router";
 import { of } from "rxjs";
 import { catchError, finalize, switchMap } from "rxjs/operators";
+import { ChangePasswordDialogComponent } from "../../components/dialogs/change-password-dialog/change-password-dialog.component";
 import { DeleteAccountDialogComponent } from "../../components/dialogs/delete-account-dialog/delete-account-dialog.component";
 import { SpinnerComponent } from "../../components/spinner/spinner.component";
 import { AlertService } from "../../services/alert.service";
 import { AuthService } from "../../services/auth.service";
 import { ProfileService } from "../../services/profile.service";
-import { ChangePasswordDialogComponent } from '../../components/dialogs/change-password-dialog/change-password-dialog.component';
 
 interface UserProfile {
   firstName: string;
@@ -95,7 +95,7 @@ export class ProfileComponent implements OnInit {
           console.error("Error loading user profile:", error);
           this.alertService.displayAlert(
             "error",
-            "No se pudo cargar la información del perfil",
+            "Could not load user profile",
             "right",
             "top",
             ["error-snackbar"]
@@ -114,7 +114,7 @@ export class ProfileComponent implements OnInit {
             email: userData.email || "",
             registrationDate: this.formatDate(userData.createdAt),
             lastPasswordChange:
-              this.formatDate(userData.passwordLastChanged) || "Nunca",
+              this.formatDate(userData.lastPasswordChangeAt) || "Never",
           };
 
           // Update form with fetched data
@@ -146,10 +146,7 @@ export class ProfileComponent implements OnInit {
         { value: this.userProfile.firstName, disabled: true },
         Validators.required,
       ],
-      lastName: [
-        { value: this.userProfile.lastName, disabled: true },
-        Validators.required,
-      ],
+      lastName: [{ value: this.userProfile.lastName, disabled: true }],
     });
 
     this.userProfileForm.valueChanges.subscribe(() => {
@@ -198,7 +195,7 @@ export class ProfileComponent implements OnInit {
 
       const userData = {
         name: formValues.firstName,
-        lastName: formValues.lastName,
+        lastName: formValues.lastName ? formValues.lastName : null,
       };
 
       this.isLoading = true;
@@ -209,7 +206,7 @@ export class ProfileComponent implements OnInit {
             console.error("Error updating profile:", error);
             this.alertService.displayAlert(
               "error",
-              "No se pudo actualizar el perfil",
+              "Could not update profile",
               "right",
               "top",
               ["error-snackbar"]
@@ -232,29 +229,31 @@ export class ProfileComponent implements OnInit {
             this.toggleEdit();
             this.alertService.displayAlert(
               "success",
-              "Perfil modificado correctamente",
+              "Profile updated successfully",
               "right",
               "top",
               ["success-snackbar"]
             );
           }
         });
+    } else {
+      // Mark form controls as touched to trigger validation messages
+      this.userProfileForm.markAllAsTouched();
     }
   }
 
   changePassword(): void {
     this.dialog
-        .open(ChangePasswordDialogComponent, {
-          width: '400px',
-        })
-        .afterClosed()
-        .subscribe((result) => {
-          if (result) {
-            this.loadUserProfile(); // Refresh password change date
-          }
-        });
+      .open(ChangePasswordDialogComponent, {
+        width: "400px",
+      })
+      .afterClosed()
+      .subscribe((result) => {
+        if (result) {
+          this.loadUserProfile(); // Refresh password change date
+        }
+      });
   }
-
 
   deleteAccount(): void {
     const dialogRef = this.dialog.open(DeleteAccountDialogComponent, {
@@ -280,7 +279,7 @@ export class ProfileComponent implements OnInit {
           if (result !== undefined) {
             this.alertService.displayAlert(
               "success",
-              "Cuenta eliminada correctamente",
+              "Account deleted successfully",
               "center",
               "top",
               ["success-snackbar"]
@@ -294,7 +293,7 @@ export class ProfileComponent implements OnInit {
         error: (error) => {
           this.alertService.displayAlert(
             "error",
-            "Error al eliminar la cuenta",
+            "Could not delete account",
             "center",
             "top",
             ["error-snackbar"]

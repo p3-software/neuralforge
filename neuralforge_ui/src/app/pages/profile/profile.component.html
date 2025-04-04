@@ -1,7 +1,7 @@
 <div class="profile-container">
   <app-spinner
-          *ngIf="isLoading"
-          [message]="'Loading profile information...'"
+    *ngIf="isLoading"
+    [message]="'Loading profile information...'"
   ></app-spinner>
 
   <div *ngIf="!isLoading">
@@ -13,19 +13,19 @@
       </div>
       <div class="action-buttons">
         <button
-                *ngIf="!isEditing"
-                mat-raised-button
-                color="primary"
-                class="edit-button"
-                (click)="toggleEdit()"
+          *ngIf="!isEditing"
+          mat-raised-button
+          color="primary"
+          class="edit-button"
+          (click)="toggleEdit()"
         >
           Edit
         </button>
         <ng-container *ngIf="isEditing">
           <button
-                  mat-raised-button
-                  class="cancel-button"
-                  (click)="cancelEdit()"
+            mat-raised-button
+            class="cancel-button"
+            (click)="cancelEdit()"
           >
             Cancel
           </button>
@@ -42,16 +42,25 @@
         <div class="form-field">
           <label>First Name</label>
           <mat-form-field appearance="outline" class="full-width">
-            <input matInput formControlName="firstName" placeholder="First Name" />
+            <input
+              matInput
+              formControlName="firstName"
+              placeholder="First Name"
+            />
+            <mat-error
+              *ngIf="userProfileForm.get('firstName')?.errors?.['required'] && userProfileForm.get('firstName')?.touched"
+            >
+              First name is required
+            </mat-error>
           </mat-form-field>
         </div>
         <div class="form-field">
           <label>Last Name</label>
           <mat-form-field appearance="outline" class="full-width">
             <input
-                    matInput
-                    formControlName="lastName"
-                    placeholder="Last Name"
+              matInput
+              formControlName="lastName"
+              placeholder="Last Name"
             />
           </mat-form-field>
         </div>
@@ -68,16 +77,16 @@
         </div>
         <div class="credential-buttons">
           <button
-                  mat-flat-button
-                  class="credential-button"
-                  (click)="changePassword()"
+            mat-flat-button
+            class="credential-button"
+            (click)="changePassword()"
           >
             CHANGE PASSWORD
           </button>
           <button
-                  mat-raised-button
-                  class="cancel-button"
-                  (click)="deleteAccount()"
+            mat-raised-button
+            class="cancel-button"
+            (click)="deleteAccount()"
           >
             DELETE ACCOUNT
           </button>
@@ -92,9 +101,9 @@
           <label>Registration Date</label>
           <mat-form-field appearance="outline" class="full-width">
             <input
-                    matInput
-                    [formControl]="registrationDateControl"
-                    [readonly]="true"
+              matInput
+              [formControl]="registrationDateControl"
+              [readonly]="true"
             />
           </mat-form-field>
         </div>
@@ -102,9 +111,9 @@
           <label>Last Password Change</label>
           <mat-form-field appearance="outline" class="full-width">
             <input
-                    matInput
-                    [formControl]="lastPasswordChangeControl"
-                    [readonly]="true"
+              matInput
+              [formControl]="lastPasswordChangeControl"
+              [readonly]="true"
             />
           </mat-form-field>
         </div>

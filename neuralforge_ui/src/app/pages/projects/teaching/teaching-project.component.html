@@ -1,0 +1,51 @@
+<ng-container *ngIf="!isLoading && !hasError">
+  <app-project-details
+    [project]="project"
+    [isLoading]="isLoading"
+    [hasError]="hasError"
+    [errorMessage]="errorMessage"
+    (editProject)="editProject()"
+    (deleteProject)="onDeleteProject()"
+  >
+    <ng-template #overviewContent>
+      <ng-container *ngIf="project">
+        <mat-card class="schedule-card">
+          <h2>Course Schedule</h2>
+          <div class="schedule-info">
+            <div class="info-item">
+              <mat-icon>schedule</mat-icon>
+              <span>Daily Hours: {{ project.dailyHours }}</span>
+            </div>
+            <div class="info-item">
+              <mat-icon>calendar_today</mat-icon>
+              <span>Weeks: {{ project.weeksCount }}</span>
+            </div>
+            <div class="info-item">
+              <mat-icon>event</mat-icon>
+              <span>Selected Days: {{ getSelectedDays() }}</span>
+            </div>
+          </div>
+        </mat-card>
+
+        <app-teaching-calendar
+          [project]="project"
+          [calendarStartDate]="calendarStartDate"
+          (calendarStartDateChange)="calendarStartDate = $event"
+        ></app-teaching-calendar>
+      </ng-container>
+    </ng-template>
+  </app-project-details>
+</ng-container>
+
+<ng-container *ngIf="isLoading">
+  <div class="loading-container">
+    <mat-spinner diameter="40"></mat-spinner>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="hasError && !isLoading">
+  <div class="error-container">
+    <mat-icon color="warn" class="error-icon">error_outline</mat-icon>
+    <p class="error-message">{{ errorMessage }}</p>
+  </div>
+</ng-container>

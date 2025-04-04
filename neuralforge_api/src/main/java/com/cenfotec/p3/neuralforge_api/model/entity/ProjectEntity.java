@@ -7,7 +7,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Abstract entity representing the base class for all projects in the system.
@@ -38,7 +40,7 @@ public abstract class ProjectEntity {
     private String id;
 
     /**
-     * ID of the user who created this learning project.
+     * ID of the user who created this project.
      * This field establishes ownership of the project.
      */
     @Column(nullable = false)
@@ -76,8 +78,39 @@ public abstract class ProjectEntity {
     @Column(name = "created_at", nullable = false, updatable = false)
     private Date createdAt;
 
+    /**
+     * Timestamp representing when the project was last modified.
+     * Updated automatically whenever the entity is changed.
+     */
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "last_modified_at", nullable = false)
+    private Date lastModifiedAt;
+
+    /**
+     * List of materials associated with this project.
+     * Establishes a one-to-many relationship with ProjectMaterialEntity.
+     * When a project is deleted, all associated materials will also be removed.
+     */
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProjectMaterialEntity> materials = new ArrayList<>();
+
+    /**
+     * Lifecycle callback triggered before this entity is persisted to the database.
+     * Sets the creation and last modified timestamps to the current date and time.
+     */
     @PrePersist
     protected void onCreate() {
-        this.createdAt = new Date();
+        Date now = new Date();
+        this.createdAt = now;
+        this.lastModifiedAt = now;
+    }
+
+    /**
+     * Lifecycle callback triggered before this entity is updated in the database.
+     * Updates the last modified timestamp to the current date and time.
+     */
+    @PreUpdate
+    protected void onUpdate() {
+        this.lastModifiedAt = new Date();
     }
 }

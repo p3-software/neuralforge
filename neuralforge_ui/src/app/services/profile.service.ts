@@ -1,5 +1,5 @@
 import { Injectable, signal } from "@angular/core";
-import { Observable, tap, catchError, throwError } from "rxjs";
+import { catchError, Observable, tap, throwError } from "rxjs";
 import { IUser } from "../interfaces";
 import { BaseService } from "./base-service";
 
@@ -24,13 +24,9 @@ export class ProfileService extends BaseService<IUser> {
     }
   }
 
-  updatePassword(payload: {
-    currentPassword: string;
-    newPassword: string;
-  }) {
+  updatePassword(payload: { currentPassword: string; newPassword: string }) {
     return this.http.put(`${this.source}/password`, payload);
   }
-
 
   updateUserName(name: string): void {
     this.userNameSignal.set(name);

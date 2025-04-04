@@ -1,3 +1,5 @@
+import { ProjectMaterial } from "../models/project-material.model";
+
 export interface ILoginResponse {
   accessToken: string;
   expiresIn: number;
@@ -12,7 +14,7 @@ export interface IResponse<T> {
 export interface IUser {
   id?: string;
   name?: string;
-  lastname?: string;
+  lastName?: string;
   email?: string;
   password?: string;
   active?: boolean;
@@ -32,7 +34,6 @@ export interface INotification {
   redirectTo?: string;
   dismissed?: boolean;
 }
-
 
 export interface IAuthority {
   authority: string;
@@ -86,15 +87,28 @@ export interface IValidationRequest {
 
 export enum IProjectType {
   Learning = "LEARNING",
+  Teaching = "TEACHING",
+  ProgrammedGoal = "PROGRAMMED_GOAL",
 }
 
-export interface ILearningProject {
+export interface IProject {
   id: string;
-  creatorUserId: string;
-  createdAt?: Date;
-  name: string;
-  description?: string;
   projectType: IProjectType;
+  creatorUserId?: string;
+  name: string;
+  description: string;
+  createdAt: Date;
+  lastModifiedAt: Date | null;
+  materials: ProjectMaterial[];
+}
+
+export interface ILearningProject extends IProject {}
+
+export interface IProgrammedGoalProject extends IProject {
+  deadline: Date;
+  notify: boolean;
+  selectedDays: ISelectedDays;
+  dynamicContents?: IDynamicContent[];
 }
 
 interface IDashboardCard {
@@ -115,25 +129,6 @@ export interface IDashboardSection {
   errorMessage?: string;
 }
 
-export enum ProjectTypeEnum {
-  PROGRAMMED_GOAL,
-  LEARNING,
-}
-
-
-export interface IProgrammedGoalProject {
-  id?: string;
-  projectType: ProjectTypeEnum;
-  creatorUserId?: string;
-  name: string;
-  description: string;
-  deadline: Date;
-  createdAt: Date | null;
-  notify: boolean;
-  selectedDays: ISelectedDays;
-  dynamicContents?: IDynamicContent[];
-}
-
 export interface ISelectedDays {
   monday: boolean;
   tuesday: boolean;
@@ -146,12 +141,12 @@ export interface ISelectedDays {
 }
 
 export interface IDynamicContent {
-  id?: string;
+  id: string;
   title: string;
-  creationDate?: Date;
+  type: string;
+  creationDate: Date;
   path: string;
   email: string;
-  type: string;
   projectId: string;
 }
 
@@ -163,4 +158,48 @@ export interface IDynamicContentSection {
   cards: IDynamicContent[];
   hasError?: boolean;
   errorMessage?: string;
+  projectId: string;
+}
+
+export interface ILearningMaterial {
+  id?: string;
+  name: string;
+  description?: string;
+  url?: string;
+  type: string;
+  createdAt?: Date;
+}
+
+export interface ITeachingProject extends IProject {
+  selectedDays: ISelectedDays;
+  dailyHours: number;
+  weeksCount: number;
+  hoursPerClass: number;
+  materials: ProjectMaterial[];
+  startDate?: Date;
+  endDate?: Date;
+  weeks?: ICourseWeek[];
+}
+
+export interface ICourseWeek {
+  id: string;
+  weekNumber: number;
+  classSessions: IClassSession[];
+}
+
+export interface IClassSession {
+  id: string;
+  dayOfWeek: string;
+  topics: ICourseTopic[];
+}
+
+export interface ICourseTopic {
+  id: string;
+  title: string;
+  description: string;
+  orderIndex: number;
+  durationMinutes: number;
+  teacherLocked: boolean;
+  sourceMaterials: ProjectMaterial[];
+  sourceReferences: { [key: string]: string };
 }
