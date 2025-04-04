@@ -11,7 +11,6 @@ export class ProgrammedGoalProjectService {
   private http = inject(HttpClient);
   private baseUrl = 'api/neuralforge/v1/programmed-goal-projects';
   public getById(id: string): Observable<IProgrammedGoalProject> {
-    console.log("Fetching project with ID:", id);
     return this.http.get<IProgrammedGoalProject>(`${this.baseUrl}/${id}`);
   }
 
