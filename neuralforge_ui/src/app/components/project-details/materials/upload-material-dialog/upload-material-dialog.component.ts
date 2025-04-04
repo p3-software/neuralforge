@@ -84,7 +84,6 @@ export class UploadMaterialDialogComponent implements OnInit {
   onFileSelected(event: any): void {
     const file = event.target.files[0];
     if (file) {
-      // Validate file type
       const fileType = file.type;
       if (fileType !== "application/pdf" && fileType !== "text/plain") {
         alert("Only PDF and TXT files are allowed");
@@ -153,27 +152,13 @@ export class UploadMaterialDialogComponent implements OnInit {
 
       if (formValue.type === "file" && this.selectedFile) {
         formData.append("file", this.selectedFile, this.selectedFile.name);
-        console.log("Adding file to form data:", {
-          name: this.selectedFile.name,
-          size: this.selectedFile.size,
-          type: this.selectedFile.type,
-        });
       } else if (formValue.type === "hyperlink") {
         formData.append("hyperlink", formValue.hyperlink);
       }
 
-      console.log("Uploading material:", {
-        type: formValue.type,
-        description: formValue.description || "",
-        projectId: this.data.projectId,
-        fileName: this.selectedFile?.name || "No file selected",
-        hyperlink: formValue.hyperlink || "No hyperlink",
-      });
-
       this.projectMaterialService.uploadMaterial(formData).subscribe({
         next: (response) => {
-          console.log("Upload successful:", response);
-          this.dialogRef.close(true);
+          this.dialogRef.close(response);
         },
         error: (error: any) => {
           console.error("Error uploading material:", error);

@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, Inject } from "@angular/core";
+import { Component, Inject, OnInit } from "@angular/core";
 import {
   FormBuilder,
   FormGroup,
@@ -16,6 +16,7 @@ import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { MatSelectModule } from "@angular/material/select";
+import { BehaviorSubject } from "rxjs";
 import { ProjectMaterial } from "../../../../models/project-material.model";
 import { AlertService } from "../../../../services/alert.service";
 import { DynamicContentService } from "../../../../services/dynamic-content.service";
@@ -41,10 +42,10 @@ interface DialogData {
   templateUrl: "./generate-content-dialog.component.html",
   styleUrls: ["./generate-content-dialog.component.scss"],
 })
-export class GenerateContentDialogComponent {
+export class GenerateContentDialogComponent implements OnInit {
   form: FormGroup;
   isLoading = false;
-  materials: ProjectMaterial[] = [];
+  materials$ = new BehaviorSubject<ProjectMaterial[]>([]);
 
   constructor(
     private fb: FormBuilder,
@@ -53,14 +54,18 @@ export class GenerateContentDialogComponent {
     private dynamicContentService: DynamicContentService,
     private alert: AlertService
   ) {
-    this.materials = data.materials
-      ? data.materials.filter((m) => m.type === "file")
-      : [];
     this.form = this.fb.group({
       title: ["", [Validators.required]],
       type: ["SUMMARY", [Validators.required]],
       materialId: ["", [Validators.required]],
     });
+  }
+
+  ngOnInit(): void {
+    const filteredMaterials = this.data.materials.filter(
+      (m) => m.type === "file" && m.fileName?.toLowerCase().endsWith(".pdf")
+    );
+    this.materials$.next(filteredMaterials);
   }
 
   onSubmit(): void {

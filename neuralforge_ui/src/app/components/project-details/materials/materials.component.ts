@@ -3,6 +3,7 @@ import {
   Component,
   Input,
   OnChanges,
+  OnDestroy,
   OnInit,
   SimpleChanges,
 } from "@angular/core";
@@ -12,9 +13,13 @@ import { MatDialog } from "@angular/material/dialog";
 import { MatIconModule } from "@angular/material/icon";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { MatSnackBar } from "@angular/material/snack-bar";
+import { Subscription } from "rxjs";
 import { ConfirmDialogComponent } from "../../../components/dialogs/confirm-dialog/confirm-dialog.component";
 import { ProjectMaterial } from "../../../models/project-material.model";
-import { ProjectMaterialService } from "../../../services/project-material.service";
+import {
+  MaterialUpdate,
+  ProjectMaterialService,
+} from "../../../services/project-material.service";
 import { UploadMaterialDialogComponent } from "./upload-material-dialog/upload-material-dialog.component";
 
 @Component({
@@ -30,11 +35,11 @@ import { UploadMaterialDialogComponent } from "./upload-material-dialog/upload-m
     MatProgressSpinnerModule,
   ],
 })
-export class MaterialsComponent implements OnInit, OnChanges {
-  @Input() projectId!: string;
-  @Input() projectMaterials?: ProjectMaterial[];
-  materials: ProjectMaterial[] = [];
+export class MaterialsComponent implements OnInit, OnChanges, OnDestroy {
+  @Input() projectId: string = "";
+  @Input() projectMaterials: ProjectMaterial[] = [];
   isLoading = false;
+  private subscriptions = new Subscription();
 
   constructor(
     private projectMaterialService: ProjectMaterialService,
@@ -43,66 +48,69 @@ export class MaterialsComponent implements OnInit, OnChanges {
   ) {}
 
   ngOnInit(): void {
-    if (!this.projectMaterials) {
+    if (!this.projectMaterials || this.projectMaterials.length === 0) {
       this.loadMaterials();
-    } else {
-      this.materials = this.projectMaterials;
     }
+
+    this.subscriptions.add(
+      this.projectMaterialService.materialUpdates$.subscribe(
+        (update: MaterialUpdate | null) => {
+          if (update && update.projectId === this.projectId) {
+            this.subscriptions.add(
+              this.projectMaterialService
+                .getMaterialsForProject(this.projectId)
+                .subscribe((materials) => {
+                  this.projectMaterials = materials;
+                })
+            );
+          }
+        }
+      )
+    );
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (
-      changes["projectMaterials"] &&
-      changes["projectMaterials"].currentValue
-    ) {
-      this.materials = changes["projectMaterials"].currentValue;
-      this.isLoading = false;
+    if (changes["projectId"] && !changes["projectId"].firstChange) {
+      this.loadMaterials();
     }
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 
   loadMaterials(): void {
     this.isLoading = true;
-    this.projectMaterialService.getProjectMaterials(this.projectId).subscribe({
-      next: (materials) => {
-        this.materials = materials;
-        this.isLoading = false;
-      },
-      error: (error) => {
-        this.snackBar.open("Error loading materials", "Close", {
-          duration: 3000,
-        });
-        this.isLoading = false;
-      },
-    });
+    this.projectMaterialService
+      .getMaterialsForProject(this.projectId)
+      .subscribe({
+        next: (materials) => {
+          this.projectMaterials = materials;
+          this.isLoading = false;
+        },
+        error: (error) => {
+          console.error("Error loading materials:", error);
+          this.snackBar.open("Failed to load project materials", "Close", {
+            duration: 3000,
+          });
+          this.isLoading = false;
+        },
+      });
   }
 
   openUploadDialog(): void {
-    const dialogRef = this.dialog.open(UploadMaterialDialogComponent, {
+    this.dialog.open(UploadMaterialDialogComponent, {
       width: "500px",
       data: { projectId: this.projectId },
     });
-
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        // If materials were passed in from parent, we need to reload
-        if (this.projectMaterials) {
-          this.loadMaterials();
-        } else {
-          this.loadMaterials();
-        }
-        this.snackBar.open("Material uploaded successfully", "Close", {
-          duration: 3000,
-        });
-      }
-    });
   }
 
-  deleteMaterial(materialId: string): void {
+  deleteMaterial(material: ProjectMaterial): void {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: "400px",
       data: {
         title: "Delete Material",
-        message: "Are you sure you want to delete this material?",
+        message: `Are you sure you want to delete ${material.fileName}?`,
         confirmText: "Delete",
         cancelText: "Cancel",
       },
@@ -110,17 +118,20 @@ export class MaterialsComponent implements OnInit, OnChanges {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.projectMaterialService.deleteMaterial(materialId).subscribe({
+        this.isLoading = true;
+        this.projectMaterialService.deleteMaterial(material.id).subscribe({
           next: () => {
-            this.materials = this.materials.filter((m) => m.id !== materialId);
             this.snackBar.open("Material deleted successfully", "Close", {
               duration: 3000,
             });
+            this.isLoading = false;
           },
           error: (error) => {
-            this.snackBar.open("Error deleting material", "Close", {
+            console.error("Error deleting material:", error);
+            this.snackBar.open("Failed to delete material", "Close", {
               duration: 3000,
             });
+            this.isLoading = false;
           },
         });
       }
@@ -133,23 +144,15 @@ export class MaterialsComponent implements OnInit, OnChanges {
       next: (blob) => {
         this.isLoading = false;
 
-        // Create a URL for the blob
         const url = window.URL.createObjectURL(blob);
-
-        // Create an anchor element and set up download attributes
         const a = document.createElement("a");
         a.href = url;
         a.download = material.fileName || `download-${material.id}`;
         document.body.appendChild(a);
-
-        // Trigger the download
         a.click();
-
-        // Clean up
         window.URL.revokeObjectURL(url);
         document.body.removeChild(a);
 
-        // Show success message
         this.snackBar.open(
           `${material.fileName} downloaded successfully`,
           "Close",
@@ -162,7 +165,6 @@ export class MaterialsComponent implements OnInit, OnChanges {
       error: (error) => {
         this.isLoading = false;
 
-        // Show friendly error message based on error status code
         let errorMessage = "Error downloading file";
         if (error.status === 403) {
           errorMessage = "You don't have permission to download this file";

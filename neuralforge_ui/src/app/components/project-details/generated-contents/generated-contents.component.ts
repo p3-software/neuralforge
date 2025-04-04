@@ -1,16 +1,20 @@
 import { CommonModule } from "@angular/common";
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, Input, OnDestroy, OnInit } from "@angular/core";
 import { MatButtonModule } from "@angular/material/button";
 import { MatCardModule } from "@angular/material/card";
 import { MatDialog, MatDialogModule } from "@angular/material/dialog";
 import { MatIconModule } from "@angular/material/icon";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { MatTableModule } from "@angular/material/table";
+import { Subscription } from "rxjs";
 import { IDynamicContent } from "../../../interfaces";
 import { ProjectMaterial } from "../../../models/project-material.model";
 import { AlertService } from "../../../services/alert.service";
 import { DynamicContentService } from "../../../services/dynamic-content.service";
-import { ProjectMaterialService } from "../../../services/project-material.service";
+import {
+  MaterialUpdate,
+  ProjectMaterialService,
+} from "../../../services/project-material.service";
 import { GenerateContentDialogComponent } from "../dialogs/generate-content-dialog/generate-content-dialog.component";
 
 @Component({
@@ -28,13 +32,13 @@ import { GenerateContentDialogComponent } from "../dialogs/generate-content-dial
   templateUrl: "./generated-contents.component.html",
   styleUrls: ["./generated-contents.component.scss"],
 })
-export class GeneratedContentsComponent implements OnInit {
+export class GeneratedContentsComponent implements OnInit, OnDestroy {
   @Input() projectId: string = "";
   @Input() projectMaterials: ProjectMaterial[] = [];
-
   contents: IDynamicContent[] = [];
   isLoading = false;
   displayedColumns: string[] = ["title", "type", "creationDate", "actions"];
+  private subscriptions = new Subscription();
 
   constructor(
     private dialog: MatDialog,
@@ -48,23 +52,45 @@ export class GeneratedContentsComponent implements OnInit {
     if (!this.projectMaterials || this.projectMaterials.length === 0) {
       this.loadMaterials();
     }
+
+    this.subscriptions.add(
+      this.projectMaterialService.materialUpdates$.subscribe(
+        (update: MaterialUpdate | null) => {
+          if (update && update.projectId === this.projectId) {
+            this.subscriptions.add(
+              this.projectMaterialService
+                .getMaterialsForProject(this.projectId)
+                .subscribe((materials) => {
+                  this.projectMaterials = materials;
+                })
+            );
+          }
+        }
+      )
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 
   loadMaterials(): void {
-    this.projectMaterialService.getProjectMaterials(this.projectId).subscribe({
-      next: (materials) => {
-        this.projectMaterials = materials;
-      },
-      error: (error) => {
-        console.error("Error loading materials:", error);
-        this.alert.displayAlert(
-          "error",
-          "Failed to load project materials",
-          "center",
-          "top"
-        );
-      },
-    });
+    this.projectMaterialService
+      .getMaterialsForProject(this.projectId)
+      .subscribe({
+        next: (materials) => {
+          this.projectMaterials = materials;
+        },
+        error: (error) => {
+          console.error("Error loading materials:", error);
+          this.alert.displayAlert(
+            "error",
+            "Failed to load project materials",
+            "center",
+            "top"
+          );
+        },
+      });
   }
 
   loadContents(): void {
@@ -74,8 +100,8 @@ export class GeneratedContentsComponent implements OnInit {
         this.contents = contents;
         this.isLoading = false;
       },
-      error: (err: any) => {
-        console.error("Error loading contents:", err);
+      error: (error: any) => {
+        console.error("Error loading contents:", error);
         this.alert.displayAlert(
           "error",
           "Failed to load generated contents",
