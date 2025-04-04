@@ -115,9 +115,9 @@
               color="primary"
               class="signup-btn"
               type="submit"
-              [disabled]="isSignUpDisabled"
+              [disabled]="isSignUpDisabled || isSubmitting"
             >
-              Sign Up
+              {{ isSubmitting ? "Signing Up..." : "Sign Up" }}
             </button>
           </div>
 
