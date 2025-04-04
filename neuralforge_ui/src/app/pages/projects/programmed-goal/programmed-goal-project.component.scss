@@ -8,12 +8,7 @@ $primary-contrast: map.get(map.get(theme.$my-primary, contrast), 500);
 
 :host {
   display: block;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 1rem;
-  font-family: "Poppins", sans-serif;
-  color: #333;
-  background-color: #f9f9fc;
+  width: 100%;
 }
 
 .project-header {
@@ -103,65 +98,37 @@ $primary-contrast: map.get(map.get(theme.$my-primary, contrast), 500);
   color: #aaa;
 }
 
-.dynamic-content-wrapper {
+.loading-container {
   display: flex;
-  flex-wrap: nowrap;
-  overflow-x: auto;
-  gap: 16px;
-  padding: 10px 20px;
-  display: flex;
-  background: #fff;
-  padding: 2rem;
-  border-radius: 1rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-  margin-bottom: 1.5rem;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-.custom-card {
-  flex: 0 0 250px;
-  max-width: 300px;
-  min-width: 250px;
-  padding: 1.5rem;
-  border-radius: 1rem;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
+.error-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-}
-
-mat-card-title {
-  font-size: 1.2rem;
-  font-weight: 600;
-  font-family: "Poppins";
-  margin-bottom: 1rem;
+  justify-content: center;
+  min-height: 400px;
   text-align: center;
-}
+  color: #f44336;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
 
-mat-card-content p {
-  font-size: 1rem;
-  font-family: "Poppins";
-  margin: 0.5rem 0;
-  color: #444;
-  text-align: center;
-}
+  .error-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    margin-bottom: 16px;
+  }
 
-.content-type {
-  color: #32468e;
-  font-weight: bold;
-}
-
-mat-card-content a button {
-  margin-top: 1rem;
-  text-align: center;
-}
-
-.empty-state {
-  text-align: center;
-  padding: 2rem;
-  font-family: "Poppins", sans-serif;
-  font-size: 1.2rem;
-  color: #666;
-  background: #f9f9fc;
-  border-radius: 1rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  .error-message {
+    font-size: 16px;
+    margin: 0;
+  }
 }

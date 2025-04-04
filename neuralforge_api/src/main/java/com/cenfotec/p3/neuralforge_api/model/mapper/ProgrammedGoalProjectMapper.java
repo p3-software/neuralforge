@@ -20,8 +20,12 @@ public class ProgrammedGoalProjectMapper extends ProjectMapper<ProgrammedGoalPro
 
     @Autowired
     protected SelectedDaysMapper selectedDaysMapper;
+
     @Autowired
     protected DynamicContentMapper dynamicContentMapper;
+
+    @Autowired
+    protected ProjectMaterialMapper projectMaterialMapper;
 
     /**
      * Maps a {@link ProgrammedGoalProjectEntity} to its corresponding
@@ -39,12 +43,12 @@ public class ProgrammedGoalProjectMapper extends ProjectMapper<ProgrammedGoalPro
                 .description(entity.getDescription())
                 .deadline(entity.getDeadline())
                 .createdAt(entity.getCreatedAt())
+                .lastModifiedAt(entity.getLastModifiedAt())
                 .notify(entity.getNotify())
                 .projectType(ProjectTypeEnum.PROGRAMMED_GOAL)
                 .selectedDays(selectedDaysMapper.toResource(entity.getSelectedDays()))
-                .dynamicContents(entity.getDynamicContents() != null
-                        ? entity.getDynamicContents().stream().map(dynamicContentMapper::mapToResource).toList()
-                        : null)
+                .dynamicContents(entity.getDynamicContents().stream().map(dynamicContentMapper::mapToResource).toList())
+                .materials(entity.getMaterials().stream().map(projectMaterialMapper::mapToResource).toList())
                 .build();
     }
 
@@ -63,12 +67,13 @@ public class ProgrammedGoalProjectMapper extends ProjectMapper<ProgrammedGoalPro
                 .name(resource.getName())
                 .description(resource.getDescription())
                 .deadline(resource.getDeadline())
-                .notify(resource.getNotify())
                 .createdAt(resource.getCreatedAt())
+                .lastModifiedAt(resource.getLastModifiedAt())
+                .notify(resource.getNotify())
+                .projectType(ProjectTypeEnum.PROGRAMMED_GOAL)
                 .selectedDays(selectedDaysMapper.toEntity(resource.getSelectedDays()))
-                .dynamicContents(resource.getDynamicContents() != null
-                        ? resource.getDynamicContents().stream().map(dynamicContentMapper::mapToEntity).toList()
-                        : null)
+                .dynamicContents(resource.getDynamicContents().stream().map(dynamicContentMapper::mapToEntity).toList())
+                .materials(resource.getMaterials().stream().map(projectMaterialMapper::mapToEntity).toList())
                 .build();
     }
 }

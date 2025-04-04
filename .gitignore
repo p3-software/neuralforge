@@ -39,3 +39,9 @@ build/
 ### Angular ###
 node_modules/
 .angular/
+
+### User uploads ###
+neuralforge_api/uploads
+
+### Generated files ###
+neuralforge_api/src/main/resources/dynamicContent

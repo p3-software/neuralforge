@@ -12,6 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -56,12 +57,14 @@ public class ProgrammedGoalProjectService {
     public ProgrammedGoalProjectResource createProgrammedGoalProject(ProgrammedGoalProjectResource projectResource) {
         UserEntity user = (UserEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         projectResource.setCreatorUserId(user.getId());
+        projectResource.setDynamicContents(new ArrayList<>());
 
         // Save SelectedDays first
         var savedSelectedDays = selectedDaysService.save(projectResource.getSelectedDays());
 
         // Map the resource to entity
         ProgrammedGoalProjectEntity entity = programmedGoalProjectMapper.mapToEntity(projectResource);
+        entity.setId(null); // Fix dumb error. We should have client specific types that don't include ids when creating projects.
 
         // Inject the persisted SelectedDaysEntity
         entity.setSelectedDays(savedSelectedDays);

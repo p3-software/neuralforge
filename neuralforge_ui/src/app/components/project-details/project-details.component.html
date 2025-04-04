@@ -1,0 +1,101 @@
+<div class="background-wrapper"></div>
+
+<div *ngIf="project" class="project-header">
+  <div class="project-title">
+    <h1>{{ project.name }}</h1>
+    <mat-slide-toggle
+      *ngIf="isProgrammedGoalProject"
+      [checked]="notificationsEnabled"
+      (change)="onToggleNotify()"
+    >
+      Notifications
+    </mat-slide-toggle>
+  </div>
+  <p class="project-description">
+    {{ project.description || "No description available" }}
+  </p>
+</div>
+
+<mat-tab-group *ngIf="!isLoading && !hasError && project">
+  <mat-tab label="Overview">
+    <ng-container *ngTemplateOutlet="overviewContent"></ng-container>
+  </mat-tab>
+
+  <mat-tab label="Materials">
+    <app-materials
+      [projectId]="project.id"
+      [projectMaterials]="project.materials"
+    ></app-materials>
+  </mat-tab>
+
+  <mat-tab label="Generated Contents">
+    <app-generated-contents
+      [projectId]="project.id"
+      [projectMaterials]="project.materials || []"
+    ></app-generated-contents>
+  </mat-tab>
+
+  <mat-tab label="Configuration">
+    <div class="config-container">
+      <div class="metadata-section">
+        <h3>Project Metadata</h3>
+        <div class="metadata-grid">
+          <div class="metadata-item">
+            <mat-icon>calendar_today</mat-icon>
+            <div class="metadata-content">
+              <span class="label">Created</span>
+              <span class="value">{{
+                project.createdAt | date : "medium"
+              }}</span>
+            </div>
+          </div>
+          <div class="metadata-item">
+            <mat-icon>update</mat-icon>
+            <div class="metadata-content">
+              <span class="label">Last Modified</span>
+              <span class="value">{{
+                project.lastModifiedAt
+                  ? (project.lastModifiedAt | date : "medium")
+                  : "Never"
+              }}</span>
+            </div>
+          </div>
+          <div class="metadata-item">
+            <mat-icon>category</mat-icon>
+            <div class="metadata-content">
+              <span class="label">Project Type</span>
+              <span class="value">{{ project.projectType | titlecase }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="actions-section">
+        <h3>Project Actions</h3>
+        <div class="actions-grid">
+          <button
+            mat-raised-button
+            color="primary"
+            (click)="editProject.emit()"
+          >
+            <mat-icon>edit</mat-icon>
+            Edit Project
+          </button>
+          <button mat-raised-button color="warn" (click)="deleteProject.emit()">
+            <mat-icon>delete</mat-icon>
+            Delete Project
+          </button>
+        </div>
+      </div>
+    </div>
+  </mat-tab>
+</mat-tab-group>
+
+<div *ngIf="isLoading" class="loading-container">
+  <mat-icon>hourglass_empty</mat-icon>
+  <p>Loading project...</p>
+</div>
+
+<div *ngIf="hasError" class="error-container">
+  <mat-icon color="warn" class="error-icon">error_outline</mat-icon>
+  <p class="error-message">{{ errorMessage }}</p>
+</div>

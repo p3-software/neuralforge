@@ -1,0 +1,153 @@
+<div class="calendar-container">
+  <!-- Schedule generation controls -->
+  <div class="controls">
+    <div *ngIf="!hasSchedule() && !isGeneratingSchedule">
+      <button mat-raised-button color="primary" (click)="generateSchedule()">
+        <mat-icon>event_note</mat-icon>
+        Generate Schedule
+      </button>
+    </div>
+
+    <div *ngIf="hasSchedule() && !isGeneratingSchedule">
+      <button mat-stroked-button color="primary" (click)="generateSchedule()">
+        <mat-icon>restart_alt</mat-icon>
+        Regenerate Schedule
+      </button>
+    </div>
+
+    <div *ngIf="isGeneratingSchedule" class="loading-spinner">
+      <mat-spinner diameter="36"></mat-spinner>
+      <span class="loading-text">Generating schedule...</span>
+    </div>
+  </div>
+
+  <!-- Week-based schedule display -->
+  <ng-container *ngIf="project && project.weeks && project.weeks.length > 0">
+    <div *ngFor="let week of project.weeks; let weekIndex = index">
+      <mat-card class="schedule-card">
+        <div class="week-header">
+          <h3>
+            Week {{ week.weekNumber }}
+            <span class="date-range">{{ getWeekRange(week) }}</span>
+          </h3>
+        </div>
+
+        <div class="sessions-container">
+          <mat-card
+            *ngFor="
+              let session of getSortedClassSessions(week);
+              let sessionIndex = index
+            "
+            class="session-card"
+          >
+            <div class="session-header">
+              <div class="day-info">
+                <mat-icon>today</mat-icon>
+                <h4>{{ getDayOfWeekName(session.dayOfWeek) }}</h4>
+                <span
+                  class="session-date"
+                  *ngIf="getSessionDate(week.weekNumber, session.dayOfWeek)"
+                >
+                  {{
+                    getSessionDate(week.weekNumber, session.dayOfWeek)
+                      | date : "MMM d, yyyy"
+                  }}
+                </span>
+              </div>
+            </div>
+
+            <div class="topics-container">
+              <ng-container *ngIf="session.topics.length > 0">
+                <div
+                  *ngFor="let topic of session.topics; let topicIndex = index"
+                  class="topic-item"
+                >
+                  <div class="topic-header">
+                    <span class="topic-title">{{ topic.title }}</span>
+                    <div class="topic-actions">
+                      <button
+                        mat-icon-button
+                        [disabled]="topicIndex === 0 || topic.teacherLocked"
+                        (click)="
+                          moveTopicUp(weekIndex, sessionIndex, topicIndex)
+                        "
+                        matTooltip="Move up"
+                      >
+                        <mat-icon>arrow_upward</mat-icon>
+                      </button>
+
+                      <button
+                        mat-icon-button
+                        [disabled]="
+                          topicIndex === session.topics.length - 1 ||
+                          topic.teacherLocked
+                        "
+                        (click)="
+                          moveTopicDown(weekIndex, sessionIndex, topicIndex)
+                        "
+                        matTooltip="Move down"
+                      >
+                        <mat-icon>arrow_downward</mat-icon>
+                      </button>
+
+                      <button
+                        mat-icon-button
+                        (click)="
+                          moveTopic(
+                            week.weekNumber,
+                            session.id,
+                            topic.id,
+                            topic
+                          )
+                        "
+                        [disabled]="topic.teacherLocked"
+                        matTooltip="Move to different day"
+                      >
+                        <mat-icon>open_with</mat-icon>
+                      </button>
+
+                      <button
+                        mat-icon-button
+                        (click)="toggleLock(topic)"
+                        [matTooltip]="
+                          topic.teacherLocked ? 'Unlock topic' : 'Lock topic'
+                        "
+                      >
+                        <mat-icon>{{
+                          topic.teacherLocked ? "lock" : "lock_open"
+                        }}</mat-icon>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="topic-details" *ngIf="topic.description">
+                    <p>{{ topic.description }}</p>
+                  </div>
+
+                  <div class="topic-duration" *ngIf="topic.durationMinutes">
+                    <mat-icon>schedule</mat-icon>
+                    <span>{{ topic.durationMinutes }} min</span>
+                  </div>
+                </div>
+              </ng-container>
+
+              <div class="no-topics" *ngIf="session.topics.length === 0">
+                <mat-icon>info</mat-icon>
+                <span>No topics scheduled for this session</span>
+              </div>
+            </div>
+          </mat-card>
+        </div>
+      </mat-card>
+    </div>
+  </ng-container>
+
+  <!-- No schedule message -->
+  <div *ngIf="!hasSchedule() && !isGeneratingSchedule" class="no-schedule">
+    <mat-icon>calendar_today</mat-icon>
+    <p>
+      No teaching schedule has been generated yet. Click the button above to
+      generate one.
+    </p>
+  </div>
+</div>

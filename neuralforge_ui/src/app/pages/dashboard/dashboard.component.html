@@ -12,15 +12,14 @@
   <div class="section-header">
     <h2>{{ section.title }}</h2>
     <button
-            *ngIf="section.cards.length > 0"
-            mat-raised-button
-            color="primary"
-            (click)="section.buttonAction && section.buttonAction()"
+      *ngIf="section.cards.length > 0"
+      mat-raised-button
+      color="primary"
+      (click)="section.buttonAction && section.buttonAction()"
     >
       {{ section.buttonText }}
     </button>
   </div>
-
 
   <div class="loading-indicator" *ngIf="section.isLoading">
     <mat-icon class="spin">refresh</mat-icon>
@@ -34,11 +33,7 @@
         <mat-icon class="error-icon">error_outline</mat-icon>
         <h3 class="error-title">Oops! Something went wrong</h3>
         <p class="error-message">{{ section.errorMessage }}</p>
-        <button
-          mat-raised-button
-          color="primary"
-          (click)="fetchLearningProjects()"
-        >
+        <button mat-raised-button color="primary" (click)="fetchAllProjects()">
           Try Again
         </button>
       </mat-card>
@@ -62,7 +57,11 @@
         <mat-card-title>{{ card.title }}</mat-card-title>
         <mat-card-content>
           <p>
-            {{ card.content.length > 50 ? (card.content | slice:0:50) + '...' : card.content }}
+            {{
+              card.content.length > 50
+                ? (card.content | slice : 0 : 50) + "..."
+                : card.content
+            }}
           </p>
 
           <p *ngIf="card.count !== undefined">
@@ -70,7 +69,16 @@
           </p>
         </mat-card-content>
         <mat-card-actions>
-          <button [routerLink]="['/app/project', card.projectType.toLowerCase(), card.id]" mat-button color="primary">Enter</button>
+          <button
+            [routerLink]="[
+              '/app/' + getRouteByProjectType(card.projectType),
+              card.id
+            ]"
+            mat-button
+            color="primary"
+          >
+            Enter
+          </button>
         </mat-card-actions>
       </mat-card>
     </div>
