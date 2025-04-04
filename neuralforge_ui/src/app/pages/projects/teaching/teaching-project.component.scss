@@ -1,0 +1,222 @@
+@use "@angular/material" as mat;
+@use "sass:map";
+@use "../../../../styles.scss" as theme;
+
+$primary-color: mat.get-color-from-palette(theme.$my-primary, 500);
+$accent-color: mat.get-color-from-palette(theme.$my-accent, 500);
+$primary-contrast: map.get(map.get(theme.$my-primary, contrast), 500);
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+.schedule-card {
+  background: #ffffff;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  margin-bottom: 1.5rem;
+
+  h2 {
+    margin: 0 0 1rem 0;
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: #2b2b2b;
+  }
+
+  .schedule-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+
+    .info-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem;
+      background-color: rgba($primary-color, 0.05);
+      border-radius: 0.5rem;
+
+      mat-icon {
+        color: $primary-color;
+      }
+
+      span {
+        font-size: 0.875rem;
+        color: #666;
+      }
+    }
+  }
+}
+
+.materials-card {
+  background: #ffffff;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  margin-top: 1.5rem;
+
+  h2 {
+    margin: 0 0 1rem 0;
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: #2b2b2b;
+  }
+
+  .materials-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+
+    .material-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem;
+      background-color: rgba($primary-color, 0.05);
+      border-radius: 0.5rem;
+
+      mat-icon {
+        color: $primary-color;
+      }
+
+      span {
+        font-size: 0.875rem;
+        color: #666;
+      }
+    }
+  }
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  text-align: center;
+  color: #f44336;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  .error-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    margin-bottom: 16px;
+  }
+
+  .error-message {
+    font-size: 16px;
+    margin: 0;
+  }
+}
+
+.project-container {
+  .project-card {
+    margin-bottom: 20px;
+
+    mat-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+
+      .header-actions {
+        display: flex;
+        gap: 8px;
+      }
+    }
+
+    .description-section {
+      margin-bottom: 24px;
+
+      h3 {
+        margin: 0 0 8px 0;
+        font-size: 18px;
+        font-weight: 500;
+      }
+
+      p {
+        margin: 0;
+        color: rgba(0, 0, 0, 0.7);
+      }
+    }
+
+    .schedule-section {
+      padding: 16px 0;
+
+      .schedule-info {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+
+        .info-item {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+
+          mat-icon {
+            color: #1976d2;
+          }
+        }
+      }
+    }
+
+    .materials-section {
+      padding: 16px 0;
+
+      .materials-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 16px;
+
+        .material-item {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 8px;
+          background-color: #f5f5f5;
+          border-radius: 4px;
+
+          mat-icon {
+            color: #1976d2;
+          }
+        }
+      }
+
+      .no-materials {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 32px;
+        color: rgba(0, 0, 0, 0.5);
+
+        mat-icon {
+          font-size: 48px;
+          width: 48px;
+          height: 48px;
+          margin-bottom: 16px;
+        }
+
+        p {
+          margin: 0;
+          font-size: 16px;
+        }
+      }
+    }
+  }
+}

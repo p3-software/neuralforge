@@ -1,0 +1,303 @@
+@use "@angular/material" as mat;
+@use "sass:map";
+@use "../../../styles.scss" as theme;
+
+$primary-color: mat.get-color-from-palette(theme.$my-primary, 500);
+$accent-color: mat.get-color-from-palette(theme.$my-accent, 500);
+$primary-contrast: map.get(map.get(theme.$my-primary, contrast), 500);
+
+.calendar {
+  background: #ffffff;
+  border-radius: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.calendar-header {
+  margin-bottom: 2rem;
+
+  h3 {
+    font-size: 1.5rem;
+    font-weight: 500;
+    margin: 0;
+    color: #2b2b2b;
+  }
+}
+
+.weeks-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.week-card {
+  background: #f8f9fa;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+
+  .week-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid rgba($primary-color, 0.1);
+
+    h4 {
+      font-size: 1.25rem;
+      font-weight: 500;
+      margin: 0;
+      color: #2b2b2b;
+    }
+
+    .week-range {
+      color: #666;
+      font-size: 0.875rem;
+    }
+  }
+
+  .days-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 1rem;
+
+    .day-box {
+      background: #ffffff;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      min-height: 120px;
+
+      &.teaching-day {
+        background-color: rgba($primary-color, 0.05);
+        border: 1px solid rgba($primary-color, 0.1);
+      }
+
+      .day-header {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+        margin-bottom: 0.75rem;
+
+        .day-name {
+          font-weight: 500;
+          color: #2b2b2b;
+        }
+
+        .day-date {
+          font-size: 0.875rem;
+          color: #666;
+        }
+      }
+
+      .topics-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+
+        .topic-item {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          padding: 0.5rem;
+          background: rgba($primary-color, 0.05);
+          border-radius: 0.25rem;
+
+          mat-icon {
+            font-size: 1rem;
+            width: 1rem;
+            height: 1rem;
+            color: $primary-color;
+          }
+
+          span {
+            font-size: 0.875rem;
+            color: #666;
+          }
+        }
+      }
+    }
+  }
+}
+
+.calendar-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-top: 16px;
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.loading-spinner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.loading-text {
+  font-size: 16px;
+  color: #555;
+}
+
+.material-warning {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #fff3e0;
+  padding: 12px 16px;
+  border-radius: 4px;
+  margin-bottom: 16px;
+
+  mat-icon {
+    color: #ff9800;
+  }
+}
+
+.schedule-card {
+  margin-bottom: 24px;
+}
+
+.week-header {
+  padding: 12px 16px;
+  border-bottom: 1px solid #e0e0e0;
+
+  h3 {
+    margin: 0;
+    font-weight: 500;
+  }
+
+  .date-range {
+    font-size: 14px;
+    color: #666;
+    margin-left: 10px;
+    font-weight: normal;
+  }
+}
+
+.sessions-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+}
+
+.session-card {
+  border-left: 4px solid #3f51b5;
+}
+
+.session-header {
+  padding: 8px 16px;
+  background-color: #f5f5f5;
+
+  .day-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    h4 {
+      margin: 0;
+      font-weight: 500;
+    }
+
+    mat-icon {
+      color: $primary-color;
+    }
+
+    .session-date {
+      color: #666;
+      font-size: 14px;
+      margin-left: 4px;
+    }
+  }
+}
+
+.topics-container {
+  padding: 12px 16px;
+}
+
+.topic-item {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.topic-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .topic-title {
+    font-weight: 500;
+    font-size: 16px;
+  }
+
+  .topic-actions {
+    display: flex;
+    gap: 4px;
+  }
+}
+
+.topic-details {
+  margin-top: 8px;
+  color: #555;
+
+  p {
+    margin: 4px 0;
+  }
+}
+
+.topic-duration {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+  color: #666;
+  font-size: 14px;
+
+  mat-icon {
+    font-size: 16px;
+    height: 16px;
+    width: 16px;
+  }
+}
+
+.no-topics {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #999;
+  font-style: italic;
+  padding: 12px 0;
+}
+
+.no-schedule {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 48px 24px;
+  text-align: center;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+
+  mat-icon {
+    font-size: 48px;
+    height: 48px;
+    width: 48px;
+    margin-bottom: 16px;
+    color: #9e9e9e;
+  }
+
+  p {
+    color: #757575;
+    max-width: 400px;
+    margin: 0;
+  }
+}

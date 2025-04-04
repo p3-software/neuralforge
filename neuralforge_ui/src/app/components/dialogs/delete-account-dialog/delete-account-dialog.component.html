@@ -1,0 +1,30 @@
+<h2 mat-dialog-title>Delete Account</h2>
+<mat-dialog-content>
+  <p>
+    This action will permanently delete your account and all associated data.
+    This action cannot be undone.
+  </p>
+  <p>To confirm, type <strong>Delete</strong> in the field below:</p>
+
+  <mat-form-field appearance="outline" class="full-width">
+    <input
+      matInput
+      [formControl]="confirmationControl"
+      placeholder="Type 'Delete'"
+    />
+    <mat-error *ngIf="confirmationControl.invalid"
+      >You must type 'Delete' exactly</mat-error
+    >
+  </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button
+    mat-raised-button
+    color="warn"
+    [disabled]="confirmationControl.invalid"
+    [mat-dialog-close]="true"
+  >
+    Delete Account
+  </button>
+</mat-dialog-actions>
