@@ -152,6 +152,15 @@ export interface IDynamicContent {
   path: string;
   email: string;
   type: string;
+  projectId: string;
 }
 
-
+export interface IDynamicContentSection {
+  title: string;
+  buttonText: string;
+  buttonAction: () => void;
+  isLoading: boolean;
+  cards: IDynamicContent[];
+  hasError?: boolean;
+  errorMessage?: string;
+}

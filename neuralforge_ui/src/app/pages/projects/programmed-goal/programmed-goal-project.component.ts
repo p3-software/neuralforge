@@ -1,7 +1,10 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import { IProgrammedGoalProject } from '../../../interfaces';
+import { IProgrammedGoalProject, IDynamicContentSection, IDynamicContent } from '../../../interfaces';
 import { ProgrammedGoalProjectService } from '../../../services/programmed-goal-project.service';
+import { CommonModule } from "@angular/common";
+import { AuthService } from '../../../services/auth.service';
+
 import {
     NgIf,
     NgFor,
@@ -25,9 +28,9 @@ import {DeadlineCalendarComponent} from "../../../components/deadline-calendar/d
 import {AlertService} from "../../../services/alert.service";
 import {MatDialog} from "@angular/material/dialog";
 import {ConfirmDialogComponent} from "../../../components/dialogs/confirm-dialog/confirm-dialog.component";
-import {
-    EditGoalProjectDialogComponent
-} from "../../../components/dialogs/edit-goal-project-dialog/edit-goal-project-dialog.component";
+import {EditGoalProjectDialogComponent} from "../../../components/dialogs/edit-goal-project-dialog/edit-goal-project-dialog.component";
+import { CreateDynamicContentDialogComponent } from '../../../components/dialogs/create-dinamic-content-dialog/create-dinamic-content-dialog.component';
+
 
 @Component({
     selector: 'app-programmed-goal-project',
@@ -45,7 +48,9 @@ import {
         MatSlideToggleModule,
         MatCardModule,
         NgClass,
+        CommonModule,
         DeadlineCalendarComponent
+         
     ]
 })
 export class ProgrammedGoalProjectComponent implements OnInit {
@@ -53,6 +58,15 @@ export class ProgrammedGoalProjectComponent implements OnInit {
     project?: IProgrammedGoalProject;
     isLoading = true;
     hasError = false;
+    projectLoaded = false;
+    
+    dynamicContentSection: IDynamicContentSection = {
+        title: "Dynamic Content",
+        buttonText: "Add Dynamic Content",
+        buttonAction: this.openDynamicContentForm.bind(this),
+        isLoading: true,
+        cards: [],
+      };
 
     calendarStartDate = new Date();
     today = new Date();
@@ -63,7 +77,8 @@ export class ProgrammedGoalProjectComponent implements OnInit {
         private cdr: ChangeDetectorRef,
         private alert: AlertService,
         private router: Router,
-        private dialog: MatDialog
+        private dialog: MatDialog,
+        private authService: AuthService
     ) {}
 
     ngOnInit(): void {
@@ -72,14 +87,15 @@ export class ProgrammedGoalProjectComponent implements OnInit {
             this.projectService.getById(this.projectId).subscribe({
                 next: (project) => {
                     this.project = project;
+                    this.projectLoaded = true;
                     this.isLoading = false;
                     this.cdr.detectChanges();
-                    console.log(project)
                 },
                 error: (err) => {
                     console.error('Error fetching project:', err);
                     this.hasError = true;
                     this.isLoading = false;
+                    this.projectLoaded = false;
 
                     this.alert.displayAlert(
                         'error',
@@ -107,10 +123,8 @@ export class ProgrammedGoalProjectComponent implements OnInit {
     onToggleNotify() {
         if (!this.project) return;
 
-        // Save the current toggle state before attempting to change
         const previousState = this.project.notify;
 
-        // Optimistically toggle it
         this.project.notify = !previousState;
 
         this.projectService.toggleNotifications(this.projectId).subscribe({
@@ -120,10 +134,8 @@ export class ProgrammedGoalProjectComponent implements OnInit {
             error: (err) => {
                 console.error('Error toggling notifications:', err);
 
-                // Revert toggle state on error
                 this.project!.notify = previousState;
 
-                // Alert the user
                 this.alert.displayAlert(
                     'error',
                     err.error.exception,
@@ -132,7 +144,6 @@ export class ProgrammedGoalProjectComponent implements OnInit {
                     ['error-snackbar']
                 );
 
-                // Manually trigger change detection if needed
                 this.cdr.detectChanges();
             }
         });
@@ -191,5 +202,36 @@ export class ProgrammedGoalProjectComponent implements OnInit {
             }
         });
     }
+    
+    openDynamicContentForm() {
+      
+        this.authService.getCurrentUser().subscribe(user => {
+          if (user) {
+            const dialogRef = this.dialog.open(CreateDynamicContentDialogComponent, {
+              width: '800px',
+              data: { 
+                projectId: this.projectId,
+                email: user.email 
+              }
+            });
+      
+            dialogRef.afterClosed().subscribe((result) => {
+              if (result) {
+                const newDynamicContent: IDynamicContent = {
+                  id: result.id,
+                  title: result.title,
+                  creationDate: result.creationDate,
+                  path: result.path,
+                  email: user.email, 
+                  type: result.type,
+                  projectId: this.projectId
+                };
+      
+                this.dynamicContentSection.cards.push(newDynamicContent);
+              }
+            });
+          }
+        });
+      }
 
 }
