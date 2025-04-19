@@ -1,0 +1,19 @@
+<div class="form-container">
+    <form [formGroup]="learnspaceForm" (ngSubmit)="onSubmit()" class="form-card">
+      <h2>Crear Learnspace</h2>
+  
+      <div class="visibilidad-toggle">
+        <label><input type="radio" formControlName="visibilidad" value="Público" /> Público</label>
+        <label><input type="radio" formControlName="visibilidad" value="Privado" /> Privado</label>
+      </div>
+  
+      <label for="nombre">Nombre del Learnspace</label>
+      <input id="nombre" formControlName="nombre" />
+  
+      <label for="descripcion">Descripción</label>
+      <textarea id="descripcion" formControlName="descripcion"></textarea>
+  
+      <button type="submit" [disabled]="learnspaceForm.invalid">Crear Nuevo Learnspace</button>
+    </form>
+  </div>
+  

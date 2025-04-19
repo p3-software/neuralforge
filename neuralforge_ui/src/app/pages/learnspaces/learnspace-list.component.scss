@@ -1,0 +1,74 @@
+.section {
+    padding: 2rem;
+  }
+  
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+  
+  .section-header h2 {
+    font-size: 1.4rem;
+    font-weight: bold;
+  }
+  
+  .section-header .btn {
+    background-color: #3f51b5;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+  
+    &:hover {
+      background-color: #303f9f;
+    }
+  }
+  
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  .card {
+    background: white;
+    border-radius: 12px;
+    padding: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    text-align: center;
+  
+    h3 {
+      font-size: 1.1rem;
+      font-weight: bold;
+    }
+  
+    p {
+      margin: 0.5rem 0;
+    }
+  
+    .miembros {
+      font-weight: bold;
+      font-size: 0.9rem;
+      color: #3f51b5;
+    }
+  
+    button {
+      margin-top: 1rem;
+      background-color: #3f51b5;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 0.5rem 1rem;
+      font-weight: bold;
+      cursor: pointer;
+  
+      &:hover {
+        background-color: #303f9f;
+      }
+    }
+  }
+  

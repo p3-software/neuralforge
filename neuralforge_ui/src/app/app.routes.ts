@@ -17,6 +17,8 @@ import { LearningProjectComponent } from "./pages/projects/learning/learning-pro
 import { ProgrammedGoalProjectComponent } from "./pages/projects/programmed-goal/programmed-goal-project.component";
 import { TeachingProjectComponent } from "./pages/projects/teaching/teaching-project.component";
 import { UsersComponent } from "./pages/users/users.component";
+import { LearnspaceListComponent } from './pages/learnspaces/learnspace-list.component';
+import { LearnspaceFormComponent } from './pages/learnspaces/learnspace-form.component';
 
 /**
  * Application routes configuration.
@@ -113,7 +115,6 @@ export const routes: Routes = [
           showInSidebar: true,
         },
       },
-
       {
         path: "profile",
         component: ProfileComponent,
@@ -124,7 +125,6 @@ export const routes: Routes = [
           showInSidebar: false,
         },
       },
-
       {
         path: "dashboard",
         component: DashboardComponent,
@@ -134,6 +134,26 @@ export const routes: Routes = [
           showInSidebar: true,
         },
       },
+
+      // ✅ Learnspaces (NUEVO)
+      {
+        path: "learnspaces",
+        component: LearnspaceListComponent,
+        data: {
+          authorities: [IRoleType.admin, IRoleType.teacher, IRoleType.student],
+          name: "Learnspaces",
+          showInSidebar: true
+        }
+      },
+      {
+        path: "learnspaces/new",
+        component: LearnspaceFormComponent,
+        data: {
+          authorities: [IRoleType.admin, IRoleType.teacher],
+          name: "Crear Learnspace",
+          showInSidebar: false
+        }
+      }
     ],
   },
 
@@ -141,5 +161,5 @@ export const routes: Routes = [
     path: "**",
     redirectTo: "/",
     pathMatch: "full",
-  },
+  }
 ];

@@ -1,0 +1,30 @@
+<div class="section">
+    <div class="section-header">
+      <h2>Learnspaces en los que participas</h2>
+      <a routerLink="/learnspaces/new" class="btn">Buscar Nuevo Learnspace</a>
+    </div>
+    <div class="card-grid">
+      <div class="card" *ngFor="let l of learnspaces.slice(0, 3)">
+        <h3>{{ l.nombre }}</h3>
+        <p>{{ l.descripcion || 'Sin descripción' }}</p>
+        <p class="miembros">560 miembros</p>
+        <button>Entrar</button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="section">
+    <div class="section-header">
+      <h2>Learnspaces creados</h2>
+      <a routerLink="/learnspaces/new" class="btn">Crear Nuevo Learnspace +</a>
+    </div>
+    <div class="card-grid">
+      <div class="card" *ngFor="let l of learnspaces.slice(3)">
+        <h3>{{ l.nombre }}</h3>
+        <p>{{ l.descripcion || 'Sin descripción' }}</p>
+        <p class="miembros">60 miembros</p>
+        <button>Entrar</button>
+      </div>
+    </div>
+  </div>
+  

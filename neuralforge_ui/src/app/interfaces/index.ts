@@ -203,3 +203,10 @@ export interface ICourseTopic {
   sourceMaterials: ProjectMaterial[];
   sourceReferences: { [key: string]: string };
 }
+
+export interface Learnspace {
+  id: number;
+  nombre: string;
+  descripcion?: string;
+  visibilidad: 'Público' | 'Privado';
+}
