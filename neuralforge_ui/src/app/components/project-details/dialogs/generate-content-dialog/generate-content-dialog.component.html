@@ -4,10 +4,7 @@
   <mat-dialog-content>
     <form [formGroup]="form" class="form-container">
       <mat-form-field appearance="outline" class="full-width">
-        <mat-label>
-          Title
-          <mat-icon matTooltip="Enter the title for the content." matTooltipPosition="above" class="inline-icon">info</mat-icon>
-        </mat-label>
+        <mat-label>Title</mat-label>
         <input matInput formControlName="title" required />
         <mat-error *ngIf="form.get('title')?.hasError('required')">
           Title is required
@@ -17,13 +14,30 @@
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>
           Type
-          <mat-icon matTooltip="Choose the type of content you want to generate, such as a summary, PowerPoint, or concept map." matTooltipPosition="above" class="inline-icon">info</mat-icon>
         </mat-label>
         <mat-select formControlName="type" required>
-          <mat-option value="SUMMARY">Summary</mat-option>
-          <mat-option value="PPT">PPT</mat-option>
-          <mat-option value="CONCEPTMAP">Concept Map</mat-option>
-          <mat-option value="CUESTIONARY">Cuestionary</mat-option>
+          <mat-option value="SUMMARY">
+            <mat-icon 
+            matTooltip="This function summarizes a given text by structuring it into sections with main titles, subtitles, and bullet points. It focuses on key ideas and omits unnecessary content such as references." 
+            matTooltipPosition="above" 
+            class="inline-icon">info</mat-icon>
+            Summary
+          </mat-option>
+          <mat-option value="PPT"><mat-icon 
+            matTooltip="This function generates a structured, text-based presentation with slides containing a title and key points. The content is summarized and written in a concise, educational manner." 
+            matTooltipPosition="above" 
+            class="inline-icon">info</mat-icon>
+            PPT</mat-option>
+          <mat-option value="CONCEPTMAP"><mat-icon 
+            matTooltip="This function generates a concept map with a structured hierarchy. It organizes key concepts, subtopics, and further levels of information in a clear and concise manner, focusing only on relevant content." 
+            matTooltipPosition="above" 
+            class="inline-icon">info</mat-icon>
+            Concept Map</mat-option>
+          <mat-option value="CUESTIONARY"><mat-icon 
+            matTooltip="This function converts a text document into a structured study questionnaire, focusing on key concepts, providing answers, and ensuring the content is organized for easy understanding." 
+            matTooltipPosition="above" 
+            class="inline-icon">info</mat-icon>
+            Cuestionary</mat-option>
         </mat-select>
         <mat-error *ngIf="form.get('type')?.hasError('required')">
           Type is required
@@ -31,10 +45,7 @@
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="full-width">
-        <mat-label>
-          Language
-          <mat-icon matTooltip="Choose the language for the content." matTooltipPosition="above" class="inline-icon">info</mat-icon>
-        </mat-label>
+        <mat-label>Language</mat-label>
         <mat-select formControlName="language" required>
           <mat-option value="English">English</mat-option>
           <mat-option value="Spanish">Spanish</mat-option>

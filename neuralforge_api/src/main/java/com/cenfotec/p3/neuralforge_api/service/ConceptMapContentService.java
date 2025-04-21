@@ -43,16 +43,34 @@ public class ConceptMapContentService {
      */
     public String getConceptMapFromDeepSeek(String text, String language) {
         String instructions = """
-            Genera un mapa conceptual en formato PlantUML siguiendo estas reglas:
-            - NO uses bloques de código Markdown como ```plantuml``` ni ningún otro formato de código.
-            - NO agregues comentarios adicionales, solo devuelve el mapa en formato de texto.
-            - Usa "* " para el concepto principal.
-            - Usa "** " para subtemas directos del concepto principal.
-            - Usa "*** " para subtemas de segundo nivel.
-            - Usa "**** " para subtemas de tercer nivel.
-            - NO agregues "@startmindmap" ni "@endmindmap".
-            - Toma en cuenta solo info importante, que sea un mapa util didacticamente, descarta informacion de formato o referencias"
-           - El contenido debe estar redactado en el siguiente idioma: """ + language + ".";
+            Generate a concept map using PlantUML mindmap format following these strict rules:
+            - DO NOT use Markdown code blocks like ```plantuml``` or any other code delimiters.
+            - DO NOT add any explanations, comments, or metadata—only return the pure text map.
+            - Use "* " for the main concept.
+            - Use "** " for direct subtopics of the main concept.
+            - Use "*** " for second-level subtopics.
+            - Use "**** " for third-level subtopics.
+            - DO NOT include "@startmindmap" or "@endmindmap" in the result.
+            - Focus only on important and relevant educational content.
+            - Discard any content related to formatting, references, or non-conceptual info.
+            - The content must be written in the following language: """ + language + "." + """
+            
+            Example of expected format:
+        
+            * Photosynthesis
+            ** Definition
+            *** Process that converts light into energy
+            ** Key Elements
+            *** Sunlight
+            *** Water
+            *** Carbon Dioxide
+            ** Stages
+            *** Light-dependent reactions
+            *** Light-independent reactions
+            ** Importance
+            *** Produces oxygen
+            *** Supports food chains
+        """;
 
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("model", MODEL_NAME);

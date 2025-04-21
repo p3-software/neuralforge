@@ -44,22 +44,47 @@ public class CuestionaryContentService {
 
     public String getCuestionaryFromDeepSeek(String text, String language) {
         String instructions = """
-        Dame este texto completo convertido en un cuestionario destinado al estudio:
-        - Usa "## " para preguntas.
-        - Usa "### " para respuestas.
-        - Usa "**texto**" para negrita.
-        - Usa "*texto*" para cursiva.
-        - Usa "- " para listas con viñetas en caso de ser necesarias para el resumen.
-        - No agregues comentarios adicionales.
-        - Sigue una estructura en el que el documento solo tenga preguntas y respuestas numeradas del 1 al n, extrayendo la info conmpartida no agregues titulos o numeraciones propias.
-        - Antes de crear el cuestionario, asegúrate de entender el contenido global.
-        - Usa un vocabulario acorde al público objetivo que es estudiantes de secundaria y universitarios.
-        - Usa una estructura lógica y coherente.
-        - No omitas ideas fundamentales.
-        - El cuestionario debe tener solo la información esencial, pero bien conectada.
-        - Omite texto fuera del contenido como referencias, bibliografía, notas fuera de contenido, etc.
-        - Agrega el texto necesario para darle sentido al resumen sin añadir más contenido.
-        - El contenido debe estar redactado en el siguiente idioma: """ + language + ".";
+            Convert the following text into a clear and structured study questionnaire, strictly following these rules:
+            
+            1. Use "## " at the beginning of each question.
+            2. Use "### " at the beginning of each answer.
+            3. Highlight **key concepts** in bold.
+            4. Use *italics* for definitions or additional explanations.
+            5. Use bullet points with "- " when listing complex information.
+            6.Do not add titles, introductions, or model-generated numbering; only generate questions and answers, and add your own numbering to the questions from 1 to n.
+            7. Do not repeat content or generate unnecessary explanations.
+            8. Ensure the output is logically structured and preserves the essential information from the original text.
+            9. Do not include references, bibliographies, or external notes.
+            10. Do not add any comments outside the questionnaire content.
+            11. The style must be accessible to high school and college students.
+            12. Do not use "---"
+            13. The language must be: """ + language + """
+            
+            Before starting, analyze the entire text and ensure you understand it. The goal is to facilitate study by transforming the text into clear questions with complete and informative answers.
+            
+            
+            Example of expected format:
+            ## What is photosynthesis?
+            ### **Photosynthesis** is the process by which **green plants and some organisms** use **sunlight** to synthesize **food** with the help of *chlorophyll*.
+            
+            ## What materials are required for photosynthesis?
+            ### The materials required are:
+            - **Carbon dioxide (CO₂)**
+            - **Water (H₂O)**
+            - **Light energy**
+            
+            ## What are the products of photosynthesis?
+            ### The main products are:
+            - **Glucose (C₆H₁₂O₆)**
+            - **Oxygen (O₂)**
+            
+            ## Where does photosynthesis take place in plant cells?
+            ### Photosynthesis occurs in the **chloroplasts**, which contain *chlorophyll*, the green pigment essential for capturing light energy.
+            
+            ## What is the general equation for photosynthesis?
+            ### The equation is:
+            **6CO₂ + 6H₂O + light energy → C₆H₁₂O₆ + 6O₂**
+            """;
 
         List<String> fragments = splitTextIntoChunks(text, 20000);
         StringBuilder fullCuestionary = new StringBuilder();
@@ -74,7 +99,7 @@ public class CuestionaryContentService {
             } else {
                 messages.add(Map.of("role", "assistant", "content", fullCuestionary.toString().trim()));
                 messages.add(Map.of("role", "user", "content",
-                        "Continúa resumiendo el siguiente fragmento del texto, manteniendo el estilo anterior. Estas son las instrucciones:\n\n"
+                        "Continuing to summarize the following fragment of the text, maintaining the previous style. These are the instructions:\n\n"
                                 + instructions + "\n\n" + fragments.get(i)));
             }
 
@@ -91,9 +116,9 @@ public class CuestionaryContentService {
             HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
 
             try {
-                System.out.println("Enviando solicitud para fragmento " + (i + 1) + "...");
+                System.out.println("Sending request for fragment " + (i + 1) + "...");
                 ResponseEntity<Map> response = restTemplate.exchange(DEEPSEEK_API_URL, HttpMethod.POST, entity, Map.class);
-                System.out.println("Respuesta recibida para fragmento " + (i + 1));
+                System.out.println("Response received for fragment " + (i + 1));
 
                 if (response.getBody() != null && response.getBody().containsKey("choices")) {
                     List<Map<String, Object>> choices = (List<Map<String, Object>>) response.getBody().get("choices");
@@ -102,17 +127,17 @@ public class CuestionaryContentService {
                         if (messageResponse != null && messageResponse.containsKey("content")) {
                             String cuestionary = (String) messageResponse.get("content");
                             fullCuestionary.append(cuestionary).append("\n\n");
-                            System.out.println("Fragmento " + (i + 1) + " procesado correctamente.");
+                            System.out.println("Fragment " + (i + 1) + " processed successfully.");
                         }
                     }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                return "Error al conectar con DeepSeek: " + e.getMessage();
+                return "Error connecting to DeepSeek: " + e.getMessage();
             }
         }
 
-        System.out.println("Resumen final generado.");
+        System.out.println("Final summary generated.");
         return fullCuestionary.toString().trim();
     }
 
@@ -253,7 +278,7 @@ public class CuestionaryContentService {
                     while (matcher.find()) {
                         String segment = matcher.group();
                         PDFont fontToUse = fontRegular;
-                        float textWidth;
+
 
                         if (segment.startsWith("**") && segment.endsWith("**")) {
                             fontToUse = fontBold;
@@ -264,7 +289,7 @@ public class CuestionaryContentService {
                         }
 
                         contentStream.setFont(fontToUse, fontSize);
-                        textWidth = fontToUse.getStringWidth(segment) / 1000 * fontSize;
+
                         contentStream.showText(segment);
                     }
 
@@ -331,14 +356,28 @@ public class CuestionaryContentService {
             float width = font.getStringWidth(testLine) * fontSize / 1000f;
 
             if (width <= maxWidth) {
+
                 line = new StringBuilder(testLine);
             } else {
-                if (line.length() > 0) {
-                    result.append(line).append("\n");
+
+                if (font.getStringWidth(word) * fontSize / 1000f > maxWidth) {
+
+                    while (font.getStringWidth(word) * fontSize / 1000f > maxWidth) {
+                        int splitIndex = word.length() / 2;
+                        result.append(word.substring(0, splitIndex) + "\n");
+                        word = word.substring(splitIndex);
+                    }
+                    line = new StringBuilder(word);
+                } else {
+
+                    if (line.length() > 0) {
+                        result.append(line).append("\n");
+                    }
+                    line = new StringBuilder(word);
                 }
-                line = new StringBuilder(word);
             }
         }
+
 
         if (line.length() > 0) {
             result.append(line);

@@ -18,6 +18,7 @@ import { MatInputModule } from "@angular/material/input";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { MatSelectModule } from "@angular/material/select";
 import { ProjectMaterialService } from "../../../../services/project-material.service";
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: "app-upload-material-dialog",
@@ -34,6 +35,7 @@ import { ProjectMaterialService } from "../../../../services/project-material.se
     MatSelectModule,
     MatIconModule,
     MatProgressSpinnerModule,
+    MatTooltipModule
   ],
 })
 export class UploadMaterialDialogComponent implements OnInit {

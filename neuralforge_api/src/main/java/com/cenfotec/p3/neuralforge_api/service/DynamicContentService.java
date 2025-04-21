@@ -1,18 +1,12 @@
 package com.cenfotec.p3.neuralforge_api.service;
 
 import com.cenfotec.p3.neuralforge_api.model.entity.DynamicContentEntity;
-import com.cenfotec.p3.neuralforge_api.model.entity.ProjectEntity;
-import com.cenfotec.p3.neuralforge_api.model.entity.UserEntity;
-import com.cenfotec.p3.neuralforge_api.model.enums.DynamicContentTypeEnum;
-import com.cenfotec.p3.neuralforge_api.model.enums.UserRoleEnum;
 import com.cenfotec.p3.neuralforge_api.model.mapper.DynamicContentMapper;
 import com.cenfotec.p3.neuralforge_api.model.resource.DynamicContentResource;
 import com.cenfotec.p3.neuralforge_api.repository.DynamicContentRepository;
 import com.cenfotec.p3.neuralforge_api.repository.ProjectMaterialRepository;
-import com.cenfotec.p3.neuralforge_api.repository.ProjectRepository;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -38,11 +32,7 @@ import com.cenfotec.p3.neuralforge_api.model.entity.ProjectMaterialEntity;
  * Service responsible for handling dynamic content operations.
  * Includes text extraction from PDF, summary generation, and PDF creation.
  * Also handles saving dynamic content information to the database.
- *
- * @author Fabian Vargas
- * @version 1.0
  */
-
 @Service
 @RequiredArgsConstructor
 public class DynamicContentService {
@@ -52,9 +42,6 @@ public class DynamicContentService {
 
     @Value("${deepseek.api.bearer-token}")
     private String bearerToken;
-
-    @Autowired
-    ProjectRepository projectRepository;
 
     private final DynamicContentRepository dynamicContentRepository;
     private final ProjectMaterialRepository materialRepository;
@@ -67,12 +54,28 @@ public class DynamicContentService {
     private final String baseUploadDir = "uploads";
     private final String materialsDir = "materials";
 
+    /**
+     * Retrieves all dynamic content associated with a specific project ID.
+     *
+     * @param projectId The ID of the project.
+     * @return A list of dynamic content resources.
+     */
     public List<DynamicContentResource> getByProjectId(String projectId) {
         return dynamicContentRepository.findByProjectId(projectId).stream()
-            .map(dynamicContentMapper::mapToResource)
-            .collect(Collectors.toList());
+                .map(dynamicContentMapper::mapToResource)
+                .collect(Collectors.toList());
     }
 
+    /**
+     * Generates content based on the provided material and type.
+     * Supports different types such as SUMMARY, PPT, CONCEPTMAP, and CUESTIONARY.
+     *
+     * @param projectId The ID of the project.
+     * @param materialId The ID of the material to process.
+     * @param title The title of the generated content.
+     * @param type The type of content to generate.
+     * @param language The language for the generated content.
+     */
     public void generateContent(String projectId, String materialId, String title, String type, String language) {
         ProjectMaterialEntity material = materialRepository.findById(materialId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Material not found"));
@@ -81,24 +84,8 @@ public class DynamicContentService {
         String fileName;
         String extractedText = "";
 
-        if (!"file".equals(material.getType()) || material.getFileUrl() == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Material is not a file");
-        }
-
-        ProjectEntity project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Project not found with id: " + projectId));
-
-        UserEntity user = (UserEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        if (!user.getId().equals(project.getCreatorUserId()) && user.getRole().getName() != UserRoleEnum.ROLE_ADMINISTRATOR){
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You are not allowed to modify this project");
-        }
-
-        // Extract the filename from the URL
-        String fileName = material.getFileUrl().substring(material.getFileUrl().lastIndexOf("/") + 1);
-        Path filePath = Paths.get(baseUploadDir, materialsDir, fileName);
-
         try {
+            // Determine the file URL based on the material type
             if ("file".equals(material.getType())) {
                 fileUrl = material.getFileUrl();
             } else if ("hyperlink".equals(material.getType())) {
@@ -107,8 +94,6 @@ public class DynamicContentService {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported material type");
             }
 
-
-
             if (fileUrl == null) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "File URL is null");
             }
@@ -116,8 +101,8 @@ public class DynamicContentService {
             fileName = fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
             boolean isRemoteFile = fileUrl.startsWith("http");
 
+            // Extract text from the file (remote or local)
             if (isRemoteFile) {
-                // Leer desde URL remota
                 URL url = new URL(fileUrl);
                 try (InputStream inputStream = url.openStream()) {
                     if (fileName.toLowerCase().endsWith(".pdf")) {
@@ -132,7 +117,6 @@ public class DynamicContentService {
                     }
                 }
             } else {
-                // Leer desde archivo local
                 Path filePath = Paths.get(baseUploadDir, materialsDir, fileName);
                 if (!Files.exists(filePath)) {
                     throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Material file not found");
@@ -150,9 +134,9 @@ public class DynamicContentService {
                 }
             }
 
-            // Procesar el texto extraído
             String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
+            // Generate content based on the specified type
             switch (type) {
                 case "SUMMARY":
                     String summary = summaryContentService.getSummaryFromDeepSeek(extractedText, language);
@@ -179,9 +163,15 @@ public class DynamicContentService {
         }
     }
 
+    /**
+     * Downloads the content file associated with the given content ID.
+     *
+     * @param contentId The ID of the content to download.
+     * @return A resource representing the content file.
+     */
     public Resource downloadContent(String contentId) {
         DynamicContentEntity content = dynamicContentRepository.findById(contentId)
-            .orElseThrow(() -> new IllegalArgumentException("Content not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Content not found"));
 
         File file = new File(content.getPath());
         if (!file.exists()) {
@@ -191,14 +181,31 @@ public class DynamicContentService {
         return new FileSystemResource(file);
     }
 
+    /**
+     * Deletes the dynamic content and its associated file.
+     *
+     * @param contentId The ID of the content to delete.
+     */
+    public void deleteDynamicContent(String contentId) {
+        DynamicContentEntity content = dynamicContentRepository.findById(contentId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Content not found"));
 
+        File file = new File(content.getPath());
+        if (file.exists()) {
+            boolean deleted = file.delete();
+            if (!deleted) {
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to delete content file");
+            }
+        }
+
+        dynamicContentRepository.deleteById(contentId);
+    }
 
     /**
-     * Calls the DeepSeek API with the given prompt and returns the raw response.
-     * This method is specifically designed for getting structured data back from DeepSeek.
+     * Sends a prompt to the DeepSeek API and retrieves the raw response.
      *
-     * @param prompt The prompt to send to DeepSeek API.
-     * @return The raw response string from DeepSeek API.
+     * @param prompt The prompt to send to the API.
+     * @return The raw response from the API.
      */
     public String sendToDeepSeekAndGetRawResponse(String prompt) {
         Map<String, Object> requestBody = new HashMap<>();
@@ -231,5 +238,4 @@ public class DynamicContentService {
         }
         throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to get valid response from DeepSeek API");
     }
-
 }

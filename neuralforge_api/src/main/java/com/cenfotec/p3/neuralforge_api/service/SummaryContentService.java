@@ -41,30 +41,60 @@ public class SummaryContentService {
 
     public String getSummaryFromDeepSeek(String text, String language) {
         String instructions = """
-        Dame este texto completo con las siguientes reglas:
-        - Usa "# " para títulos principales.
-        - Usa "## " para subtítulos.
-        - Usa "### " para sub-subtítulos.
-        - Utiliza solo estos 3 tipos de titulo no más.
-        - Los títulos deben ser procesados correctamente y no deben ser fragmentados.
-        - Los títulos deben empezar con mayúscula aun si tienen una numeracion antes y deben ser completos, no cortados.
-        - Usa "**texto**" para negrita.
-        - Usa "*texto*" para cursiva.
-        - Usa "- " para listas con viñetas en caso de ser necesarias para el resumen.
-        - No agregues comentarios adicionales.
-        - Antes de resumir, asegúrate de entender el contenido global.
-        - Usa un vocabulario acorde al público objetivo que es estudiantes de secundaria y universitarios.
-        - Usa una estructura lógica y coherente y resume por secciones.
-        - No omitas ideas fundamentales.
-        - El resumen debe tener solo la información esencial, pero bien conectada.
-        - Omite texto fuera del contenido como referencias, bibliografía, notas fuera de contenido, etc.
-        - Agrega el texto necesario para darle sentido al resumen sin añadir más contenido.
-        - El contenido debe estar redactado en el siguiente idioma: """ + language + ".";
+            Summarize the text using the following rules:
+            
+            - Use "# " for main titles.
+            - Use "## " for subtitles.
+            - Use "### " for sub-subtitles.
+            - Only use these 3 types of headings—no more.
+            - Headings must be processed correctly and not be fragmented.
+            - Headings must start with a capital letter, even if preceded by numbering, and should not be cut off.
+            - Use "**text**" for bold.
+            - Use "*text*" for italic.
+            - Use "- " for bullet lists when appropriate.
+            - Do not include extra comments or explanations outside the main content.
+            - Understand the overall content before summarizing.
+            - Use vocabulary appropriate for high school and college students.
+            - Maintain a logical and coherent structure. Summarize by sections.
+            - Do not skip essential ideas.
+            - The summary should contain only essential information but remain well connected.
+            - Omit sections such as references, bibliography, and footnotes.
+            - Add necessary transitions for clarity without introducing new content.
+            - Do not use "---"
+            - The output must be in this language: """ + language + """
+            
+            Example of the expected format (output only, do not include original text):
+            
+            # Photosynthesis
+            
+            ## Definition And Importance
+            
+            **Photosynthesis** is a process where **green plants** and some **organisms** use *sunlight* to convert *carbon dioxide* and *water* into **glucose**. This process is vital for life on Earth because:
+            
+            - It produces **oxygen** for respiration.
+            - It provides **glucose**, the foundation of most food chains.
+            
+            ## Where It Happens
+            
+            Photosynthesis occurs in **chloroplasts**, specialized cell structures in plants. These contain **chlorophyll**, a pigment that absorbs sunlight.
+            
+            ## General Equation
+            
+            The general photosynthesis equation is:
+            
+            **6CO₂ + 6H₂O + light energy → C₆H₁₂O₆ + 6O₂**
+            
+            ### Key Concepts
+            
+            - **Carbon dioxide** and **water** are the inputs.
+            - **Light energy** is essential for the reaction.
+            - **Oxygen** is produced as a *byproduct*.
+            """;
 
-        List<String> fragments = splitTextIntoChunks(text, 1000000);
+        List<String> fragments = splitTextIntoChunks(text, 20000);
         StringBuilder fullSummary = new StringBuilder();
 
-        System.out.println("Iniciando el proceso de resumen...");
+        System.out.println("Starting the summarization process...");
 
         for (int i = 0; i < fragments.size(); i++) {
             List<Map<String, String>> messages = new ArrayList<>();
@@ -74,7 +104,7 @@ public class SummaryContentService {
             } else {
                 messages.add(Map.of("role", "assistant", "content", fullSummary.toString().trim()));
                 messages.add(Map.of("role", "user", "content",
-                        "Continúa resumiendo el siguiente fragmento del texto, manteniendo el estilo anterior. Estas son las instrucciones:\n\n"
+                        "Continuing to summarize the following fragment of the text, maintaining the previous style. These are the instructions:\n\n"
                                 + instructions + "\n\n" + fragments.get(i)));
             }
 
@@ -91,9 +121,9 @@ public class SummaryContentService {
             HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
 
             try {
-                System.out.println("Enviando solicitud para fragmento " + (i + 1) + "...");
+                System.out.println("Sending request for fragment " + (i + 1) + "...");
                 ResponseEntity<Map> response = restTemplate.exchange(DEEPSEEK_API_URL, HttpMethod.POST, entity, Map.class);
-                System.out.println("Respuesta recibida para fragmento " + (i + 1));
+                System.out.println("Response received for fragment " + (i + 1));
 
                 if (response.getBody() != null && response.getBody().containsKey("choices")) {
                     List<Map<String, Object>> choices = (List<Map<String, Object>>) response.getBody().get("choices");
@@ -102,17 +132,17 @@ public class SummaryContentService {
                         if (messageResponse != null && messageResponse.containsKey("content")) {
                             String summary = (String) messageResponse.get("content");
                             fullSummary.append(summary).append("\n\n");
-                            System.out.println("Fragmento " + (i + 1) + " procesado correctamente.");
+                            System.out.println("Fragment " + (i + 1) + " processed successfully.");
                         }
                     }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                return "Error al conectar con DeepSeek: " + e.getMessage();
+                return "Error connecting to DeepSeek: " + e.getMessage();
             }
         }
 
-        System.out.println("Resumen final generado.");
+        System.out.println("Final summary generated.");
         return fullSummary.toString().trim();
     }
 
@@ -331,14 +361,28 @@ public class SummaryContentService {
             float width = font.getStringWidth(testLine) * fontSize / 1000f;
 
             if (width <= maxWidth) {
+
                 line = new StringBuilder(testLine);
             } else {
-                if (line.length() > 0) {
-                    result.append(line).append("\n");
+
+                if (font.getStringWidth(word) * fontSize / 1000f > maxWidth) {
+
+                    while (font.getStringWidth(word) * fontSize / 1000f > maxWidth) {
+                        int splitIndex = word.length() / 2;
+                        result.append(word.substring(0, splitIndex) + "\n");
+                        word = word.substring(splitIndex);
+                    }
+                    line = new StringBuilder(word);
+                } else {
+
+                    if (line.length() > 0) {
+                        result.append(line).append("\n");
+                    }
+                    line = new StringBuilder(word);
                 }
-                line = new StringBuilder(word);
             }
         }
+
 
         if (line.length() > 0) {
             result.append(line);

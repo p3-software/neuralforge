@@ -22,7 +22,6 @@ export class DynamicContentService extends BaseService<IDynamicContent> {
     type: string,
     language: string
   ): Observable<void> {
-    // Imprimir los datos que se están enviando
     console.log('Enviando datos al servidor:', {
       projectId,
       materialId,
@@ -31,7 +30,6 @@ export class DynamicContentService extends BaseService<IDynamicContent> {
       language
     });
   
-    // Realizar la solicitud POST
     return this.http.post<void>(`${this.source}/generate`, {
       projectId,
       materialId,
@@ -40,6 +38,7 @@ export class DynamicContentService extends BaseService<IDynamicContent> {
       language
     });
   }
+  
   download(contentId: string): Observable<ArrayBuffer> {
     return this.http.get(`${this.source}/download/${contentId}`, {
       responseType: "arraybuffer",
