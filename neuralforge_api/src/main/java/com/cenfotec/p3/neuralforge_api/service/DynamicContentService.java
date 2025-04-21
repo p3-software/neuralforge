@@ -49,7 +49,7 @@ public class DynamicContentService {
     private final SummaryContentService summaryContentService;
     private final PPTContentService pptContentService;
     private final ConceptMapContentService conceptMapContentService;
-    private final CuestionaryContentService cuestionaryContentService;
+    private final QuestionnaireContentService questionnaireContentService;
 
     private final String baseUploadDir = "uploads";
     private final String materialsDir = "materials";
@@ -150,9 +150,9 @@ public class DynamicContentService {
                     String conceptMapContent = conceptMapContentService.getConceptMapFromDeepSeek(extractedText, language);
                     conceptMapContentService.savePlantUmlDiagram(conceptMapContent, title, username, type, projectId);
                     break;
-                case "CUESTIONARY":
-                    String cuestionary = cuestionaryContentService.getCuestionaryFromDeepSeek(extractedText, language);
-                    cuestionaryContentService.savePdf(cuestionary, title, username, type, projectId);
+                case "QUESTIONNAIRE":
+                    String questionnaire = questionnaireContentService.getQuestionnaireFromDeepSeek(extractedText, language);
+                    questionnaireContentService.savePdf(questionnaire, title, username, type, projectId);
                     break;
                 default:
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported content type");

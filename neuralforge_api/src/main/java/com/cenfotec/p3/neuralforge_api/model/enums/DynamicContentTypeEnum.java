@@ -22,7 +22,7 @@ public enum DynamicContentTypeEnum {
     CONCEPTMAP,
 
     /**
-     * Type representing a CUESTIONARY
+     * Type representing a QUESTIONNAIRE
      */
-    CUESTIONARY
+    QUESTIONNAIRE,
 }

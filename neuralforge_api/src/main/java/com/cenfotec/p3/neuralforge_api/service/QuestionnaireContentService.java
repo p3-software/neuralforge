@@ -28,7 +28,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
-public class CuestionaryContentService {
+public class QuestionnaireContentService {
 
     private static final String DEEPSEEK_API_URL = "https://api.deepseek.com/chat/completions";
     private static final String MODEL_NAME = "deepseek-chat";
@@ -38,11 +38,11 @@ public class CuestionaryContentService {
 
     private final DynamicContentRepository dynamicContentRepository;
 
-    public CuestionaryContentService(DynamicContentRepository dynamicContentRepository) {
+    public QuestionnaireContentService(DynamicContentRepository dynamicContentRepository) {
         this.dynamicContentRepository = dynamicContentRepository;
     }
 
-    public String getCuestionaryFromDeepSeek(String text, String language) {
+    public String getQuestionnaireFromDeepSeek(String text, String language) {
         String instructions = """
             Convert the following text into a clear and structured study questionnaire, strictly following these rules:
             
@@ -57,7 +57,7 @@ public class CuestionaryContentService {
             9. Do not include references, bibliographies, or external notes.
             10. Do not add any comments outside the questionnaire content.
             11. The style must be accessible to high school and college students.
-            12. Do not use "---"
+            12. Do not use "---" to separate questions or ANYWHERE IMPORTANT.
             13. The language must be: """ + language + """
             
             Before starting, analyze the entire text and ensure you understand it. The goal is to facilitate study by transforming the text into clear questions with complete and informative answers.
@@ -99,7 +99,7 @@ public class CuestionaryContentService {
             } else {
                 messages.add(Map.of("role", "assistant", "content", fullCuestionary.toString().trim()));
                 messages.add(Map.of("role", "user", "content",
-                        "Continuing to summarize the following fragment of the text, maintaining the previous style. These are the instructions:\n\n"
+                        "Just continue the following fragment of the text, maintaining the previous style, do not use (---) to separate questions or ANYWHERE, do not add any extra explanation. These are the instructions of the whole summary:\n\n"
                                 + instructions + "\n\n" + fragments.get(i)));
             }
 

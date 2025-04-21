@@ -60,7 +60,7 @@ public class SummaryContentService {
             - The summary should contain only essential information but remain well connected.
             - Omit sections such as references, bibliography, and footnotes.
             - Add necessary transitions for clarity without introducing new content.
-            - Do not use "---"
+            - Do not use "---" to separate sections or ANYWHERE IMPORTANT.
             - The output must be in this language: """ + language + """
             
             Example of the expected format (output only, do not include original text):
@@ -104,7 +104,7 @@ public class SummaryContentService {
             } else {
                 messages.add(Map.of("role", "assistant", "content", fullSummary.toString().trim()));
                 messages.add(Map.of("role", "user", "content",
-                        "Continuing to summarize the following fragment of the text, maintaining the previous style. These are the instructions:\n\n"
+                        "Just continue the following fragment of the text, maintaining the previous style, do not use (---) to separate sections or ANYWHERE, do not add any extra explanation. These are the instructions of the whole summary:\n\n"
                                 + instructions + "\n\n" + fragments.get(i)));
             }
 
