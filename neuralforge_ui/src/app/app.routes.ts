@@ -20,6 +20,7 @@ import { UsersComponent } from "./pages/users/users.component";
 import {ProjectGlobalViewComponent} from "./pages/projects/project-global-view/project-global-view.component";
 import {VirtualClassDashboardComponent} from "./pages/virtual-class-dashboard/virtual-class-dashboard.component";
 import {VirtualClass} from "./pages/virtual-class/virtual-class.component";
+import { QuizDetailComponent } from "./components/quiz/quiz-detail/quiz-detail.component";
 
 /**
  * Application routes configuration.
@@ -94,6 +95,15 @@ export const routes: Routes = [
         data: {
           authorities: [IRoleType.admin, IRoleType.teacher, IRoleType.student],
           name: "Learning Project",
+          showInSidebar: false,
+        },
+      },
+      {
+        path: "projects/:id/quiz/:quizId",
+        component: QuizDetailComponent,
+        data: {
+          authorities: [IRoleType.admin, IRoleType.teacher, IRoleType.student],
+          name: "Quiz Details",
           showInSidebar: false,
         },
       },

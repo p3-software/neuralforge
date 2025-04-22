@@ -1,0 +1,98 @@
+<div class="quiz-detail-container">
+  <div class="quiz-detail-header">
+    <button mat-button color="primary" (click)="navigateBack()">
+      <mat-icon>arrow_back</mat-icon> Back to Project
+    </button>
+    
+    <h1 *ngIf="quiz">{{ quiz.title }}</h1>
+    
+    <div class="header-actions" *ngIf="quiz">
+      <button mat-raised-button color="warn" (click)="deleteQuiz()">
+        <mat-icon>delete</mat-icon> Delete Quiz
+      </button>
+    </div>
+  </div>
+
+  <ng-container *ngIf="isLoading">
+    <div class="loading-container">
+      <mat-spinner diameter="40"></mat-spinner>
+      <p>Loading quiz...</p>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="!isLoading && error">
+    <div class="error-container">
+      <mat-icon color="warn">error</mat-icon>
+      <h2>Error loading quiz</h2>
+      <p>{{ error }}</p>
+      <button mat-raised-button color="primary" (click)="loadQuiz()">Try Again</button>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="!isLoading && !error && quiz">
+    <div class="quiz-detail-content">
+      <mat-card class="quiz-info-card">
+        <mat-card-content>
+          <div class="quiz-description" *ngIf="quiz.description">
+            {{ quiz.description }}
+          </div>
+          
+          <div class="quiz-metadata">
+            <div class="metadata-item">
+              <mat-icon>question_answer</mat-icon>
+              <span>{{ quiz.questions.length || 0 }} Questions</span>
+            </div>
+            <div class="metadata-item">
+              <mat-icon>calendar_today</mat-icon>
+              <span>Created on {{ formatDate(quiz.createdAt) }}</span>
+            </div>
+          </div>
+          
+          <div class="quiz-actions">
+            <button mat-raised-button color="primary" (click)="startQuiz()">
+              <mat-icon>play_arrow</mat-icon> Start Quiz
+            </button>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <div class="questions-preview">
+        <h2>Preview Questions</h2>
+        
+        <mat-accordion>
+          <mat-expansion-panel *ngFor="let question of quiz.questions; let i = index">
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                Question {{ i + 1 }}
+              </mat-panel-title>
+              <mat-panel-description>
+                {{ question.questionText.length > 50 ? question.questionText.substring(0, 50) + '...' : question.questionText }}
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+            
+            <div class="question-content">
+              <p class="question-text">{{ question.questionText }}</p>
+              
+              <div class="answer-options">
+                <div 
+                  *ngFor="let answer of question.answers" 
+                  class="answer-option"
+                  [class.correct-answer]="answer.isCorrect">
+                  <div class="answer-letter">{{ ['A', 'B', 'C', 'D'][answer.answerOrder - 1] }}</div>
+                  <div class="answer-text">{{ answer.answerText }}</div>
+                  <mat-icon *ngIf="answer.isCorrect" class="correct-icon" color="primary">check_circle</mat-icon>
+                </div>
+              </div>
+              
+              <div class="explanation" *ngIf="question.explanation">
+                <mat-divider></mat-divider>
+                <h4>Explanation</h4>
+                <p>{{ question.explanation }}</p>
+              </div>
+            </div>
+          </mat-expansion-panel>
+        </mat-accordion>
+      </div>
+    </div>
+  </ng-container>
+</div>
