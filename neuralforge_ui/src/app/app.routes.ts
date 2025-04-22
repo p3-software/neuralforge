@@ -21,6 +21,8 @@ import {ProjectGlobalViewComponent} from "./pages/projects/project-global-view/p
 import {VirtualClassDashboardComponent} from "./pages/virtual-class-dashboard/virtual-class-dashboard.component";
 import {VirtualClass} from "./pages/virtual-class/virtual-class.component";
 import { QuizDetailComponent } from "./components/quiz/quiz-detail/quiz-detail.component";
+import { QuizTakeComponent } from "./components/quiz/quiz-take/quiz-take.component";
+import { QuizResultComponent } from "./components/quiz/quiz-result/quiz-result.component";
 
 /**
  * Application routes configuration.
@@ -104,6 +106,24 @@ export const routes: Routes = [
         data: {
           authorities: [IRoleType.admin, IRoleType.teacher, IRoleType.student],
           name: "Quiz Details",
+          showInSidebar: false,
+        },
+      },
+      {
+        path: "quizzes/:quizId/take",
+        component: QuizTakeComponent,
+        data: {
+          authorities: [IRoleType.admin, IRoleType.teacher, IRoleType.student],
+          name: "Take Quiz",
+          showInSidebar: false,
+        },
+      },
+      {
+        path: "quizzes/:quizId/attempts/:attemptId",
+        component: QuizResultComponent,
+        data: {
+          authorities: [IRoleType.admin, IRoleType.teacher, IRoleType.student],
+          name: "Quiz Result",
           showInSidebar: false,
         },
       },

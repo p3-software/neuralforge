@@ -1,19 +1,19 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { Quiz } from '../../../models/quiz.model';
-import { QuizService } from '../../../services/quiz.service';
-import { AlertService } from '../../../services/alert.service';
-import { Router } from '@angular/router';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { MatIconModule } from '@angular/material/icon';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { QuizGenerateDialogComponent } from '../quiz-generate-dialog/quiz-generate-dialog.component';
+import { CommonModule } from "@angular/common";
+import { Component, Input, OnInit } from "@angular/core";
+import { MatButtonModule } from "@angular/material/button";
+import { MatCardModule } from "@angular/material/card";
+import { MatDialog, MatDialogModule } from "@angular/material/dialog";
+import { MatIconModule } from "@angular/material/icon";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import { MatTooltipModule } from "@angular/material/tooltip";
+import { Router } from "@angular/router";
+import { Quiz } from "../../../models/quiz.model";
+import { AlertService } from "../../../services/alert.service";
+import { QuizService } from "../../../services/quiz.service";
+import { QuizGenerateDialogComponent } from "../quiz-generate-dialog/quiz-generate-dialog.component";
 
 @Component({
-  selector: 'app-quiz-list',
+  selector: "app-quiz-list",
   standalone: true,
   imports: [
     CommonModule,
@@ -22,14 +22,14 @@ import { QuizGenerateDialogComponent } from '../quiz-generate-dialog/quiz-genera
     MatIconModule,
     MatTooltipModule,
     MatProgressSpinnerModule,
-    MatDialogModule
+    MatDialogModule,
   ],
-  templateUrl: './quiz-list.component.html',
-  styleUrls: ['./quiz-list.component.scss']
+  templateUrl: "./quiz-list.component.html",
+  styleUrls: ["./quiz-list.component.scss"],
 })
 export class QuizListComponent implements OnInit {
   @Input() projectId!: string;
-  
+
   quizzes: Quiz[] = [];
   isLoading = false;
   error: string | null = null;
@@ -55,20 +55,20 @@ export class QuizListComponent implements OnInit {
         this.isLoading = false;
       },
       error: (err) => {
-        this.error = 'Failed to load quizzes. Please try again.';
+        this.error = "Failed to load quizzes. Please try again.";
         this.isLoading = false;
-        console.error('Error loading quizzes:', err);
-      }
+        console.error("Error loading quizzes:", err);
+      },
     });
   }
 
   openGenerateQuizDialog(): void {
     const dialogRef = this.dialog.open(QuizGenerateDialogComponent, {
-      width: '500px',
-      data: { projectId: this.projectId }
+      width: "500px",
+      data: { projectId: this.projectId },
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         this.loadQuizzes();
       }
@@ -81,19 +81,25 @@ export class QuizListComponent implements OnInit {
     if (confirm(`Are you sure you want to delete the quiz "${quiz.title}"?`)) {
       this.quizService.deleteQuiz(quiz.id).subscribe({
         next: () => {
-          this.alertService.displayAlert('success', 'Quiz deleted successfully');
+          this.alertService.displayAlert(
+            "success",
+            "Quiz deleted successfully"
+          );
           this.loadQuizzes();
         },
         error: (err) => {
-          this.alertService.displayAlert('error', 'Failed to delete quiz. Please try again.');
-          console.error('Error deleting quiz:', err);
-        }
+          this.alertService.displayAlert(
+            "error",
+            "Failed to delete quiz. Please try again."
+          );
+          console.error("Error deleting quiz:", err);
+        },
       });
     }
   }
 
   navigateToQuiz(quiz: Quiz): void {
-    this.router.navigate(['/projects', this.projectId, 'quiz', quiz.id]);
+    this.router.navigate(["app/projects", this.projectId, "quiz", quiz.id]);
   }
 
   formatDate(date: Date): string {

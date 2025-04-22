@@ -49,6 +49,7 @@ public class QuizMapper {
                 .title(entity.getTitle())
                 .description(entity.getDescription())
                 .projectId(entity.getProject().getId())
+                .projectType(entity.getProject().getProjectType().name())
                 .questions(entity.getQuestions() != null ? entity.getQuestions().stream()
                         .map(questionMapper::mapToResource)
                         .collect(Collectors.toList()) : new ArrayList<>())

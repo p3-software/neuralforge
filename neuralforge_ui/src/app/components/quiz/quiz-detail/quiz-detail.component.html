@@ -56,38 +56,53 @@
         </mat-card-content>
       </mat-card>
 
-      <div class="questions-preview">
-        <h2>Preview Questions</h2>
+      <div class="quiz-attempts-history">
+        <h2>Your Attempt History</h2>
         
-        <mat-accordion>
-          <mat-expansion-panel *ngFor="let question of quiz.questions; let i = index">
+        <div *ngIf="loadingAttempts" class="loading-container">
+          <mat-spinner diameter="30"></mat-spinner>
+          <p>Loading attempts...</p>
+        </div>
+        
+        <div *ngIf="!loadingAttempts && quizAttempts.length === 0" class="no-attempts">
+          <p>You haven't taken this quiz yet. Click 'Start Quiz' to begin!</p>
+        </div>
+        
+        <mat-accordion *ngIf="!loadingAttempts && quizAttempts.length > 0">
+          <mat-expansion-panel *ngFor="let attempt of quizAttempts; let i = index">
             <mat-expansion-panel-header>
               <mat-panel-title>
-                Question {{ i + 1 }}
+                Attempt #{{ quizAttempts.length - i }}
               </mat-panel-title>
               <mat-panel-description>
-                {{ question.questionText.length > 50 ? question.questionText.substring(0, 50) + '...' : question.questionText }}
+                {{ formatDate(attempt.completedAt) }} - Score: {{ attempt.score }}%
               </mat-panel-description>
             </mat-expansion-panel-header>
             
-            <div class="question-content">
-              <p class="question-text">{{ question.questionText }}</p>
-              
-              <div class="answer-options">
-                <div 
-                  *ngFor="let answer of question.answers" 
-                  class="answer-option"
-                  [class.correct-answer]="answer.isCorrect">
-                  <div class="answer-letter">{{ ['A', 'B', 'C', 'D'][answer.answerOrder - 1] }}</div>
-                  <div class="answer-text">{{ answer.answerText }}</div>
-                  <mat-icon *ngIf="answer.isCorrect" class="correct-icon" color="primary">check_circle</mat-icon>
+            <div class="attempt-details">
+              <div class="attempt-metadata">
+                <div class="metadata-item">
+                  <mat-icon>play_arrow</mat-icon>
+                  <span>Started: {{ formatDate(attempt.startedAt) }}</span>
+                </div>
+                <div class="metadata-item">
+                  <mat-icon>check_circle</mat-icon>
+                  <span>Completed: {{ formatDate(attempt.completedAt) }}</span>
+                </div>
+                <div class="metadata-item" [ngClass]="{
+                  'score-excellent': attempt.score >= 80,
+                  'score-good': attempt.score >= 60 && attempt.score < 80,
+                  'score-needs-improvement': attempt.score < 60
+                }">
+                  <mat-icon>stars</mat-icon>
+                  <span>Score: {{ attempt.score }}%</span>
                 </div>
               </div>
               
-              <div class="explanation" *ngIf="question.explanation">
-                <mat-divider></mat-divider>
-                <h4>Explanation</h4>
-                <p>{{ question.explanation }}</p>
+              <div class="attempt-actions">
+                <button mat-raised-button color="primary" (click)="viewAttemptDetails(attempt.id)">
+                  <mat-icon>visibility</mat-icon> View Details
+                </button>
               </div>
             </div>
           </mat-expansion-panel>

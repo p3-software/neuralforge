@@ -4,6 +4,7 @@ export interface Quiz {
   title: string;
   description: string;
   projectId: string;
+  projectType?: string;
   questions: QuizQuestion[];
   createdAt: Date;
   lastModifiedAt: Date;
@@ -47,4 +48,7 @@ export interface QuizUserAnswer {
   selectedAnswerId: string;
   selectedAnswerText: string;
   isCorrect: boolean;
+  explanation: string;
+  correctAnswerId?: string;
+  correctAnswerText?: string;
 }

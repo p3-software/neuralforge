@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Repository interface for {@link QuizUserAnswerEntity} operations.
@@ -31,5 +32,5 @@ public interface QuizUserAnswerRepository extends JpaRepository<QuizUserAnswerEn
      * @param questionId The ID of the question.
      * @return The user answer for the question in the attempt.
      */
-    QuizUserAnswerEntity findByAttemptIdAndQuestionId(String attemptId, String questionId);
+    Optional<QuizUserAnswerEntity> findByAttemptIdAndQuestionId(String attemptId, String questionId);
 }

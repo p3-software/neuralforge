@@ -84,10 +84,27 @@
     }
   }
   
-  .questions-preview {
+  .quiz-attempts-history {
     h2 {
       margin-bottom: 16px;
       font-weight: 500;
+    }
+    
+    .loading-container {
+      padding: 20px 0;
+    }
+    
+    .no-attempts {
+      padding: 24px;
+      text-align: center;
+      background-color: #f5f5f5;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      
+      p {
+        color: #616161;
+        font-style: italic;
+      }
     }
     
     mat-expansion-panel {
@@ -99,70 +116,51 @@
         text-overflow: ellipsis;
         white-space: nowrap;
       }
-    }
-    
-    .question-content {
-      .question-text {
-        font-size: 16px;
-        line-height: 1.6;
-        margin-bottom: 16px;
+      
+      .attempt-details {
+        padding: 12px 0;
       }
       
-      .answer-options {
+      .attempt-metadata {
         display: flex;
         flex-direction: column;
         gap: 12px;
-        margin-bottom: 20px;
+        margin-bottom: 16px;
         
-        .answer-option {
+        @media (min-width: 768px) {
+          flex-direction: row;
+          flex-wrap: wrap;
+        }
+        
+        .metadata-item {
           display: flex;
           align-items: center;
-          padding: 12px;
-          border-radius: 4px;
-          border: 1px solid #e0e0e0;
-          position: relative;
+          margin-right: 24px;
           
-          &.correct-answer {
-            background-color: rgba(76, 175, 80, 0.08);
-            border-color: rgba(76, 175, 80, 0.3);
+          mat-icon {
+            margin-right: 8px;
+            font-size: 20px;
+            height: 20px;
+            width: 20px;
           }
-          
-          .answer-letter {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 24px;
-            height: 24px;
-            background-color: #f5f5f5;
-            border-radius: 50%;
-            margin-right: 12px;
-            font-weight: 500;
-          }
-          
-          .answer-text {
-            flex: 1;
-          }
-          
-          .correct-icon {
-            margin-left: 8px;
-          }
+        }
+        
+        .score-excellent {
+          color: #2e7d32;
+        }
+        
+        .score-good {
+          color: #ff8f00;
+        }
+        
+        .score-needs-improvement {
+          color: #c62828;
         }
       }
       
-      .explanation {
-        margin-top: 20px;
-        padding-top: 20px;
-        
-        h4 {
-          margin-bottom: 8px;
-          font-weight: 500;
-          color: #3f51b5;
-        }
-        
-        p {
-          color: #616161;
-          line-height: 1.6;
-        }
+      .attempt-actions {
+        display: flex;
+        justify-content: flex-end;
       }
     }
   }

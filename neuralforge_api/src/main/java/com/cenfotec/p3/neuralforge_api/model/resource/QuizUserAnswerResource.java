@@ -52,4 +52,19 @@ public class QuizUserAnswerResource {
      * Indicates if the selected answer was correct.
      */
     private boolean isCorrect;
+    
+    /**
+     * Explanation of the correct answer.
+     */
+    private String explanation;
+    
+    /**
+     * The ID of the correct answer (useful when user selects wrong answer).
+     */
+    private String correctAnswerId;
+    
+    /**
+     * The text of the correct answer (useful when user selects wrong answer).
+     */
+    private String correctAnswerText;
 }

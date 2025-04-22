@@ -1,6 +1,8 @@
 package com.cenfotec.p3.neuralforge_api.controller;
 
+import com.cenfotec.p3.neuralforge_api.model.resource.QuizAttemptResource;
 import com.cenfotec.p3.neuralforge_api.model.resource.QuizResource;
+import com.cenfotec.p3.neuralforge_api.model.resource.QuizUserAnswerResource;
 import com.cenfotec.p3.neuralforge_api.service.QuizService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -95,5 +97,73 @@ public class QuizController {
     public ResponseEntity<Void> deleteQuiz(@PathVariable String id) {
         quizService.deleteQuiz(id);
         return ResponseEntity.noContent().build();
+    }
+    
+    /**
+     * Starts a new quiz attempt for the authenticated user.
+     *
+     * @param quizId The ID of the quiz to start.
+     * @return A ResponseEntity containing the created quiz attempt.
+     */
+    @PostMapping("/{quizId}/attempts")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<QuizAttemptResource> startQuizAttempt(@PathVariable String quizId) {
+        QuizAttemptResource attempt = quizService.startQuizAttempt(quizId);
+        return ResponseEntity.ok(attempt);
+    }
+    
+    /**
+     * Submits an answer for a specific question in a quiz attempt.
+     *
+     * @param attemptId The ID of the quiz attempt.
+     * @param userAnswer The user answer resource containing the answer data.
+     * @return A ResponseEntity containing the updated quiz attempt with answer feedback.
+     */
+    @PostMapping("/attempts/{attemptId}/answers")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<QuizUserAnswerResource> submitAnswer(
+            @PathVariable String attemptId,
+            @Valid @RequestBody QuizUserAnswerResource userAnswer) {
+        QuizUserAnswerResource savedAnswer = quizService.saveQuizUserAnswer(attemptId, userAnswer);
+        return ResponseEntity.ok(savedAnswer);
+    }
+    
+    /**
+     * Completes a quiz attempt, calculating the final score.
+     *
+     * @param attemptId The ID of the quiz attempt to complete.
+     * @return A ResponseEntity containing the completed quiz attempt with score.
+     */
+    @PostMapping("/attempts/{attemptId}/complete")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<QuizAttemptResource> completeQuizAttempt(@PathVariable String attemptId) {
+        QuizAttemptResource completedAttempt = quizService.completeQuizAttempt(attemptId);
+        return ResponseEntity.ok(completedAttempt);
+    }
+    
+    /**
+     * Gets all attempts for a specific quiz by the authenticated user.
+     *
+     * @param quizId The ID of the quiz to get attempts for.
+     * @return A ResponseEntity containing the list of quiz attempts.
+     */
+    @GetMapping("/{quizId}/attempts")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<List<QuizAttemptResource>> getQuizAttempts(@PathVariable String quizId) {
+        List<QuizAttemptResource> attempts = quizService.getQuizAttempts(quizId);
+        return ResponseEntity.ok(attempts);
+    }
+    
+    /**
+     * Gets a specific quiz attempt by ID.
+     *
+     * @param attemptId The ID of the quiz attempt to retrieve.
+     * @return A ResponseEntity containing the quiz attempt.
+     */
+    @GetMapping("/attempts/{attemptId}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<QuizAttemptResource> getQuizAttempt(@PathVariable String attemptId) {
+        QuizAttemptResource attempt = quizService.getQuizAttempt(attemptId);
+        return ResponseEntity.ok(attempt);
     }
 }

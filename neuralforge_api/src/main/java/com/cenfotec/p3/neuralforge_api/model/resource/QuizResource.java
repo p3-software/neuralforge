@@ -52,6 +52,12 @@ public class QuizResource {
     private String projectId;
     
     /**
+     * The project type (learning, teaching, or programmed_goal)
+     * This eliminates the need for separate API calls to determine project type
+     */
+    private String projectType;
+    
+    /**
      * List of questions in this quiz.
      */
     private List<QuizQuestionResource> questions;
