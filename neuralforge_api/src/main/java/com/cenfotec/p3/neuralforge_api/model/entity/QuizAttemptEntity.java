@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -44,7 +46,8 @@ public class QuizAttemptEntity {
      * The user who attempted the quiz.
      */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(name = "FK_quizattempt_user"))
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private UserEntity user;
     
     /**
@@ -64,6 +67,7 @@ public class QuizAttemptEntity {
      * When an attempt is deleted, all associated answer selections will also be removed.
      */
     @OneToMany(mappedBy = "attempt", cascade = CascadeType.ALL, orphanRemoval = true)
+    @lombok.Builder.Default
     private List<QuizUserAnswerEntity> userAnswers = new ArrayList<>();
     
     /**
