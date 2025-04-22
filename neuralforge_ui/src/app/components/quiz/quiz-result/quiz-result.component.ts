@@ -1,4 +1,4 @@
-import { CommonModule, Location } from "@angular/common";
+import { CommonModule } from "@angular/common";
 import { Component, OnInit } from "@angular/core";
 import { MatButtonModule } from "@angular/material/button";
 import { MatCardModule } from "@angular/material/card";
@@ -43,8 +43,7 @@ export class QuizResultComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private attemptService: QuizAttemptService,
-    private alertService: AlertService,
-    private _location: Location
+    private alertService: AlertService
   ) {}
 
   ngOnInit(): void {
@@ -127,7 +126,7 @@ export class QuizResultComponent implements OnInit {
     return "Unknown";
   }
 
-  navigateToQuiz(): void {
-    this._location.back();
+  navigateToDashboard(): void {
+    this.router.navigate(["app/dashboard"]);
   }
 }
