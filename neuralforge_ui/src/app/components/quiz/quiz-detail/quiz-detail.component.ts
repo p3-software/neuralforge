@@ -2,6 +2,7 @@ import { CommonModule, Location } from "@angular/common";
 import { Component, OnInit } from "@angular/core";
 import { MatButtonModule } from "@angular/material/button";
 import { MatCardModule } from "@angular/material/card";
+import { MatDialog } from "@angular/material/dialog";
 import { MatDividerModule } from "@angular/material/divider";
 import { MatExpansionModule } from "@angular/material/expansion";
 import { MatIconModule } from "@angular/material/icon";
@@ -9,6 +10,7 @@ import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Quiz, QuizAttempt } from "../../../models/quiz.model";
+import { ConfirmDialogComponent } from "../../../components/dialogs/confirm-dialog/confirm-dialog.component";
 import { AlertService } from "../../../services/alert.service";
 import { QuizAttemptService } from "../../../services/quiz-attempt.service";
 import { QuizService } from "../../../services/quiz.service";
@@ -45,7 +47,8 @@ export class QuizDetailComponent implements OnInit {
     private quizService: QuizService,
     private alertService: AlertService,
     private _location: Location,
-    private quizAttemptService: QuizAttemptService
+    private quizAttemptService: QuizAttemptService,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -97,26 +100,36 @@ export class QuizDetailComponent implements OnInit {
   }
 
   deleteQuiz(): void {
-    if (
-      confirm(`Are you sure you want to delete the quiz "${this.quiz?.title}"?`)
-    ) {
-      this.quizService.deleteQuiz(this.quizId).subscribe({
-        next: () => {
-          this.alertService.displayAlert(
-            "success",
-            "Quiz deleted successfully"
-          );
-          this.navigateBack();
-        },
-        error: (err) => {
-          this.alertService.displayAlert(
-            "error",
-            "Failed to delete quiz. Please try again."
-          );
-          console.error("Error deleting quiz:", err);
-        },
-      });
-    }
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: 'Delete Quiz',
+        message: `Are you sure you want to delete the quiz "${this.quiz?.title}"?`,
+        confirmText: 'Delete',
+        cancelText: 'Cancel'
+      },
+      width: '400px'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.quizService.deleteQuiz(this.quizId).subscribe({
+          next: () => {
+            this.alertService.displayAlert(
+              "success",
+              "Quiz deleted successfully"
+            );
+            this.navigateBack();
+          },
+          error: (err) => {
+            this.alertService.displayAlert(
+              "error",
+              "Failed to delete quiz. Please try again."
+            );
+            console.error("Error deleting quiz:", err);
+          },
+        });
+      }
+    });
   }
 
   navigateBack(): void {
